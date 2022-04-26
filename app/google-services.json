@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "34648008581",
+    "project_id": "wallpaper-bazaar",
+    "storage_bucket": "wallpaper-bazaar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34648008581:android:a05c2b0d488fda80a2c6ec",
+        "android_client_info": {
+          "package_name": "com.imagesandwallpaper.bazaar.iwb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "34648008581-ipe3pcmdu6roi80ahspdq3lvu63qbrge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApiESSrkCT7a7ObI7tvRvrhWjdMTV5KVc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "34648008581-ipe3pcmdu6roi80ahspdq3lvu63qbrge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

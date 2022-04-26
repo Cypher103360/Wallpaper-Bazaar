@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/action_bg.xml" value="0.1645" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/drawer_item.xml" value="0.158" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.158" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/item_bg.xml" value="0.145" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/opened_eye.xml" value="0.158" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_fullscreen.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_home.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_login.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_main.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_privacy_policy.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_register.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_signup.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/cat_item_layout.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/disclaimer_layout.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/fragment_category.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/fragment_home.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/fragment_home2.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/header.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/image_item_layout.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/load_image_dialog.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/loading.xml" value="0.75" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/set_dialog_layout.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/menu/menu.xml" value="0.2234375" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/menu/menu2.xml" value="0.2234375" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

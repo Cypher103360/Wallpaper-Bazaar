@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_baseline_home_24"
+            android:iconTint="#6200EA"
+            android:title="@string/home"
+            tools:targetApi="o" />
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/ic_baseline_contact_support_24"
+            android:iconTint="#6200EA"
+            android:title="@string/contact_us"
+            tools:targetApi="o" />
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_baseline_share_24"
+            android:iconTint="#6200EA"
+            android:title="@string/share_app"
+            tools:targetApi="o" />
+
+        <item
+            android:id="@+id/nav_favorite"
+            android:icon="@drawable/ic_baseline_favorite_24"
+            android:iconTint="#6200EA"
+            android:title="@string/favorite"
+            tools:targetApi="o" />
+
+        <item
+            android:id="@+id/nav_privacy"
+            android:icon="@drawable/ic_baseline_privacy_tip_24"
+            android:iconTint="#6200EA"
+            android:title="@string/privacy_policy"
+            tools:targetApi="o" />
+
+        <item
+            android:id="@+id/nav_disclaimer"
+            android:icon="@drawable/ic_baseline_warning_amber_24"
+            android:iconTint="#6200EA"
+            android:title="@string/disclaimer"
+            tools:targetApi="o" />
+
+        <item
+            android:id="@+id/nav_signOut"
+            android:icon="@drawable/ic_baseline_logout_24"
+            android:iconTint="#6200EA"
+            android:title="@string/sign_out"
+            tools:targetApi="o" />
+    </group>
+
+</menu>
