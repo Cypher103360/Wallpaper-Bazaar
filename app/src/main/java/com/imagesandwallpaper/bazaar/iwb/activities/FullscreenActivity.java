@@ -1,24 +1,27 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,11 +29,14 @@ import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityFullscreenBinding;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class FullscreenActivity extends AppCompatActivity {
     ActivityFullscreenBinding binding;
-    Dialog loadImageDialog,setImageDialog;
-    ImageView backIcon,favIcon,downloadIcon,shareIcon,fullImage;
+    Dialog loadImageDialog, setImageDialog;
+    ImageView backIcon, favIcon, downloadIcon, shareIcon, fullImage;
     String imgUrl;
 
 
@@ -47,29 +53,30 @@ public class FullscreenActivity extends AppCompatActivity {
         backIcon.setOnClickListener(view -> {
             onBackPressed();
         });
+
         imgUrl = getIntent().getStringExtra("img");
-        Glide.with(FullscreenActivity.this).load("https://gedgetsworld.in/Wallpaper_Bazaar/popular_images/"+imgUrl).into(fullImage);
+        Glide.with(FullscreenActivity.this).load("https://gedgetsworld.in/Wallpaper_Bazaar/popular_images/" + imgUrl).into(fullImage);
 
         downloadIcon.setOnClickListener(view -> {
-            if (checkPermissionForReadExternalStorage()) {
-                saveImage(imgUrl,view);
-            } else {
-                try {
-                    requestPermissionForReadExternalStorage();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (checkPermissionForReadExternalStorage()) {
+//                saveImage(imgUrl,view);
+//            } else {
+//                try {
+//                    requestPermissionForReadExternalStorage();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
         });
         binding.setBtn.setOnClickListener(view -> {
             loadImageDialog();
         });
     }
 
-    public void loadImageDialog(){
+    public void loadImageDialog() {
         loadImageDialog = new Dialog(FullscreenActivity.this);
         loadImageDialog.setContentView(R.layout.load_image_dialog);
-        loadImageDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        loadImageDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         loadImageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         loadImageDialog.setCancelable(false);
         loadImageDialog.show();
@@ -81,10 +88,11 @@ public class FullscreenActivity extends AppCompatActivity {
         });
 
     }
-    public void setImageDialog(){
+
+    public void setImageDialog() {
         setImageDialog = new Dialog(FullscreenActivity.this);
         setImageDialog.setContentView(R.layout.set_image_dialog);
-        setImageDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        setImageDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         setImageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setImageDialog.setCancelable(false);
         setImageDialog.show();
@@ -94,6 +102,7 @@ public class FullscreenActivity extends AppCompatActivity {
             setImageDialog.dismiss();
         });
     }
+
 
     private void saveImage(String imgUrl, View view) {
         String dirPath = "/Wallpaper Images";
@@ -117,6 +126,7 @@ public class FullscreenActivity extends AppCompatActivity {
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(resolver.getType(uri));
     }
+
     public boolean checkPermissionForReadExternalStorage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int result = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -125,9 +135,9 @@ public class FullscreenActivity extends AppCompatActivity {
         return false;
     }
 
-    public void requestPermissionForReadExternalStorage() throws Exception {
+    public void requestPermissionForReadExternalStorage() {
         try {
-            ActivityCompat.requestPermissions((Activity) FullscreenActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+            ActivityCompat.requestPermissions(FullscreenActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     101);
         } catch (Exception e) {
             e.printStackTrace();

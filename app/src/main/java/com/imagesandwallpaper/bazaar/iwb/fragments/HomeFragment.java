@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
         Intent intent = new Intent(requireActivity(),FullscreenActivity.class);
-        intent.putExtra("img",imageItemModel.getItemImage());
+        intent.putExtra("img",imageItemModel.getItemImage().trim());
         startActivity(intent);
     }
 }
