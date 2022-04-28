@@ -107,8 +107,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 .setAllowedOverRoaming(true)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, String.valueOf(file))
-                .setMimeType(getMimeType(uri))
-        ;
+                .setMimeType(getMimeType(uri));
         downloadManager.enqueue(request);
         Snackbar.make(view, "Downloading Started", Snackbar.LENGTH_LONG).show();
     }
