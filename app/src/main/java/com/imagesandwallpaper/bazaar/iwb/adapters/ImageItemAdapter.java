@@ -2,6 +2,7 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
@@ -36,7 +38,9 @@ public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.itemImage.setImageResource(imageItemModelList.get(position).getItemImage());
+        Log.d("mmmmmmmm",imageItemModelList.get(position).getItemImage()+" ");
+        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/popular_images/"
+                +imageItemModelList.get(position).getItemImage()).into(holder.itemImage);
         holder.itemView.setOnClickListener(view -> {
             imageItemClickInterface.onClicked(imageItemModelList.get(position));
         });

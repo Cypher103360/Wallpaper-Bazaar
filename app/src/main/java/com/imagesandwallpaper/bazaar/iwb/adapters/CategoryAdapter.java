@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.models.CatClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.CategoryModel;
@@ -38,8 +39,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.catImage.setImageResource(categoryModelList.get(position).getCatImage());
-        holder.catTitle.setText(categoryModelList.get(position).getCatTitle());
+        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
+                +categoryModelList.get(position).getImage()).into(holder.catImage);
+        holder.catTitle.setText(categoryModelList.get(position).getTitle());
         holder.itemView.setOnClickListener(view -> {
             catClickInterface.onClicked(categoryModelList.get(position));
         });

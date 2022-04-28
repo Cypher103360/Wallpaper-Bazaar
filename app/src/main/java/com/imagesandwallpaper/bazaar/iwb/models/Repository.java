@@ -3,6 +3,8 @@ package com.imagesandwallpaper.bazaar.iwb.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +46,8 @@ public class Repository {
         return categoryMutableLiveData;
     }
 
-    public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(){
-        Call<ImageItemModelList> call = apiInterface.getAllImageItem();
+    public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(Map<String,String> map){
+        Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
         call.enqueue(new Callback<ImageItemModelList>() {
             @Override
             public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {

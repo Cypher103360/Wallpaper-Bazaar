@@ -10,23 +10,12 @@ import retrofit2.http.POST;
 
 public interface ApiInterface {
 
-//    @FormUrlEncoded
-//    @POST("upload_news_api.php")
-//    Call<MessageModel> uploadNews(@FieldMap Map<String, String> map);
-//
-//    @FormUrlEncoded
-//    @POST("upload_tips_api.php")
-//    Call<MessageModel> uploadTips(@FieldMap Map<String, String> map);
-//
-//    @FormUrlEncoded
-//    @POST("upload_strip_ban_api.php")
-//    Call<MessageModel> uploadStripBan(@FieldMap Map<String, String> map);
-//
-    @POST("fetch_news_api.php")
+    @POST("fetch_category.php")
     Call<CatModelList> getAllCategory();
 
-    @POST("fetch_tips_api.php")
-    Call<ImageItemModelList> getAllImageItem();
+    @FormUrlEncoded
+    @POST("fetch_popular_images.php")
+    Call<ImageItemModelList> getPopularImageItem(@FieldMap Map<String,String> map);
 
 //    @FormUrlEncoded
 //    @POST("ads_id_fetch.php")

@@ -7,7 +7,7 @@
     tools:context=".activities.FullscreenActivity">
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/full_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_bg" />
+        app:srcCompat="@drawable/login_bg"
+        android:contentDescription="@string/todo" />
 
     <ImageView
         android:id="@+id/back_icon"
@@ -93,7 +94,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/set_btn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_share_24" />
+            app:srcCompat="@drawable/ic_baseline_share_24"
+            android:contentDescription="@string/todo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

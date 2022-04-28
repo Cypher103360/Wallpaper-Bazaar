@@ -1,24 +1,25 @@
 package com.imagesandwallpaper.bazaar.iwb.models;
 
 public class CategoryModel {
-    int catImage;
-    String catId, catTitle;
+    String id;
+    String Image;
+    String Title;
 
-    public CategoryModel(int catImage, String catId, String catTitle) {
-        this.catImage = catImage;
-        this.catId = catId;
-        this.catTitle = catTitle;
+    public CategoryModel(String id, String image, String title) {
+        this.id = id;
+        Image = image;
+        Title = title;
     }
 
-    public int getCatImage() {
-        return catImage;
+    public String getId() {
+        return id;
     }
 
-    public String getCatId() {
-        return catId;
+    public String getImage() {
+        return Image;
     }
 
-    public String getCatTitle() {
-        return catTitle;
+    public String getTitle() {
+        return Title;
     }
 }
