@@ -3,6 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_main.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_welcome.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/image_item_layout.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_data.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_image.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_sub_image.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_sub_cat.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/cat_item_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/image_item_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/upload_image_layout.xml" value="0.19895833333333332" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/action_bg.xml" value="0.1645" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/drawer_item.xml" value="0.158" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.158" />
@@ -36,7 +47,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

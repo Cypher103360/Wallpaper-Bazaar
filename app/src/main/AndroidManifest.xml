@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperBazaar">
         <activity
+            android:name=".activities.WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.PrivacyPolicyActivity"
             android:exported="false" />
         <activity
