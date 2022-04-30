@@ -36,6 +36,9 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.backIcon.setOnClickListener(view -> {
+            onBackPressed();
+        });
         auth = FirebaseAuth.getInstance();
         loadingDialog = CommonMethods.loadingDialog(RegisterActivity.this);
 
@@ -87,5 +90,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void uploadData() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

@@ -71,4 +71,8 @@ dependencies {
 
     // Google signIn
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
+
+    // Photo View
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
 }

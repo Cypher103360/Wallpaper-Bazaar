@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,10 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemViewModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -40,11 +44,13 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     FragmentHomeBinding binding;
     RecyclerView imageItemRecyclerView;
     ImageItemAdapter imageItemAdapter;
+    List<ImageItemModel> imageItemModelList = new ArrayList<>();
     MaterialButtonToggleGroup materialButtonToggleGroup;
     Button popularBtn, newBtn;
     ApiInterface apiInterface;
     Map<String, String> map = new HashMap<>();
     Dialog loading;
+
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -111,7 +117,8 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
         Intent intent = new Intent(requireActivity(),FullscreenActivity.class);
-        intent.putExtra("img",imageItemModel.getItemImage().trim());
+        imageItemModelList.add(new ImageItemModel(imageItemModel.getId(), imageItemModel.getCatId(), imageItemModel.getImage()));
+        intent.putExtra("myList", (Serializable) imageItemModelList);
         startActivity(intent);
     }
 }

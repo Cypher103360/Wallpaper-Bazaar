@@ -142,7 +142,6 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
 
             Intent intent =new Intent(this, SubCatActivity.class);
             intent.putExtra("catId", categoryModel.getId());
-
             startActivity(intent);
 
         } else if (categoryModel.getItem().equals("true")) {

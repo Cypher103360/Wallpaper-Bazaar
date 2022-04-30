@@ -6,17 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.FullscreenActivity">
 
-    <ImageView
-        android:id="@+id/full_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/fullScreenItem_ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_bg"
-        android:contentDescription="@string/todo" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/back_icon"

@@ -3,8 +3,6 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,6 +61,7 @@ public class Repository {
         });
         return subCategoryMutableLiveData;
     }
+
     public MutableLiveData<CatItemModelList> getCatItemsMutableLiveData(String catId) {
         Call<CatItemModelList> call = apiInterface.fetchCatItems(catId);
         call.enqueue(new Callback<CatItemModelList>() {
@@ -79,7 +78,9 @@ public class Repository {
             }
         });
         return catItemModelListMutableLiveData;
-    }public MutableLiveData<CatItemModelList> getSubCatItemsMutableLiveData(String catId) {
+    }
+
+    public MutableLiveData<CatItemModelList> getSubCatItemsMutableLiveData(String catId) {
         Call<CatItemModelList> call = apiInterface.fetchSubCatItems(catId);
         call.enqueue(new Callback<CatItemModelList>() {
             @Override
@@ -96,8 +97,4 @@ public class Repository {
         });
         return catItemModelListMutableLiveData;
     }
-
-//    public LiveData<PopularModelList> getPopularLiveData(){
-//        Call<PopularModelList> call = apiInterface.uploadPopularImages()
-//    }
 }

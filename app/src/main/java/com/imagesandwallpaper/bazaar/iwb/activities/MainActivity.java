@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         binding.myText.setVisibility(View.VISIBLE);
         binding.lottieNoInternet.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.GONE);
-        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_500));
+        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.off_white));
 
         if (count == 2) {
             new Handler().postDelayed(() -> {

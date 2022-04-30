@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
@@ -38,9 +39,8 @@ public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("mmmmmmmm",imageItemModelList.get(position).getItemImage()+" ");
-        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/popular_images/"
-                +imageItemModelList.get(position).getItemImage()).into(holder.itemImage);
+        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                +imageItemModelList.get(position).getImage()).into(holder.itemImage);
         holder.itemView.setOnClickListener(view -> {
             imageItemClickInterface.onClicked(imageItemModelList.get(position));
         });

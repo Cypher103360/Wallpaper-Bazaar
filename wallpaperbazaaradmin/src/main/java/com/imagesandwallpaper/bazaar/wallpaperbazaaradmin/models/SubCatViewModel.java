@@ -12,7 +12,6 @@ public class SubCatViewModel extends AndroidViewModel {
     private final Repository repository;
     String catId;
 
-
     public SubCatViewModel(@NonNull Application application) {
         super(application);
         repository = Repository.getInstance();
