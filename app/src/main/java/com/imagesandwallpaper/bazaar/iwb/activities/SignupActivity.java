@@ -80,7 +80,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void navigateToNextActivity() {
         finish();
-        Intent intent = new Intent(SignupActivity.this,HomeActivity.class);
+        Intent intent = new Intent(SignupActivity.this,WelcomeActivity.class);
         startActivity(intent);
     }
 }

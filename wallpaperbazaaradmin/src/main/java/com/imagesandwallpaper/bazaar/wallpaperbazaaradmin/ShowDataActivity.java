@@ -18,34 +18,50 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.adapters.CatClickInterface;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.adapters.CategoryAdapter;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityShowDataBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CatViewModel;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CategoryModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.MessageModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.utils.CommonMethods;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
-    ActivityMainBinding binding;
+public class ShowDataActivity extends AppCompatActivity implements CatClickInterface {
+
+    CatViewModel catViewModel;
+    List<CategoryModel> categoryModels;
+    CategoryAdapter categoryAdapter;
+    GridLayoutManager layoutManager;
+    ActivityShowDataBinding binding;
+    MaterialAlertDialogBuilder builder;
     ActivityResultLauncher<String> launcher;
-    Map<String, String> map = new HashMap<>();
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
     String encodedImage;
     Dialog loadingDialog, imageDialog, catDialog;
     ApiInterface apiInterface;
+    Map<String, String> map = new HashMap<>();
+
 
     public static String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -57,13 +73,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityShowDataBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loadingDialog = CommonMethods.loadingDialog(MainActivity.this);
-        apiInterface = ApiWebServices.getApiInterface();
-        // upload_popular_images.php
 
+        catViewModel = new ViewModelProvider(this).get(CatViewModel.class);
+        categoryModels = new ArrayList<>();
+        categoryAdapter = new CategoryAdapter(this, this);
+        layoutManager = new GridLayoutManager(this, 3);
+        loadingDialog = CommonMethods.loadingDialog(this);
+        apiInterface = ApiWebServices.getApiInterface();
+
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        binding.showRV.setLayoutManager(layoutManager);
+        binding.showRV.setAdapter(categoryAdapter);
+        fetchCategory();
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
             if (result != null) {
                 if (chooseImage != null) {
@@ -82,26 +106,68 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        binding.popImgBtn.setOnClickListener(view -> {
-            uploadImage("Popular_Images");
-        });
+    }
 
-        binding.newImgBtn.setOnClickListener(view -> {
-            uploadImage("New_Images");
-        });
-        binding.categoryBtn.setOnClickListener(view -> {
-
-            uploadCategory();
-        });
-        binding.showDataBtn.setOnClickListener(view -> {
-            startActivity(new Intent(this, ShowDataActivity.class));
+    private void fetchCategory() {
+        loadingDialog.show();
+        catViewModel.getAllCategory().observe(this, catModelList -> {
+            if (catModelList.getData() != null) {
+                categoryModels.clear();
+                categoryModels.addAll(catModelList.getData());
+                categoryAdapter.updateList(categoryModels);
+            }
+            loadingDialog.dismiss();
         });
     }
 
+    @Override
+    public void onClicked(CategoryModel categoryModel) {
+        builder = new MaterialAlertDialogBuilder(ShowDataActivity.this);
+
+        if (categoryModel.getSubCat().equals("false") && categoryModel.getItem().equals("false")) {
+            builder.setIcon(R.drawable.ic_baseline_add_alert_24)
+                    .setTitle("Add subcategory or Item")
+                    .setMessage("Would you like to add a subcategory or item?")
+                    .setCancelable(false).setNegativeButton("Add Sub Category", (dialogInterface, i) -> {
+                uploadCategory(categoryModel);
+
+            })
+                    .setNeutralButton("Cancel", ((dialogInterface, i) -> {
+                    })).setPositiveButton("Add Item", (dialogInterface, i) -> {
+                uploadImage(categoryModel);
+
+            });
+
+        } else if (categoryModel.getSubCat().equals("true")) {
+
+            Intent intent =new Intent(this, SubCatActivity.class);
+            intent.putExtra("catId", categoryModel.getId());
+
+            startActivity(intent);
+
+        } else if (categoryModel.getItem().equals("true")) {
+            builder.setIcon(R.drawable.ic_baseline_add_alert_24)
+                    .setTitle("Add Item")
+                    .setMessage("Would you like to add a new image?")
+                    .setCancelable(false).setPositiveButton("Add Item", (dialogInterface, i) -> {
+
+                uploadImage(categoryModel);
+            }).setNeutralButton("Cancel", ((dialogInterface, i) -> {
+            })).setNegativeButton("Show Images", (dialogInterface, i) -> {
+                Intent intent = new Intent(this, ShowImageActivity.class);
+                intent.putExtra("catId", categoryModel.getId());
+                intent.putExtra("catKey", "cat");
+
+                startActivity(intent);
+            });
+        }
 
 
-    private void uploadCategory() {
-        catDialog = new Dialog(MainActivity.this);
+        builder.show();
+    }
+
+    private void uploadCategory(CategoryModel categoryModel) {
+        catDialog = new Dialog(this);
         catDialog.setContentView(R.layout.category_dialog);
         catDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         catDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -122,45 +188,45 @@ public class MainActivity extends AppCompatActivity {
             String cTitle = catTitle.getText().toString().trim();
 
             if (encodedImage == null) {
-                loadingDialog.dismiss();
-                Toast.makeText(MainActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
             } else if (TextUtils.isEmpty(cTitle)) {
                 catTitle.setError("Name Required");
                 catTitle.requestFocus();
-                loadingDialog.dismiss();
             } else {
+                map.put("catId", categoryModel.getId());
                 map.put("img", encodedImage);
                 map.put("title", cTitle);
+                map.put("subCat", "true");
                 uploadCatData(map);
             }
         });
     }
 
     private void uploadCatData(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.uploadCategory(map);
+        Call<MessageModel> call = apiInterface.uploadSubCategory(map);
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Category Uploaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Category Uploaded", Toast.LENGTH_SHORT).show();
                     catDialog.dismiss();
                 } else {
                     assert response.body() != null;
-                    Toast.makeText(MainActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), response.body().getError(), Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.dismiss();
             }
 
             @Override
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
             }
         });
     }
 
-    private void uploadImage(String type) {
-        imageDialog = new Dialog(MainActivity.this);
+    private void uploadImage(CategoryModel categoryModel) {
+        imageDialog = new Dialog(this);
         imageDialog.setContentView(R.layout.upload_image_layout);
         imageDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         imageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -172,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
         Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
 
-        dialogTitle.setText(type);
+        dialogTitle.setText(categoryModel.getTitle());
         cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
         chooseImage.setOnClickListener(view -> {
             launcher.launch("image/*");
@@ -180,37 +246,40 @@ public class MainActivity extends AppCompatActivity {
         uploadImageBtn.setOnClickListener(view -> {
             loadingDialog.show();
             if (encodedImage == null) {
-                Toast.makeText(MainActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please Select an Image", Toast.LENGTH_SHORT).show();
             } else {
-                map.put("tableName", type);
                 map.put("img", encodedImage);
-                uploadPopularImage(map);
+                map.put("catId", categoryModel.getId());
+                map.put("subCat", "false");
+                uploadCatImages(map);
             }
         });
 
 
     }
 
-    private void uploadPopularImage(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.uploadPopularImages(map);
+    private void uploadCatImages(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.uploadCatItemImages(map);
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Image Uploaded", Toast.LENGTH_SHORT).show();
                     imageDialog.dismiss();
                 } else {
                     assert response.body() != null;
-                    Toast.makeText(MainActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), response.body().getError(), Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.dismiss();
             }
 
             @Override
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
             }
         });
     }
+
 }
+
