@@ -1,6 +1,8 @@
 package com.imagesandwallpaper.bazaar.iwb.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,8 +28,10 @@ import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.FragmentHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
+import com.imagesandwallpaper.bazaar.iwb.models.CatViewModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemViewModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
@@ -41,10 +47,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ImageItemClickInterface {
+    ImageItemViewModel imageItemViewModel;
     FragmentHomeBinding binding;
     RecyclerView imageItemRecyclerView;
     ImageItemAdapter imageItemAdapter;
-    List<ImageItemModel> imageItemModelList = new ArrayList<>();
     MaterialButtonToggleGroup materialButtonToggleGroup;
     Button popularBtn, newBtn;
     ApiInterface apiInterface;
@@ -56,7 +62,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        //CommonMethods.loadingDialog(requireActivity()).show();
+
         materialButtonToggleGroup = binding.materialButtonToggleGroup;
         popularBtn = binding.popBtn;
         newBtn = binding.newBtn;
@@ -90,35 +96,26 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         return binding.getRoot();
     }
 
-    private void setImageData(FragmentActivity context, Map<String, String> map) {
+    private void setImageData(Activity context, Map<String, String> map) {
         imageItemAdapter = new ImageItemAdapter(context, this);
         imageItemRecyclerView.setAdapter(imageItemAdapter);
+        imageItemViewModel = new ViewModelProvider(requireActivity(),
+                new ImageItemModelFactory(requireActivity().getApplication(), map)).get(ImageItemViewModel.class);
 
-        Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
-        call.enqueue(new Callback<ImageItemModelList>() {
-            @Override
-            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    if (response.body().getData() != null) {
-                        imageItemAdapter.updateList(response.body().getData());
-                    }
-                    loading.dismiss();
-                }
+        imageItemViewModel.getImageItems().observe(requireActivity(), imageItemModelList -> {
+            if (!imageItemModelList.getData().isEmpty()){
+                imageItemAdapter.updateList(imageItemModelList.getData());
             }
-
-            @Override
-            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
-                Log.e("Tag", t.getMessage());
-            }
+            loading.dismiss();
         });
     }
 
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
         Intent intent = new Intent(requireActivity(),FullscreenActivity.class);
-        imageItemModelList.add(new ImageItemModel(imageItemModel.getId(), imageItemModel.getCatId(), imageItemModel.getImage()));
-        intent.putExtra("myList", (Serializable) imageItemModelList);
+        List<ImageItemModel> itemModels = new ArrayList<>();
+        itemModels.add(imageItemModel);
+        intent.putExtra("myList", (Serializable) itemModels);
         startActivity(intent);
     }
 }

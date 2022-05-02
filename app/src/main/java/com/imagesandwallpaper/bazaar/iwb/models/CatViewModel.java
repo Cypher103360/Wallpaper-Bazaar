@@ -17,4 +17,5 @@ public class CatViewModel extends AndroidViewModel {
     public LiveData<CatModelList> getCategories(){
         return repository.getCategoryMutableLiveData();
     }
+
 }

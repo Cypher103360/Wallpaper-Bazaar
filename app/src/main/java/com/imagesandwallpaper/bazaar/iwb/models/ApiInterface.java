@@ -1,5 +1,7 @@
 package com.imagesandwallpaper.bazaar.iwb.models;
 
+import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
+
 import java.util.Map;
 
 import retrofit2.Call;
@@ -21,11 +23,15 @@ public interface ApiInterface {
     //fetch_sub_category.php
     @FormUrlEncoded
     @POST("fetch_cat_item_images.php")
-    Call<ImageItemModelList> getCatItemImages(@Field("catId") String id);
+    Call<CatItemImageModelList> getCatItemImages(@Field("catId") String id);
 
     @FormUrlEncoded
     @POST("fetch_sub_category.php")
-    Call<CatModelList> getSubCategories(@Field("catId") String id);
+    Call<SubCatModelList> getSubCategories(@Field("catId") String id);
+
+    @FormUrlEncoded
+    @POST("fetch_sub_cat_item_images.php")
+    Call<SubCatImageModelList> getSubCategoryItemsImages(@Field("catId") String id);
 
 
 //    @FormUrlEncoded

@@ -1,38 +1,39 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.imagesandwallpaper.bazaar.iwb.R;
-import com.imagesandwallpaper.bazaar.iwb.adapters.CategoryAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatClickInterface;
+import com.imagesandwallpaper.bazaar.iwb.adapters.SubCategoryAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivitySubCategoryBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
-import com.imagesandwallpaper.bazaar.iwb.models.CatClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.CatModelList;
-import com.imagesandwallpaper.bazaar.iwb.models.CategoryModel;
+import com.imagesandwallpaper.bazaar.iwb.models.SubCatModel;
+import com.imagesandwallpaper.bazaar.iwb.models.SubCatModelFactory;
+import com.imagesandwallpaper.bazaar.iwb.models.SubCatViewModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class SubCategoryActivity extends AppCompatActivity implements CatClickInterface {
+public class SubCategoryActivity extends AppCompatActivity implements SubCatClickInterface {
     ActivitySubCategoryBinding binding;
-    CategoryAdapter categoryAdapter;
+    SubCatViewModel subCatViewModel;
+    SubCategoryAdapter subCategoryAdapter;
     ApiInterface apiInterface;
     RecyclerView subCatItemsRecyclerview;
-    String catId,activityTitle;
+    String catId, activityTitle;
+    Dialog loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySubCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        loading = CommonMethods.loadingDialog(SubCategoryActivity.this);
         catId = getIntent().getStringExtra("id");
         activityTitle = getIntent().getStringExtra("title");
         binding.backIcon.setOnClickListener(view -> {
@@ -43,36 +44,34 @@ public class SubCategoryActivity extends AppCompatActivity implements CatClickIn
 
         apiInterface = ApiWebServices.getApiInterface();
         subCatItemsRecyclerview = binding.subCatRecyclerView;
-        subCatItemsRecyclerview.setLayoutManager(new GridLayoutManager(SubCategoryActivity.this,3));
+        subCatItemsRecyclerview.setLayoutManager(new GridLayoutManager(SubCategoryActivity.this, 3));
         subCatItemsRecyclerview.setHasFixedSize(true);
 
         setData();
     }
 
     private void setData() {
-        categoryAdapter = new CategoryAdapter(SubCategoryActivity.this,this);
-        subCatItemsRecyclerview.setAdapter(categoryAdapter);
-        Call<CatModelList> call = apiInterface.getSubCategories(catId);
-        call.enqueue(new Callback<CatModelList>() {
-            @Override
-            public void onResponse(@NonNull Call<CatModelList> call, @NonNull Response<CatModelList> response) {
-                if (response.isSuccessful()){
-                    categoryAdapter.updateList(response.body().getData());
-                }
-            }
+        loading.show();
+        subCategoryAdapter = new SubCategoryAdapter(SubCategoryActivity.this, this);
+        subCatItemsRecyclerview.setAdapter(subCategoryAdapter);
 
-            @Override
-            public void onFailure(@NonNull Call<CatModelList> call, @NonNull Throwable t) {
+        subCatViewModel = new ViewModelProvider(SubCategoryActivity.this,
+                new SubCatModelFactory(this.getApplication(), catId)).get(SubCatViewModel.class);
 
+        subCatViewModel.getSubCategories().observe(this, subCatModelList -> {
+            if (!subCatModelList.data.isEmpty()) {
+                subCategoryAdapter.updateList(subCatModelList.getData());
+                loading.dismiss();
             }
         });
     }
 
     @Override
-    public void onClicked(CategoryModel categoryModel) {
-        Intent intent = new Intent(SubCategoryActivity.this,CatItemsActivity.class);
-        intent.putExtra("id",categoryModel.getId());
-        intent.putExtra("title",categoryModel.getTitle());
+    public void onClicked(SubCatModel subCatModel) {
+        Intent intent = new Intent(SubCategoryActivity.this, CatItemsActivity.class);
+        intent.putExtra("type","SubCatItem");
+        intent.putExtra("id", subCatModel.getCatId());
+        intent.putExtra("title", subCatModel.getTitle());
         startActivity(intent);
     }
 

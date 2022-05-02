@@ -71,7 +71,9 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
             startActivity(intent);
         }else if (categoryModel.getItem().equals("true")){
             Intent intent = new Intent(requireActivity(), CatItemsActivity.class);
+            intent.putExtra("type","CatFragment");
             intent.putExtra("id",categoryModel.getId());
+            intent.putExtra("title",categoryModel.getTitle());
             startActivity(intent);
         }
     }

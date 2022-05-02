@@ -3,6 +3,8 @@ package com.imagesandwallpaper.bazaar.iwb.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
+
 import java.util.Map;
 
 import retrofit2.Call;
@@ -15,7 +17,10 @@ public class Repository {
     public  static Repository repository;
 
     MutableLiveData<CatModelList> categoryMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<CatItemImageModelList> catItemImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
 
     public Repository() {
         apiInterface = ApiWebServices.getApiInterface();
@@ -62,6 +67,61 @@ public class Repository {
             }
         });
         return imageItemModelListMutableLiveData;
+    }
+
+    public MutableLiveData<SubCatModelList> getSubCategoryMutableLiveData(String catId){
+
+        Call<SubCatModelList> call = apiInterface.getSubCategories(catId);
+        call.enqueue(new Callback<SubCatModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<SubCatModelList> call, @NonNull Response<SubCatModelList> response) {
+                if (response.isSuccessful()){
+                    subCategoryMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SubCatModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return subCategoryMutableLiveData;
+    }
+
+    public MutableLiveData<SubCatImageModelList> getSubCatImageModelListMutableLiveData(String catId){
+        Call<SubCatImageModelList> call = apiInterface.getSubCategoryItemsImages(catId);
+        call.enqueue(new Callback<SubCatImageModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<SubCatImageModelList> call, @NonNull Response<SubCatImageModelList> response) {
+                if (response.isSuccessful()){
+                    subCatImageModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SubCatImageModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return subCatImageModelListMutableLiveData;
+    }
+
+    public MutableLiveData<CatItemImageModelList> getCatItemImageModelListMutableLiveData(String catId){
+        Call<CatItemImageModelList> call  = apiInterface.getCatItemImages(catId);
+        call.enqueue(new Callback<CatItemImageModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<CatItemImageModelList> call, @NonNull Response<CatItemImageModelList> response) {
+                if (response.isSuccessful()){
+                    catItemImageModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CatItemImageModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return catItemImageModelListMutableLiveData;
     }
 
 }

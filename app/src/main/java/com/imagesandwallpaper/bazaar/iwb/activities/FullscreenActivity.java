@@ -16,6 +16,7 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FullscreenActivity extends AppCompatActivity implements ImageItemClickInterface {
     ActivityFullscreenBinding binding;
@@ -42,7 +43,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
         binding.setBtn.setOnClickListener(view -> {
             loadImageDialog();
         });
-        ArrayList<ImageItemModel> myList = (ArrayList<ImageItemModel>) getIntent().getSerializableExtra("mylist");
+        ArrayList<ImageItemModel> myList = (ArrayList<ImageItemModel>) getIntent().getSerializableExtra("myList");
         Log.d("myList",myList.toString());
     }
 
