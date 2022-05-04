@@ -14,25 +14,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/action_bg"
         android:elevation="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/act_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:gravity="center_vertical"
-            android:minHeight="?actionBarSize"
-            android:text="Create Account"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/back_icon"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageView
             android:id="@+id/back_icon"
@@ -44,7 +31,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/black" />
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -56,13 +43,13 @@
         android:layout_marginTop="120dp"
         android:fontFamily="@font/doppio_one"
         android:text="Create Account"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="35sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -74,54 +61,79 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            app:boxStrokeColor="@color/black"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:hint="@string/email"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/white"
             app:hintTextColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+            app:endIconTint="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <EditText
                 android:id="@+id/reg_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout2"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:hint="@string/password"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/white"
             app:endIconMode="password_toggle"
-            app:boxStrokeColor="@color/black"
+            app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout">
 
             <EditText
                 android:id="@+id/reg_pass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/create_account_btn"
-            android:layout_gravity="center"
-            android:background="@drawable/item_bg"
             android:layout_width="300dp"
-            android:layout_margin="8dp"
-            android:textStyle="bold"
-            android:textSize="20sp"
             android:layout_height="wrap_content"
-            android:text="Create"
-            android:textAllCaps="false"/>
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/item_bg"
+            android:text="@string/create"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple_500"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout2" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -142,8 +154,8 @@
             android:layout_margin="5dp"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:text="Already have account?" />
+            android:textColor="@color/white"
+            android:text="@string/already_have_an_account" />
 
         <TextView
             android:id="@+id/login_text"
@@ -152,9 +164,9 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:textSize="16sp"
-            android:textColor="@color/purple_500"
+            android:textColor="@color/teal_200"
             android:textStyle="bold"
-            android:text="Log in" />
+            android:text="@string/log_in" />
     </LinearLayout>
 
 

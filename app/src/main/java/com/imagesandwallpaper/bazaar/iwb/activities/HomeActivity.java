@@ -109,6 +109,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
         auth = FirebaseAuth.getInstance();
@@ -147,9 +148,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
         sectionsPagerAdapter.addFragments(new CategoryFragment(), "Category");
-        sectionsPagerAdapter.addFragments(new OtherFragment(), "Other");
+        sectionsPagerAdapter.addFragments(new OtherFragment(), "Premium");
 
     }
+
     public void navigationDrawer() {
         navigationView = findViewById(R.id.navigation);
         navigationView.bringToFront();
@@ -158,6 +160,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
+
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(HomeActivity.this);

@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.newImgBtn.setOnClickListener(view -> {
-            uploadImage("New_Images");
+            uploadImage("Premium_Images");
         });
         binding.categoryBtn.setOnClickListener(view -> {
 
@@ -96,8 +96,30 @@ public class MainActivity extends AppCompatActivity {
         binding.showDataBtn.setOnClickListener(view -> {
             startActivity(new Intent(this, ShowDataActivity.class));
         });
+        binding.uploadBannerBtn.setOnClickListener(view -> {
+            uploadBannerImage();
+        });
     }
 
+    private void uploadBannerImage() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Upload Banner")
+                .setIcon(R.drawable.ic_baseline_add_alert_24)
+                .setMessage("Upload banner in Home or Premium?")
+                .setNeutralButton("Cancel", (dialogInterface, i) -> {
+
+                }).setNegativeButton("Home", ((dialogInterface, i) -> {
+                    map.put("tableName","home_banner");
+                    uploadBanner(map);
+
+        })).setPositiveButton("Premium", ((dialogInterface, i) -> {
+
+        })).show();
+    }
+
+    private void uploadBanner(Map<String, String> map) {
+
+    }
 
 
     private void uploadCategory() {

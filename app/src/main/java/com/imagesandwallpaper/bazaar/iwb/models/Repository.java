@@ -19,6 +19,7 @@ public class Repository {
     MutableLiveData<CatModelList> categoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<CatItemImageModelList> catItemImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
 
@@ -67,6 +68,22 @@ public class Repository {
             }
         });
         return imageItemModelListMutableLiveData;
+    }public MutableLiveData<ImageItemModelList> getPremiumImageItemModelListMutableLiveData(Map<String,String> map){
+        Call<ImageItemModelList> call = apiInterface.getPremiumImages(map);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()){
+                    premiumImageItemModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return premiumImageItemModelListMutableLiveData;
     }
 
     public MutableLiveData<SubCatModelList> getSubCategoryMutableLiveData(String catId){

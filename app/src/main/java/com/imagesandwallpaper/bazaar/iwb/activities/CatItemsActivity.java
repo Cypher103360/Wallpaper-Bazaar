@@ -1,6 +1,8 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -113,7 +115,11 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
 
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
-
+        Intent intent = new Intent(this,FullscreenActivity.class);
+        intent.putExtra("key","catItem");
+//        imageItemModelList.add(new ImageItemModel(imageItemModel.getId(), imageItemModel.getCatId(), imageItemModel.getImage()));
+//        intent.putExtra("myList",  imageItemModelList);
+        startActivity(intent);
     }
 
     @Override

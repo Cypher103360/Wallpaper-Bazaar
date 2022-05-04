@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -76,6 +77,8 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
         binding = ActivitySubCatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+//        ArrayList<String> myList = (ArrayList<String>) getIntent().getSerializableExtra("mylist");
+//        Log.d("TAg", myList.toString());
         catId = getIntent().getStringExtra("catId");
         subCatViewModel = new ViewModelProvider(this, new SubCatModelFactory(this.getApplication(),catId)).get(SubCatViewModel.class);
         subCatModels = new ArrayList<>();

@@ -17,10 +17,15 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("fetch_popular_images.php")
-    Call<ImageItemModelList> getPopularImageItem(@FieldMap Map<String,String> map);
+    Call<ImageItemModelList> getPopularImageItem(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_premium_images.php")
+    Call<ImageItemModelList> getPremiumImages(@FieldMap Map<String, String> map);
 
     //fetch_cat_item_images.php
     //fetch_sub_category.php
+
     @FormUrlEncoded
     @POST("fetch_cat_item_images.php")
     Call<CatItemImageModelList> getCatItemImages(@Field("catId") String id);
