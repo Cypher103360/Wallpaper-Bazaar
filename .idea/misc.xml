@@ -3,8 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/drawable-v24/start_btn_bg.xml" value="0.132" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/drawable/item_back_bg.xml" value="0.132" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/drawable/item_bg.xml" value="0.132" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_main.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_refreshing.xml" value="0.2" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_register.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_signup.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_welcome.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/cat_item_layout.xml" value="0.6855345911949685" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/fragment_home.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/fragment_other.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/image_item_layout.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_data.xml" value="0.19895833333333332" />

@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
@@ -52,7 +53,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     RecyclerView imageItemRecyclerView;
     ImageItemAdapter imageItemAdapter;
     MaterialButtonToggleGroup materialButtonToggleGroup;
-    Button popularBtn, newBtn;
+    MaterialButton popularBtn, newBtn;
     ApiInterface apiInterface;
     Map<String, String> map = new HashMap<>();
     Dialog loading;
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
         materialButtonToggleGroup = binding.materialButtonToggleGroup;
         popularBtn = binding.popBtn;
-        newBtn = binding.newBtn;
+        newBtn = binding.newImgBtn;
         apiInterface = ApiWebServices.getApiInterface();
         loading = CommonMethods.loadingDialog(requireActivity());
 
@@ -85,7 +86,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
                         map.put("tableName", "Popular_Images");
                         setImageData(requireActivity(), map);
                         break;
-                    case R.id.new_btn:
+                    case R.id.new_img_btn:
                         loading.show();
                         map.put("tableName", "New_Images");
                         setImageData(requireActivity(), map);
@@ -113,9 +114,9 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
         Intent intent = new Intent(requireActivity(),FullscreenActivity.class);
-        List<ImageItemModel> itemModels = new ArrayList<>();
-        itemModels.add(imageItemModel);
-        intent.putExtra("myList", (Serializable) itemModels);
+//        List<ImageItemModel> itemModels = new ArrayList<>();
+//        itemModels.add(imageItemModel);
+//        intent.putExtra("myList", (Serializable) itemModels);
         startActivity(intent);
     }
 }

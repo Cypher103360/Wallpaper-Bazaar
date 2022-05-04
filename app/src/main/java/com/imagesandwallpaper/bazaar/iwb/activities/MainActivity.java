@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
                 if (auth.getCurrentUser() != null | account != null) {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 } else {
                     startActivity(new Intent(MainActivity.this, SignupActivity.class));
                 }

@@ -84,5 +84,7 @@ public class ShowImageActivity extends AppCompatActivity implements CatItemClick
     @Override
     public void onClicked(CatItemModel categoryModel) {
 
+
+
     }
 }

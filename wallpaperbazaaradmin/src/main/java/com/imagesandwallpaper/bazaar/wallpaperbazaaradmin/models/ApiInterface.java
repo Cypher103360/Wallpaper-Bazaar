@@ -17,7 +17,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("upload_cat_item_images.php")
     Call<MessageModel> uploadCatItemImages(@FieldMap Map<String, String> map);
- @FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("upload_sub_cat_item_images.php")
     Call<MessageModel> uploadSubCatItemImages(@FieldMap Map<String, String> map);
 
@@ -32,7 +33,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("fetch_cat_item_images.php")
     Call<CatItemModelList> fetchCatItems(@Field("catId") String catId);
-@FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("fetch_sub_cat_item_images.php")
     Call<CatItemModelList> fetchSubCatItems(@Field("catId") String catId);
 

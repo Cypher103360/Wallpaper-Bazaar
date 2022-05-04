@@ -139,10 +139,22 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
             });
 
         } else if (categoryModel.getSubCat().equals("true")) {
+            builder.setIcon(R.drawable.ic_baseline_add_alert_24)
+                    .setTitle("Add subcategory")
+                    .setMessage("Would you like to add a subcategory?")
+                    .setCancelable(false).setPositiveButton("Add subcategory", (dialogInterface, i) -> {
 
-            Intent intent =new Intent(this, SubCatActivity.class);
-            intent.putExtra("catId", categoryModel.getId());
-            startActivity(intent);
+                uploadCategory(categoryModel);
+
+            }).setNeutralButton("Cancel", ((dialogInterface, i) -> {
+            })).setNegativeButton("Show Sub Category", (dialogInterface, i) -> {
+                Intent intent =new Intent(this, SubCatActivity.class);
+                intent.putExtra("catId", categoryModel.getId());
+                startActivity(intent);
+
+                startActivity(intent);
+            });
+
 
         } else if (categoryModel.getItem().equals("true")) {
             builder.setIcon(R.drawable.ic_baseline_add_alert_24)

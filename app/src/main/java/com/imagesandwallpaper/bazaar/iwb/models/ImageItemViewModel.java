@@ -28,4 +28,7 @@ public class ImageItemViewModel extends AndroidViewModel {
     public LiveData<ImageItemModelList> getImageItems(){
         return repository.getImageItemModelListMutableLiveData(map);
     }
+    public LiveData<ImageItemModelList> getPremiumImageItems(){
+        return repository.getPremiumImageItemModelListMutableLiveData(map);
+    }
 }

@@ -3,6 +3,7 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -29,6 +30,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         binding = ActivityFullscreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         backIcon = binding.backIcon;

@@ -3,6 +3,7 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -32,6 +33,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySubCategoryBinding.inflate(getLayoutInflater());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(binding.getRoot());
         loading = CommonMethods.loadingDialog(SubCategoryActivity.this);
         catId = getIntent().getStringExtra("id");

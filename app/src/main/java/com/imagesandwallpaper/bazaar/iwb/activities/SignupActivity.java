@@ -33,6 +33,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
@@ -80,7 +81,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void navigateToNextActivity() {
         finish();
-        Intent intent = new Intent(SignupActivity.this,WelcomeActivity.class);
+        Intent intent = new Intent(SignupActivity.this,RefreshingActivity.class);
         startActivity(intent);
     }
 }

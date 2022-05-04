@@ -5,7 +5,6 @@
     <string name="tab_text_2">Tab 2</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="todo">TODO</string>
     <string name="popular">Popular</string>
     <string name="home">Home</string>
     <string name="contact_us">Contact us</string>
@@ -18,4 +17,14 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="sign_out">Sign out</string>
     <string name="disclaimer_text">All the contents of this Site are only for general information or use. They do not constitute advice and should not be relied upon in making (or refraining from making) any decision. In case of any omission or discrepancy, information in the original records will be final and binding.</string>
+    <string name="log_in">Log in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="todo">TODO</string>
+    <string name="not_registered_yet">Not registered yet?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="create">Create</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="start">START</string>
+    <string name="new_img">New</string>
 </resources>

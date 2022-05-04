@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,6 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
         setContentView(binding.getRoot());
         binding.backIcon.setOnClickListener(view -> {
             onBackPressed();
@@ -81,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this,LoginActivity.class));
+                        finish();
                     }else {
                         Toast.makeText(RegisterActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
