@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_margin="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="5dp"
+    android:layout_margin="8dp"
     app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,16 +13,18 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/choose_cat_imageView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_launcher_background"
+            android:id="@+id/choose_banner_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/banner_dialog_title"
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="@string/todo" />
         <com.google.android.material.textfield.TextInputLayout
+
             android:id="@+id/textInputLayout2"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -35,7 +36,7 @@
             app:boxStrokeColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/choose_cat_imageView">
+            app:layout_constraintTop_toBottomOf="@+id/choose_banner_imageView">
 
             <EditText
                 android:id="@+id/img_quality"
@@ -52,16 +53,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
-            android:hint="Category Title"
+            android:layout_marginTop="16dp"
+            android:hint="@string/enter_url"
             app:boxStrokeColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
             <EditText
-                android:id="@+id/cat_title"
+                android:id="@+id/url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:ignore="SpeakableTextPresentCheck" />
@@ -69,31 +70,43 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
-            android:id="@+id/upload_cat_btn"
+        <TextView
+            android:id="@+id/banner_dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/upload_banner"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/upload_banner_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
-            android:text="upload"
+            android:text="Update"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
         <Button
-            android:id="@+id/cancel_btn"
+            android:id="@+id/cancel_banner_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="#F4F4F4"
-            android:text="cancel"
+            android:text="@string/cancel"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="@+id/upload_image_btn" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -45,5 +45,12 @@ public interface ApiInterface {
     @POST("fetch_sub_category.php")
     Call<SubCatModelList> getAllSubCategory(@Field("catId") String catId);
 
+    @FormUrlEncoded
+    @POST("update_banner.php")
+    Call<MessageModel> updateBanner(@FieldMap Map<String, String> map);
+ @FormUrlEncoded
+    @POST("fetch_banner.php")
+    Call<BannerModelList> fetchBanner(@FieldMap Map<String, String> map);
+
 }
 

@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,12 +63,13 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
     String encodedImage;
     ActivityResultLauncher<String> launcher;
     Map<String, String> map = new HashMap<>();
+    EditText choseImgQuality;
 
 
 
-    public static String imageStore(Bitmap bitmap) {
+    public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, imageQuality, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
@@ -94,9 +96,13 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
             if (result != null) {
                     Glide.with(this).load(result).into(chooseImage);
                 try {
-                    InputStream inputStream = this.getContentResolver().openInputStream(result);
-                    bitmap = BitmapFactory.decodeStream(inputStream);
-                    encodedImage = imageStore(bitmap);
+                    if (choseImgQuality != null) {
+                        String imgQuality = choseImgQuality.getText().toString();
+                        InputStream inputStream = this.getContentResolver().openInputStream(result);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
+                        Toast.makeText(this, "Image quality is "+ imgQuality, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -151,12 +157,22 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
         TextView dialogTitle = imageDialog.findViewById(R.id.dialog_title);
         chooseImage = imageDialog.findViewById(R.id.choose_imageView);
         Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
+        choseImgQuality = imageDialog.findViewById(R.id.img_quality);
+
         Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
 
         dialogTitle.setText(categoryModel.getTitle());
         cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
         chooseImage.setOnClickListener(view -> {
-            launcher.launch("image/*");
+            String quality = choseImgQuality.getText().toString().trim();
+            if (quality.isEmpty()) {
+                Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
+            } else if (Integer.parseInt(quality)>=10){
+
+                launcher.launch("image/*");
+            }else{
+                choseImgQuality.setError("Minimum Quality must be 10.");
+            }
         });
         uploadImageBtn.setOnClickListener(view -> {
             loadingDialog.show();

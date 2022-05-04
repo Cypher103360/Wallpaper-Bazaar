@@ -3,5 +3,9 @@
     <string name="todo">TODO</string>
     <string name="show_data">Show Data</string>
     <string name="upload_category">Upload Category</string>
-    <string name="upload_banner_image">Upload Banner Image</string>
+    <string name="upload_banner_image">Update Banner Image</string>
+    <string name="enter_url">Enter Url</string>
+    <string name="upload_banner">Update Banner</string>
+    <string name="cancel">cancel</string>
+
 </resources>

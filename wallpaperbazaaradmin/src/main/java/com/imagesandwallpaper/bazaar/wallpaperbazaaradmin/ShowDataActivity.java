@@ -61,15 +61,15 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
     Dialog loadingDialog, imageDialog, catDialog;
     ApiInterface apiInterface;
     Map<String, String> map = new HashMap<>();
+    EditText choseImgQuality;
 
 
-    public static String imageStore(Bitmap bitmap) {
+    public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, imageQuality, stream);
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,9 +96,13 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
                     Glide.with(this).load(result).into(categoryImage);
                 }
                 try {
-                    InputStream inputStream = this.getContentResolver().openInputStream(result);
-                    bitmap = BitmapFactory.decodeStream(inputStream);
-                    encodedImage = imageStore(bitmap);
+                    if (choseImgQuality != null) {
+                        String imgQuality = choseImgQuality.getText().toString();
+                        InputStream inputStream = this.getContentResolver().openInputStream(result);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
+                        Toast.makeText(this, "Image quality is "+ imgQuality, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -188,10 +192,20 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
         categoryImage = catDialog.findViewById(R.id.choose_cat_imageView);
         EditText catTitle = catDialog.findViewById(R.id.cat_title);
         Button uploadCatBtn = catDialog.findViewById(R.id.upload_cat_btn);
+        choseImgQuality = catDialog.findViewById(R.id.img_quality);
+
         Button cancelBtn = catDialog.findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(view -> catDialog.dismiss());
         categoryImage.setOnClickListener(view -> {
-            launcher.launch("image/*");
+            String quality = choseImgQuality.getText().toString().trim();
+            if (quality.isEmpty()) {
+                Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
+            } else if (Integer.parseInt(quality)>=10){
+
+                launcher.launch("image/*");
+            }else{
+                choseImgQuality.setError("Minimum Quality must be 10.");
+            }
         });
 
         uploadCatBtn.setOnClickListener(view -> {
@@ -246,13 +260,22 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
 
         TextView dialogTitle = imageDialog.findViewById(R.id.dialog_title);
         chooseImage = imageDialog.findViewById(R.id.choose_imageView);
+        choseImgQuality = imageDialog.findViewById(R.id.img_quality);
         Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
         Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
 
         dialogTitle.setText(categoryModel.getTitle());
         cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
         chooseImage.setOnClickListener(view -> {
-            launcher.launch("image/*");
+            String quality = choseImgQuality.getText().toString().trim();
+            if (quality.isEmpty()) {
+                Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
+            } else if (Integer.parseInt(quality)>=10){
+
+                launcher.launch("image/*");
+            }else{
+                choseImgQuality.setError("Minimum Quality must be 10.");
+            }
         });
         uploadImageBtn.setOnClickListener(view -> {
             loadingDialog.show();
