@@ -16,6 +16,7 @@ import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.ViewHolder> {
@@ -54,6 +55,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
     public void updateList(List<SubCatModel> subCatModels){
         subCatModelList.clear();
         subCatModelList.addAll(subCatModels);
+        Collections.reverse(subCatModelList);
         notifyDataSetChanged();
     }
 

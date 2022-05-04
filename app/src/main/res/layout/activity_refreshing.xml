@@ -12,7 +12,7 @@
         android:layout_width="200sp"
         android:layout_height="200dp"
         android:src="@drawable/splash"
-        app:layout_constraintBottom_toTopOf="@+id/startBtn"
+        android:layout_marginTop="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,6 +24,7 @@
         android:backgroundTint="#303F9F"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
+        android:visibility="gone"
         android:textColor="@color/white"
         android:background="@drawable/start_btn_bg"
         android:text="@string/start"

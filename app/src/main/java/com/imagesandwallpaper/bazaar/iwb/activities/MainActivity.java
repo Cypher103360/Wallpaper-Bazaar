@@ -35,6 +35,9 @@ import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 public class MainActivity extends AppCompatActivity {
 
     // 4d2242b4-ec1e-4e4e-9969-5bf6571c8b4d
+    // Google Client Id
+    // 592357180684-khldqgeopsjv00jjiq6ap18d18b325ru.apps.googleusercontent.com
+
     public static final String BroadCastStringForAction = "checkingInternet";
     int REQUEST_CODE = 11;
     int count = 1;

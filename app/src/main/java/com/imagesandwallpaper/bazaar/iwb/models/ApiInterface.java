@@ -1,6 +1,8 @@
 package com.imagesandwallpaper.bazaar.iwb.models;
 
+import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelList;
 
 import java.util.Map;
 
@@ -38,9 +40,13 @@ public interface ApiInterface {
     @POST("fetch_sub_cat_item_images.php")
     Call<SubCatImageModelList> getSubCategoryItemsImages(@Field("catId") String id);
 
+    @FormUrlEncoded
+    @POST("fetch_premium_images.php")
+    Call<PremiumModelList> getAllPremium(@FieldMap Map<String, String> map);
 
-//    @FormUrlEncoded
-//    @POST("ads_id_fetch.php")
-//    Call<AdsModelList> fetchAds(@Field("id") String id);
+    @FormUrlEncoded
+    @POST("fetch_banner.php")
+    Call<BannerModelList> getBanners(@FieldMap Map<String, String> map);
+
 }
 

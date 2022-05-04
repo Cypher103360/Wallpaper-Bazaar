@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCategoryAdapter;
@@ -33,7 +34,6 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySubCategoryBinding.inflate(getLayoutInflater());
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(binding.getRoot());
         loading = CommonMethods.loadingDialog(SubCategoryActivity.this);
         catId = getIntent().getStringExtra("id");
@@ -50,6 +50,10 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
         subCatItemsRecyclerview.setHasFixedSize(true);
 
         setData();
+        binding.subCatSwipeRefresh.setOnRefreshListener(() -> {
+            setData();
+            binding.subCatSwipeRefresh.setRefreshing(false);
+        });
     }
 
     private void setData() {

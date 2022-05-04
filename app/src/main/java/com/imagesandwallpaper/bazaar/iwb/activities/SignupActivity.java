@@ -26,19 +26,12 @@ public class SignupActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
     int RC_SIGN_IN = 1000;
 
-    // Firebase Auth
-    private FirebaseAuth auth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(binding.getRoot());
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-        // Firebase auth
-        auth = FirebaseAuth.getInstance();
 
         // Google SignIn
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
@@ -48,8 +41,6 @@ public class SignupActivity extends AppCompatActivity {
 //            navigateToNextActivity();
 //        }
 
-        binding.withEmail.setOnClickListener(view ->
-                startActivity(new Intent(SignupActivity.this,LoginActivity.class)));
         binding.withGoogle.setOnClickListener(view -> {
             signIn();
         });

@@ -18,6 +18,7 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.ViewHolder> {
@@ -55,6 +56,7 @@ public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.View
     public void updateList(List<ImageItemModel> imageItemModels){
         imageItemModelList.clear();
         imageItemModelList.addAll(imageItemModels);
+        Collections.reverse(imageItemModelList);
         notifyDataSetChanged();
     }
 

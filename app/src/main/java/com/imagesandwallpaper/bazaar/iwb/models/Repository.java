@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelList;
 
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class Repository {
     MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<PremiumModelList> premiumModelListMutableLiveData = new MutableLiveData<>();
 
     public Repository() {
         apiInterface = ApiWebServices.getApiInterface();
@@ -139,6 +141,24 @@ public class Repository {
             }
         });
         return catItemImageModelListMutableLiveData;
+    }
+
+    public MutableLiveData<PremiumModelList> getPremiumModelListMutableLiveData(Map<String, String> map){
+        Call<PremiumModelList> call = apiInterface.getAllPremium(map);
+        call.enqueue(new Callback<PremiumModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<PremiumModelList> call, @NonNull Response<PremiumModelList> response) {
+                if (response.isSuccessful()){
+                    premiumModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<PremiumModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return premiumModelListMutableLiveData;
     }
 
 }

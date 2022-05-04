@@ -1,18 +1,22 @@
 package com.imagesandwallpaper.bazaar.iwb.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.imagesandwallpaper.bazaar.iwb.activities.CatItemsActivity;
 import com.imagesandwallpaper.bazaar.iwb.activities.SubCategoryActivity;
@@ -25,6 +29,9 @@ import com.imagesandwallpaper.bazaar.iwb.models.CatViewModel;
 import com.imagesandwallpaper.bazaar.iwb.models.CategoryModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CategoryFragment extends Fragment implements CatClickInterface {
     FragmentCategoryBinding binding;
     RecyclerView catRecyclerView;
@@ -32,6 +39,8 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
     ApiInterface apiInterface;
     CatViewModel catViewModel;
     Dialog loading;
+    SwipeRefreshLayout swipeRefreshLayout;
+    List<CategoryModel> categoryModels;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -40,23 +49,32 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
         apiInterface = ApiWebServices.getApiInterface();
         loading = CommonMethods.loadingDialog(requireActivity());
         loading.show();
+        categoryModels = new ArrayList<>();
+        swipeRefreshLayout = binding.categorySwipeRefreshLayout;
         catRecyclerView = binding.categoryRecyclerView;
         catRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(),3));
         catRecyclerView.setHasFixedSize(true);
 
         categoryAdapter = new CategoryAdapter(requireActivity(),this);
         catRecyclerView.setAdapter(categoryAdapter);
-        //categoryAdapter.updateList(categoryModelList);
 
-        setCategoryData();
+        setCategoryData(requireActivity());
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            setCategoryData(requireActivity());
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
         return binding.getRoot();
     }
 
-    private void setCategoryData() {
-        catViewModel = new ViewModelProvider(requireActivity()).get(CatViewModel.class);
+    private void setCategoryData(FragmentActivity context) {
+        catViewModel = new ViewModelProvider(context).get(CatViewModel.class);
         catViewModel.getCategories().observe(requireActivity(), catModelList -> {
             if (!catModelList.getData().isEmpty()){
-                categoryAdapter.updateList(catModelList.getData());
+                categoryModels.clear();
+                categoryModels.addAll(catModelList.getData());
+                categoryAdapter.updateList(categoryModels);
             }
             loading.dismiss();
         });
@@ -75,6 +93,8 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
             intent.putExtra("id",categoryModel.getId());
             intent.putExtra("title",categoryModel.getTitle());
             startActivity(intent);
+        }else {
+            Toast.makeText(requireActivity(), "No wallpapers available", Toast.LENGTH_SHORT).show();
         }
     }
 }

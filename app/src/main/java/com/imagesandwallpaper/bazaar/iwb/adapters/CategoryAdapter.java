@@ -18,6 +18,7 @@ import com.imagesandwallpaper.bazaar.iwb.models.CatClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.CategoryModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
@@ -56,6 +57,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public void updateList(List<CategoryModel> categoryModels){
         categoryModelList.clear();
         categoryModelList.addAll(categoryModels);
+        Collections.reverse(categoryModelList);
         notifyDataSetChanged();
     }
 

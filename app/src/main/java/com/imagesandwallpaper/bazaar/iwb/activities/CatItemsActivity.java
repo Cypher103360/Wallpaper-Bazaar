@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.imagesandwallpaper.bazaar.iwb.adapters.CatItemImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
@@ -67,6 +68,14 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         }else if (type.equals("SubCatItem")){
             setSubCatImages();
         }
+        binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
+            if (type.equals("CatFragment")){
+                setCatImages();
+            }else if (type.equals("SubCatItem")){
+                setSubCatImages();
+            }
+            binding.catItemSwipeRefresh.setRefreshing(false);
+        });
     }
 
     private void setSubCatImages() {
@@ -94,23 +103,6 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
             }
         });
 
-//        Call<CatItemImageModelList> call = apiInterface.getCatItemImages(id);
-//        call.enqueue(new Callback<CatItemImageModelList>() {
-//            @Override
-//            public void onResponse(@NonNull Call<CatItemImageModelList> call, @NonNull Response<CatItemImageModelList> response) {
-//                if (response.isSuccessful()){
-//                    assert response.body() != null;
-//                    if (response.body().getData() != null){
-//                        catItemImageAdapter.updateList(response.body().getData());
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<CatItemImageModelList> call, @NonNull Throwable t) {
-//
-//            }
-//        });
     }
 
     @Override

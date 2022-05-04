@@ -12,23 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.iwb.R;
-import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumClickInterface;
+import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CatItemImageAdapter extends RecyclerView.Adapter<CatItemImageAdapter.ViewHolder> {
-    List<CatItemImageModel> catItemImageModelList = new ArrayList<>();
+public class PremiumAdapter extends RecyclerView.Adapter<PremiumAdapter.ViewHolder> {
+    List<PremiumModel> premiumModelList = new ArrayList<>();
     Context context;
-    CatItemImageClickInterface catItemImageClickInterface;
+    PremiumClickInterface premiumClickInterface;
 
-    public CatItemImageAdapter(Context context, CatItemImageClickInterface catItemImageClickInterface) {
+    public PremiumAdapter(Context context, PremiumClickInterface premiumClickInterface) {
         this.context = context;
-        this.catItemImageClickInterface = catItemImageClickInterface;
+        this.premiumClickInterface = premiumClickInterface;
     }
 
     @NonNull
@@ -41,30 +41,32 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<CatItemImageAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                +catItemImageModelList.get(position).getImage()).into(holder.itemImage);
+                +premiumModelList.get(position).getImage()).into(holder.itemImage);
         holder.itemView.setOnClickListener(view -> {
-            catItemImageClickInterface.onClicked(catItemImageModelList.get(position));
+            premiumClickInterface.onClicked(premiumModelList.get(position));
         });
     }
 
     @Override
     public int getItemCount() {
-        return catItemImageModelList.size();
+        return premiumModelList.size();
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(List<CatItemImageModel> catItemImageModels){
-        catItemImageModelList.clear();
-        catItemImageModelList.addAll(catItemImageModels);
-        Collections.reverse(catItemImageModelList);
+    public void updateList(List<PremiumModel> premiumModels){
+        premiumModelList.clear();
+        premiumModelList.addAll(premiumModels);
+        Collections.reverse(premiumModelList);
         notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImage;
+        ImageView itemImage,premiumImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemImage  = itemView.findViewById(R.id.item_image);
+            premiumImage = itemView.findViewById(R.id.pre_logo);
+            premiumImage.setVisibility(View.VISIBLE);
         }
     }
 }

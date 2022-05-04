@@ -32,16 +32,10 @@
             android:name=".activities.FullscreenActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.WallpaperBazaar.NoActionBar" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
 
         <service
             android:name=".utils.MyReceiver"

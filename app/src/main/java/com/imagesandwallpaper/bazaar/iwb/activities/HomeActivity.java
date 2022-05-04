@@ -15,13 +15,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -35,8 +33,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +42,7 @@ import com.imagesandwallpaper.bazaar.iwb.activities.ui.main.SectionsPagerAdapter
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.fragments.CategoryFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
-import com.imagesandwallpaper.bazaar.iwb.fragments.OtherFragment;
+import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 
@@ -63,7 +59,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityHomeBinding binding;
-    private FirebaseAuth auth;
 
 
     public BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -109,10 +104,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
-        auth = FirebaseAuth.getInstance();
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
         drawerLayout = binding.drawerLayout;
@@ -148,10 +141,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
         sectionsPagerAdapter.addFragments(new CategoryFragment(), "Category");
-        sectionsPagerAdapter.addFragments(new OtherFragment(), "Premium");
+        sectionsPagerAdapter.addFragments(new PremiumFragment(), "Premium");
 
     }
-
     public void navigationDrawer() {
         navigationView = findViewById(R.id.navigation);
         navigationView.bringToFront();
@@ -160,7 +152,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
-
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(HomeActivity.this);
@@ -279,14 +270,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_signOut:
                 CommonMethods.loadingDialog(HomeActivity.this).show();
-                // Sign Out for Email user
-                FirebaseUser currentUser = auth.getCurrentUser();
-                if (currentUser != null){
-                    auth.signOut();
-                    finish();
-                    startActivity(new Intent(HomeActivity.this,SignupActivity.class));
-                    CommonMethods.loadingDialog(HomeActivity.this).dismiss();
-                }
 
                 // Sign Out for google user
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
