@@ -7,31 +7,55 @@
     android:background="@drawable/login_bg"
     tools:context=".activities.RefreshingActivity">
 
-
-    <ImageView
-        android:layout_width="200sp"
-        android:layout_height="200dp"
-        android:src="@drawable/splash"
-        android:layout_marginTop="200dp"
+    <RelativeLayout
+        android:id="@+id/adView_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/adView_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="200sp"
+        android:layout_height="200dp"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/splash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView_top" />
 
     <Button
         android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/start_btn_bg"
         android:backgroundTint="#303F9F"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:visibility="gone"
-        android:textColor="@color/white"
-        android:background="@drawable/start_btn_bg"
         android:text="@string/start"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:visibility="visible"
         android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

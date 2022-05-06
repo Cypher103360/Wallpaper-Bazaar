@@ -35,8 +35,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.activities.ui.main.SectionsPagerAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
@@ -45,6 +43,12 @@ import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+
+import java.io.UnsupportedEncodingException;
+
+import io.paperdb.Paper;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
@@ -59,17 +63,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityHomeBinding binding;
+    ShowAds ads = new ShowAds();
 
 
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(BroadCastStringForAction)){
-                if (intent.getStringExtra("online_status").equals("true")){
+            if (intent.getAction().equals(BroadCastStringForAction)) {
+                if (intent.getStringExtra("online_status").equals("true")) {
 
                     Set_Visibility_ON();
                     count++;
-                }else {
+                } else {
                     Set_Visibility_OFF();
                 }
             }
@@ -80,9 +85,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding.lottieHomeNoInternet.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.GONE);
         binding.viewPager.setVisibility(View.VISIBLE);
+        binding.viewPager.setOffscreenPageLimit(3);
         binding.tabs.setVisibility(View.VISIBLE);
+        getLifecycle().addObserver(ads);
         enableNavItems();
-        if (count == 2){
+        if (count == 2) {
             ViewPager viewPager = binding.viewPager;
             viewPager.setAdapter(sectionsPagerAdapter);
             TabLayout tabs = binding.tabs;
@@ -119,12 +126,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")){
+            ads.showTopBanner(this,binding.adViewTop);
+
+        }else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")){
+            ads.showTopBanner(this,binding.adViewTop);
+        }
         //Internet Checking Condition
         intentFilter = new IntentFilter();
         intentFilter.addAction(BroadCastStringForAction);
         Intent serviceIntent = new Intent(this, MyReceiver.class);
         startService(serviceIntent);
-        if (isOnline(HomeActivity.this)){
+        if (isOnline(HomeActivity.this)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Set_Visibility_ON();
             }
@@ -132,6 +145,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Set_Visibility_OFF();
         }
 
+        binding.lottieContact.setOnClickListener(view -> {
+            try {
+                CommonMethods.whatsApp(HomeActivity.this);
+            } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
             String name = account.getDisplayName();
@@ -144,6 +164,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter.addFragments(new PremiumFragment(), "Premium");
 
     }
+
     public void navigationDrawer() {
         navigationView = findViewById(R.id.navigation);
         navigationView.bringToFront();
@@ -159,14 +180,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         categoryContainer = findViewById(R.id.container_layout);
 
         navMenu.setOnClickListener(view -> {
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)){
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START);
-            }else {
+            } else {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
         animateNavigationDrawer();
     }
+
     private void animateNavigationDrawer() {
         drawerLayout.setScrimColor(Color.parseColor("#DEE4EA"));
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -248,7 +270,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 overridePendingTransition(0, 0);
@@ -260,10 +282,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_share:
                 CommonMethods.shareApp(HomeActivity.this);
                 break;
+            case R.id.nav_rate:
+                CommonMethods.rateApp(HomeActivity.this);
+                break;
             case R.id.nav_favorite:
+                startActivity(new Intent(this, FavoriteActivity.class));
                 break;
             case R.id.nav_privacy:
-                startActivity(new Intent(HomeActivity.this,PrivacyPolicyActivity.class));
+                startActivity(new Intent(HomeActivity.this, PrivacyPolicyActivity.class));
                 break;
             case R.id.nav_disclaimer:
                 disclaimerDialog();
@@ -273,7 +299,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 // Sign Out for google user
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                if (account!= null){
+                if (account != null) {
                     googleSignOut();
                 }
 
@@ -283,19 +309,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void disclaimerDialog(){
+    public void disclaimerDialog() {
         Dialog dialog = new Dialog(HomeActivity.this);
         dialog.setContentView(R.layout.disclaimer_layout);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setCancelable(true);
         dialog.show();
     }
 
-    public void googleSignOut(){
+    public void googleSignOut() {
         gsc.signOut().addOnCompleteListener(task -> {
             finish();
-            startActivity(new Intent(HomeActivity.this,SignupActivity.class));
+            startActivity(new Intent(HomeActivity.this, SignupActivity.class));
             CommonMethods.loadingDialog(HomeActivity.this).dismiss();
         });
     }

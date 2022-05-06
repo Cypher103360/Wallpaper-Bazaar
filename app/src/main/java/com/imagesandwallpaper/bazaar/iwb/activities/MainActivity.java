@@ -1,10 +1,14 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -30,7 +35,19 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityMainBinding;
+import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
+import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
+import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
+
+import java.util.Objects;
+
+import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     int REQUEST_CODE = 11;
     int count = 1;
     ActivityMainBinding binding;
+    FirebaseAnalytics firebaseAnalytics;
+    IntentFilter intentFilter;
+    ApiInterface apiInterface;
+    private FirebaseAuth auth;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -55,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-    FirebaseAnalytics firebaseAnalytics;
-    IntentFilter intentFilter;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
         if (isOnline(getApplicationContext())) {
             Set_Visibility_ON();
+//            fetchAds();
         } else {
             Set_Visibility_OFF();
         }
@@ -105,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 if (auth.getCurrentUser() != null | account != null) {
                     startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 } else {
-                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
                 }
                 finish();
             }, 2000);
@@ -183,4 +202,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(receiver);
     }
+
+
+
 }

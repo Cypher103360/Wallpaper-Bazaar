@@ -1,15 +1,17 @@
 package com.imagesandwallpaper.bazaar.iwb.models.CatItemImage;
 
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+
 import java.util.List;
 
 public class CatItemImageModelList {
-    List<CatItemImageModel> data = null;
+    List<ImageItemModel> data = null;
 
-    public CatItemImageModelList(List<CatItemImageModel> data) {
+    public CatItemImageModelList(List<ImageItemModel> data) {
         this.data = data;
     }
 
-    public List<CatItemImageModel> getData() {
+    public List<ImageItemModel> getData() {
         return data;
     }
 }

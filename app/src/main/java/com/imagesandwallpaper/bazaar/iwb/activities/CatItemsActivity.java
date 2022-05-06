@@ -2,41 +2,33 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.imagesandwallpaper.bazaar.iwb.adapters.CatItemImageAdapter;
-import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatImageClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityCatItemsBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModel;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelFactory;
-import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageViewModel;
-import com.imagesandwallpaper.bazaar.iwb.models.CategoryModel;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatImageModelFactory;
-import com.imagesandwallpaper.bazaar.iwb.models.SubCatImageModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatImageViewModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CatItemsActivity extends AppCompatActivity implements SubCatImageClickInterface, CatItemImageClickInterface {
+    public static List<ImageItemModel> imageItemModels = new ArrayList<>();
     SubCatImageViewModel subCatImageViewModel;
     CatItemImageViewModel catItemImageViewModel;
     ActivityCatItemsBinding binding;
@@ -44,7 +36,8 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     SubCatImageAdapter subCatImageAdapter;
     RecyclerView catItemsRecyclerView;
     ApiInterface apiInterface;
-    String id,title,type;
+    String id, title, type;
+    ShowAds ads = new ShowAds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +53,24 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         binding.activityTitle.setText(title);
         apiInterface = ApiWebServices.getApiInterface();
         catItemsRecyclerView = binding.catItemsRecyclerView;
-        catItemsRecyclerView.setLayoutManager(new GridLayoutManager(CatItemsActivity.this, 3));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        catItemsRecyclerView.setLayoutManager(layoutManager);
         catItemsRecyclerView.setHasFixedSize(true);
 
-        if (type.equals("CatFragment")){
+        getLifecycle().addObserver(ads);
+
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
+
+        if (type.equals("CatFragment")) {
             setCatImages();
-        }else if (type.equals("SubCatItem")){
+        } else if (type.equals("SubCatItem")) {
             setSubCatImages();
         }
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
-            if (type.equals("CatFragment")){
+            if (type.equals("CatFragment")) {
                 setCatImages();
-            }else if (type.equals("SubCatItem")){
+            } else if (type.equals("SubCatItem")) {
                 setSubCatImages();
             }
             binding.catItemSwipeRefresh.setRefreshing(false);
@@ -79,12 +78,12 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     }
 
     private void setSubCatImages() {
-        subCatImageAdapter = new SubCatImageAdapter(CatItemsActivity.this,this);
+        subCatImageAdapter = new SubCatImageAdapter(CatItemsActivity.this, this);
         catItemsRecyclerView.setAdapter(subCatImageAdapter);
         subCatImageViewModel = new ViewModelProvider(CatItemsActivity.this,
-                new SubCatImageModelFactory(getApplication(),id)).get(SubCatImageViewModel.class);
+                new SubCatImageModelFactory(getApplication(), id)).get(SubCatImageViewModel.class);
         subCatImageViewModel.getSubCatImageItems().observe(this, subCatImageModelList -> {
-            if (!subCatImageModelList.getData().isEmpty()){
+            if (!subCatImageModelList.getData().isEmpty()) {
                 subCatImageAdapter.updateList(subCatImageModelList.getData());
             }
         });
@@ -95,33 +94,36 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         catItemsRecyclerView.setAdapter(catItemImageAdapter);
 
         catItemImageViewModel = new ViewModelProvider(CatItemsActivity.this,
-                new CatItemImageModelFactory(getApplication(),id)).get(CatItemImageViewModel.class);
+                new CatItemImageModelFactory(getApplication(), id)).get(CatItemImageViewModel.class);
 
         catItemImageViewModel.getCatItemImages().observe(this, catItemImageModelList -> {
-            if (!catItemImageModelList.getData().isEmpty()){
-                catItemImageAdapter.updateList(catItemImageModelList.getData());
+            if (!catItemImageModelList.getData().isEmpty()) {
+                imageItemModels.clear();
+                imageItemModels.addAll(catItemImageModelList.getData());
+                catItemImageAdapter.updateList(imageItemModels);
             }
         });
 
     }
 
     @Override
-    public void onClicked(ImageItemModel imageItemModel) {
-        Intent intent = new Intent(this,FullscreenActivity.class);
-        intent.putExtra("key","catItem");
-//        imageItemModelList.add(new ImageItemModel(imageItemModel.getId(), imageItemModel.getCatId(), imageItemModel.getImage()));
-//        intent.putExtra("myList",  imageItemModelList);
+    public void onClicked(ImageItemModel imageItemModel, int position) {
+        ads.showInterstitialAds(this);
+        Ads.destroyBanner();
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        intent.putExtra("id", imageItemModel.getId());
+        intent.putExtra("catId", imageItemModel.getCatId());
+        intent.putExtra("img", imageItemModel.getImage());
+        intent.putExtra("pos", String.valueOf(position));
+        intent.putExtra("key", "catItem");
         startActivity(intent);
     }
 
-    @Override
-    public void onClicked(CatItemImageModel imageItemModel) {
-
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Ads.destroyBanner();
         finish();
     }
 }
