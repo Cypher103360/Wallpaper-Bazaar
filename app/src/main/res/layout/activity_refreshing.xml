@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/start_btn_bg"
-        android:backgroundTint="#303F9F"
+        android:backgroundTint="#338EEF"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
         android:text="@string/start"

@@ -3,6 +3,8 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -14,6 +16,9 @@ public class Repository {
     MutableLiveData<CatModelList> categoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<CatItemModelList> catItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
+
 
     public Repository() {
         apiInterface = ApiWebServices.getApiInterface();
@@ -96,5 +101,41 @@ public class Repository {
             }
         });
         return catItemModelListMutableLiveData;
+    }
+
+    public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(Map<String, String> map) {
+        Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    imageItemModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return imageItemModelListMutableLiveData;
+    }
+
+    public MutableLiveData<ImageItemModelList> getPremiumImageItemModelListMutableLiveData(Map<String, String> map) {
+        Call<ImageItemModelList> call = apiInterface.getPremiumImages(map);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    premiumImageItemModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return premiumImageItemModelListMutableLiveData;
     }
 }

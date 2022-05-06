@@ -14,9 +14,8 @@ import retrofit2.Response;
 
 public class Repository {
 
+    public static Repository repository;
     ApiInterface apiInterface;
-    public  static Repository repository;
-
     MutableLiveData<CatModelList> categoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<CatItemImageModelList> catItemImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
@@ -29,19 +28,19 @@ public class Repository {
         apiInterface = ApiWebServices.getApiInterface();
     }
 
-    public static Repository getInstance(){
-        if (repository == null){
+    public static Repository getInstance() {
+        if (repository == null) {
             repository = new Repository();
         }
         return repository;
     }
 
-    public MutableLiveData<CatModelList> getCategoryMutableLiveData(){
+    public MutableLiveData<CatModelList> getCategoryMutableLiveData() {
         Call<CatModelList> call = apiInterface.getAllCategory();
         call.enqueue(new Callback<CatModelList>() {
             @Override
             public void onResponse(@NonNull Call<CatModelList> call, @NonNull Response<CatModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     categoryMutableLiveData.setValue(response.body());
                 }
             }
@@ -54,12 +53,12 @@ public class Repository {
         return categoryMutableLiveData;
     }
 
-    public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(Map<String,String> map){
+    public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(Map<String, String> map) {
         Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
         call.enqueue(new Callback<ImageItemModelList>() {
             @Override
             public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     imageItemModelListMutableLiveData.setValue(response.body());
                 }
             }
@@ -70,12 +69,14 @@ public class Repository {
             }
         });
         return imageItemModelListMutableLiveData;
-    }public MutableLiveData<ImageItemModelList> getPremiumImageItemModelListMutableLiveData(Map<String,String> map){
+    }
+
+    public MutableLiveData<ImageItemModelList> getPremiumImageItemModelListMutableLiveData(Map<String, String> map) {
         Call<ImageItemModelList> call = apiInterface.getPremiumImages(map);
         call.enqueue(new Callback<ImageItemModelList>() {
             @Override
             public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     premiumImageItemModelListMutableLiveData.setValue(response.body());
                 }
             }
@@ -88,13 +89,13 @@ public class Repository {
         return premiumImageItemModelListMutableLiveData;
     }
 
-    public MutableLiveData<SubCatModelList> getSubCategoryMutableLiveData(String catId){
+    public MutableLiveData<SubCatModelList> getSubCategoryMutableLiveData(String catId) {
 
         Call<SubCatModelList> call = apiInterface.getSubCategories(catId);
         call.enqueue(new Callback<SubCatModelList>() {
             @Override
             public void onResponse(@NonNull Call<SubCatModelList> call, @NonNull Response<SubCatModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     subCategoryMutableLiveData.setValue(response.body());
                 }
             }
@@ -107,12 +108,12 @@ public class Repository {
         return subCategoryMutableLiveData;
     }
 
-    public MutableLiveData<SubCatImageModelList> getSubCatImageModelListMutableLiveData(String catId){
+    public MutableLiveData<SubCatImageModelList> getSubCatImageModelListMutableLiveData(String catId) {
         Call<SubCatImageModelList> call = apiInterface.getSubCategoryItemsImages(catId);
         call.enqueue(new Callback<SubCatImageModelList>() {
             @Override
             public void onResponse(@NonNull Call<SubCatImageModelList> call, @NonNull Response<SubCatImageModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     subCatImageModelListMutableLiveData.setValue(response.body());
                 }
             }
@@ -125,12 +126,12 @@ public class Repository {
         return subCatImageModelListMutableLiveData;
     }
 
-    public MutableLiveData<CatItemImageModelList> getCatItemImageModelListMutableLiveData(String catId){
-        Call<CatItemImageModelList> call  = apiInterface.getCatItemImages(catId);
+    public MutableLiveData<CatItemImageModelList> getCatItemImageModelListMutableLiveData(String catId) {
+        Call<CatItemImageModelList> call = apiInterface.getCatItemImages(catId);
         call.enqueue(new Callback<CatItemImageModelList>() {
             @Override
             public void onResponse(@NonNull Call<CatItemImageModelList> call, @NonNull Response<CatItemImageModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     catItemImageModelListMutableLiveData.setValue(response.body());
                 }
             }
@@ -143,12 +144,12 @@ public class Repository {
         return catItemImageModelListMutableLiveData;
     }
 
-    public MutableLiveData<PremiumModelList> getPremiumModelListMutableLiveData(Map<String, String> map){
+    public MutableLiveData<PremiumModelList> getPremiumModelListMutableLiveData(Map<String, String> map) {
         Call<PremiumModelList> call = apiInterface.getAllPremium(map);
         call.enqueue(new Callback<PremiumModelList>() {
             @Override
             public void onResponse(@NonNull Call<PremiumModelList> call, @NonNull Response<PremiumModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     premiumModelListMutableLiveData.setValue(response.body());
                 }
             }

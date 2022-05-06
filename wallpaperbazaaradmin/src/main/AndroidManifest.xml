@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperBazaar">
         <activity
+            android:name=".activities.UpdateAdsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PopAndPremiumActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShowImageActivity"
             android:exported="false" />
         <activity

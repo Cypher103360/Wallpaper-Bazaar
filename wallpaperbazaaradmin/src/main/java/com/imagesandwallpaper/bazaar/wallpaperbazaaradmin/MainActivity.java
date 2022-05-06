@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremiumActivity;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
@@ -107,6 +109,20 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.uploadBannerBtn.setOnClickListener(view -> {
             updateBannerImage();
+        });
+        binding.popularBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, PopAndPremiumActivity.class);
+            intent.putExtra("type","popular");
+            startActivity(intent);
+        });
+        binding.premiumBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, PopAndPremiumActivity.class);
+            intent.putExtra("type","premium");
+            startActivity(intent);
+        });
+        binding.adsIdBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
+            startActivity(intent);
         });
     }
 

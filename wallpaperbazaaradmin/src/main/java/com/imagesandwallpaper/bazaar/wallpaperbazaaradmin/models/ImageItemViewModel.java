@@ -1,10 +1,8 @@
-package com.imagesandwallpaper.bazaar.iwb.models;
+package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
-import android.app.Activity;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
@@ -27,5 +25,8 @@ public class ImageItemViewModel extends AndroidViewModel {
 
     public LiveData<ImageItemModelList> getImageItems(){
         return repository.getImageItemModelListMutableLiveData(map);
+    }
+    public LiveData<ImageItemModelList> getPremiumImageItems(){
+        return repository.getPremiumImageItemModelListMutableLiveData(map);
     }
 }

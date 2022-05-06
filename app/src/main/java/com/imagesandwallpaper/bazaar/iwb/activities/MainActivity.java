@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 if (auth.getCurrentUser() != null | account != null) {
                     startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 } else {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
                 }
                 finish();
             }, 2000);

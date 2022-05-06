@@ -276,8 +276,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(0, 0);
                 finish();
                 break;
+            case R.id.nav_pro:
+
+                break;
             case R.id.nav_contact:
-                CommonMethods.contactUs(HomeActivity.this);
+                try {
+                    CommonMethods.whatsApp(HomeActivity.this);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.nav_share:
                 CommonMethods.shareApp(HomeActivity.this);
@@ -342,5 +351,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
     }
 }

@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +29,6 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.adapters.SubCategoryAd
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivitySubCatBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
-import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CatItemModelFactory;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.MessageModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.SubCatModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.SubCatModelFactory;
@@ -54,17 +53,16 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
     SubCategoryAdapter subCategoryAdapter;
     GridLayoutManager layoutManager;
     ApiInterface apiInterface;
-    Dialog loadingDialog, imageDialog;
+    Dialog loadingDialog, imageDialog,catDialog;
     ActivitySubCatBinding binding;
-    String catId;
+    String catId,catImage,catTitle;
     MaterialAlertDialogBuilder builder;
-    ImageView chooseImage;
+    ImageView chooseImage,categoryImage;
     Bitmap bitmap;
     String encodedImage;
     ActivityResultLauncher<String> launcher;
     Map<String, String> map = new HashMap<>();
     EditText choseImgQuality;
-
 
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
@@ -73,6 +71,7 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +81,7 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
 //        ArrayList<String> myList = (ArrayList<String>) getIntent().getSerializableExtra("mylist");
 //        Log.d("TAg", myList.toString());
         catId = getIntent().getStringExtra("catId");
-        subCatViewModel = new ViewModelProvider(this, new SubCatModelFactory(this.getApplication(),catId)).get(SubCatViewModel.class);
+        subCatViewModel = new ViewModelProvider(this, new SubCatModelFactory(this.getApplication(), catId)).get(SubCatViewModel.class);
         subCatModels = new ArrayList<>();
         subCategoryAdapter = new SubCategoryAdapter(this, this);
         layoutManager = new GridLayoutManager(this, 3);
@@ -92,25 +91,27 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         binding.showRV.setLayoutManager(layoutManager);
         binding.showRV.setAdapter(subCategoryAdapter);
+        fetchSubCategory();
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
             if (result != null) {
+                if (chooseImage != null) {
                     Glide.with(this).load(result).into(chooseImage);
+                } else {
+                    Glide.with(this).load(result).into(categoryImage);
+                }
                 try {
                     if (choseImgQuality != null) {
                         String imgQuality = choseImgQuality.getText().toString();
                         InputStream inputStream = this.getContentResolver().openInputStream(result);
                         bitmap = BitmapFactory.decodeStream(inputStream);
                         encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
-                        Toast.makeText(this, "Image quality is "+ imgQuality, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Image quality is " + imgQuality, Toast.LENGTH_SHORT).show();
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        fetchSubCategory();
-
     }
 
     private void fetchSubCategory() {
@@ -132,16 +133,23 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
         builder.setIcon(R.drawable.ic_baseline_add_alert_24)
                 .setTitle("Add Item")
                 .setMessage("Would you like to add a new image?")
-                .setCancelable(false).setPositiveButton("Add Item", (dialogInterface, i) -> {
-
-            uploadImage(categoryModel);
-        }).setNeutralButton("Cancel", ((dialogInterface, i) -> {
-        })).setNegativeButton("Show Images", (dialogInterface, i) -> {
-            Intent intent = new Intent(this, ShowImageActivity.class);
-            intent.putExtra("catId", categoryModel.getId());
-            intent.putExtra("catKey","subCat");
-            startActivity(intent);
-        });
+                .setCancelable(true)
+                .setPositiveButton("Add Item", (dialogInterface, i) -> {
+                    uploadImage(categoryModel);
+                })
+                .setNeutralButton("Update Category", ((dialogInterface, i) -> {
+                    // update category
+                    catId = categoryModel.getId();
+                    catImage = categoryModel.getImage();
+                    catTitle = categoryModel.getTitle();
+                    updateCategoryDialog(catId, catImage, catTitle);
+                }))
+                .setNegativeButton("Show Images", (dialogInterface, i) -> {
+                    Intent intent = new Intent(this, ShowImageActivity.class);
+                    intent.putExtra("catId", categoryModel.getId());
+                    intent.putExtra("catKey", "subCat");
+                    startActivity(intent);
+                });
         builder.show();
 
     }
@@ -167,10 +175,10 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
             String quality = choseImgQuality.getText().toString().trim();
             if (quality.isEmpty()) {
                 Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
-            } else if (Integer.parseInt(quality)>=10){
+            } else if (Integer.parseInt(quality) >= 10) {
 
                 launcher.launch("image/*");
-            }else{
+            } else {
                 choseImgQuality.setError("Minimum Quality must be 10.");
             }
         });
@@ -208,6 +216,91 @@ public class SubCatActivity extends AppCompatActivity implements SubCatClickInte
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
+            }
+        });
+    }
+
+    private void updateCategoryDialog(String catId, String catImage, String mTitle) {
+        catDialog = new Dialog(this);
+        catDialog.setContentView(R.layout.category_dialog);
+        catDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        catDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        catDialog.setCancelable(false);
+        catDialog.show();
+
+        categoryImage = catDialog.findViewById(R.id.choose_cat_imageView);
+        EditText catTitle = catDialog.findViewById(R.id.cat_title);
+        Button uploadCatBtn = catDialog.findViewById(R.id.upload_cat_btn);
+        choseImgQuality = catDialog.findViewById(R.id.img_quality);
+        Button cancelBtn = catDialog.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(view -> {
+            catDialog.dismiss();
+            encodedImage = "";
+        });
+        encodedImage = catImage;
+        Glide.with(SubCatActivity.this).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
+                + catImage).into(categoryImage);
+        catTitle.setText(mTitle);
+
+        categoryImage.setOnClickListener(view -> {
+            String quality = choseImgQuality.getText().toString().trim();
+            if (quality.isEmpty()) {
+                Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
+            } else if (Integer.parseInt(quality) >= 10) {
+
+                launcher.launch("image/*");
+            } else {
+                choseImgQuality.setError("Minimum Quality must be 10.");
+            }
+        });
+
+        uploadCatBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            String cTitle = catTitle.getText().toString().trim();
+
+            if (TextUtils.isEmpty(cTitle)) {
+                catTitle.setError("Cat Name Required");
+                catTitle.requestFocus();
+                loadingDialog.dismiss();
+            } else {
+                if (encodedImage.length() <= 100) {
+                    map.put("catId", catId);
+                    map.put("img", encodedImage);
+                    map.put("deleteImg", catImage);
+                    map.put("title", cTitle);
+                    map.put("imgKey", "0");
+                    map.put("tableName","subCat");
+                    updateCategory(map);
+                }else {
+                    map.put("catId", catId);
+                    map.put("img", encodedImage);
+                    map.put("deleteImg", catImage);
+                    map.put("title", cTitle);
+                    map.put("imgKey", "1");
+                    map.put("tableName","subCat");
+                    updateCategory(map);
+                }
+
+            }
+        });
+    }
+    private void updateCategory(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateCategory(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()){
+                    assert response.body() != null;
+                    Toast.makeText(SubCatActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    fetchSubCategory();
+                }
+                catDialog.dismiss();
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+
             }
         });
     }

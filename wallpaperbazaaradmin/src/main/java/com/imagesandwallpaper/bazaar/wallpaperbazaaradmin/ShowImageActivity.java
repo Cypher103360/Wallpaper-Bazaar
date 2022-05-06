@@ -3,12 +3,16 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.adapters.CatItemClickInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.adapters.CatItemsAdapter;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityShowImageBinding;
@@ -17,10 +21,17 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CatItemModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CatItemModelFactory;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.CatItemsViewModel;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.MessageModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.utils.CommonMethods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ShowImageActivity extends AppCompatActivity implements CatItemClickInterface {
 
@@ -31,7 +42,9 @@ public class ShowImageActivity extends AppCompatActivity implements CatItemClick
     ApiInterface apiInterface;
     Dialog loadingDialog;
     ActivityShowImageBinding binding;
-    String catId, catKey;
+    String catId, catKey, itemId, itemImage;
+    ItemTouchHelper.SimpleCallback simpleCallback;
+    Map<String, String> map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +63,9 @@ public class ShowImageActivity extends AppCompatActivity implements CatItemClick
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         binding.showRV.setLayoutManager(layoutManager);
         binding.showRV.setAdapter(adapter);
-        if (catKey.equals("subCat")){
+        if (catKey.equals("subCat")) {
             fetchSubCatItems();
-        }else if (catKey.equals("cat")){
+        } else if (catKey.equals("cat")) {
             fetchCatItems();
         }
 
@@ -69,7 +82,22 @@ public class ShowImageActivity extends AppCompatActivity implements CatItemClick
             }
             loadingDialog.dismiss();
         });
-    }private void fetchSubCatItems() {
+
+        simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                String itemId = catItemModels.get(viewHolder.getAdapterPosition()).getId();
+                String imgPath = catItemModels.get(viewHolder.getAdapterPosition()).getImage();
+            }
+        };
+    }
+
+    private void fetchSubCatItems() {
         loadingDialog.show();
         catItemsViewModel.getSubCatItems().observe(this, catItemModelList -> {
             if (catItemModelList.getData() != null) {
@@ -82,9 +110,59 @@ public class ShowImageActivity extends AppCompatActivity implements CatItemClick
     }
 
     @Override
-    public void onClicked(CatItemModel categoryModel) {
+    public void onClicked(CatItemModel catItemModel) {
+        if (catKey.equals("subCat")) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle("Delete this Item?")
+                    .setNegativeButton("Cancel", (dialog1, which1) -> {
 
+                    }).setPositiveButton("Delete", (dialog12, which12) -> {
+                loadingDialog.show();
+                itemId = catItemModel.getId();
+                itemImage = catItemModel.getImage();
+                map.put("id", itemId);
+                map.put("title", "subCatItem");
+                map.put("path", itemImage);
+                deleteCategoryItems(map, "subCat");
+            }).show();
+        } else if (catKey.equals("cat")) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle("Delete this Item?")
+                    .setNegativeButton("Cancel", (dialog1, which1) -> {
 
+                    }).setPositiveButton("Delete", (dialog12, which12) -> {
+                loadingDialog.show();
+                itemId = catItemModel.getId();
+                itemImage = catItemModel.getImage();
+                map.put("id", itemId);
+                map.put("title", "catItem");
+                map.put("path", itemImage);
+                deleteCategoryItems(map, "CatItem");
+            }).show();
+        }
+    }
 
+    private void deleteCategoryItems(Map<String, String> map, String type) {
+        Call<MessageModel> call = apiInterface.deleteCategory(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    Toast.makeText(ShowImageActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    if (type.equals("subCat")) {
+                        fetchSubCatItems();
+                    } else if (type.equals("CatItem")) {
+                        fetchCatItems();
+                    }
+                }
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 }

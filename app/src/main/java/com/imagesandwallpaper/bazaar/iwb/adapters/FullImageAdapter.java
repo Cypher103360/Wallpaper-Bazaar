@@ -63,7 +63,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         showAds.showTopBanner(context, holder.adviewTop);
 
 
-        if (position>0) {
+        if (position > 0) {
             if (position % 3 == 0) {
                 showAds.showInterstitialAds(context);
             }
@@ -79,7 +79,8 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         service.execute(() -> {
             // Background work
             for (Favorite f : favoriteAppDatabase.getFavoriteDao().getAllFavorite()) {
-                if (f.getImage().equals(imageItemModelList.get(position).getImage())) {
+                if (f.getImage().equals(imageItemModelList.get(position).getImage()) &&
+                        f.getCatId().equals(imageItemModelList.get(position).getCatId())) {
                     holder.favoriteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_favorite_24));
                 }
             }

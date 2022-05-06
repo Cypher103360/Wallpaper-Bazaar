@@ -28,8 +28,6 @@ public class RefreshingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRefreshingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         startBtn = findViewById(R.id.startBtn);
         showAds = new ShowAds();
         getLifecycle().addObserver(showAds);

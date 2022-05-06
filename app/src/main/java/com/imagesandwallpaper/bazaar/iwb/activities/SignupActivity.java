@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -40,7 +41,16 @@ public class SignupActivity extends AppCompatActivity {
 //        if (account!= null){
 //            navigateToNextActivity();
 //        }
+        String firstString = "By continuing, you agree to Wallpaper Bazaar's ";
+        String second = "Terms of Service";
+        String third = " and acknowledge that you've read our ";
+        String fourth = "Privacy Policy";
+        String sourceString = firstString + "<b>" + second + "</b> " + third+ "<b>" + "<font color='#338EEF'>"+fourth+"</font>" + "</b> ";
+        binding.termsText.setText(Html.fromHtml(sourceString));
 
+        binding.termsText.setOnClickListener(view -> {
+            startActivity(new Intent(SignupActivity.this,PrivacyPolicyActivity.class));
+        });
         binding.withGoogle.setOnClickListener(view -> {
             signIn();
         });
