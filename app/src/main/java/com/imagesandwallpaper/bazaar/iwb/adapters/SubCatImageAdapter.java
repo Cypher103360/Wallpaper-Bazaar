@@ -1,7 +1,8 @@
 package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,49 +10,87 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.iwb.R;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
+import com.imagesandwallpaper.bazaar.iwb.databinding.AdLayoutBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SubCatImageAdapter extends RecyclerView.Adapter<SubCatImageAdapter.ViewHolder> {
-    List<ImageItemModel> subCatImageModelList = new ArrayList<>();
-    Context context;
-    SubCatImageClickInterface subCatImageClickInterface;
+import io.paperdb.Paper;
 
-    public SubCatImageAdapter(Context context, SubCatImageClickInterface subCatImageClickInterface) {
+public class SubCatImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int ITEM_VIEW = 0;
+    private static final int AD_VIEW = 1;
+    private static final int ITEM_FEED_COUNT = 7;
+    List<ImageItemModel> subCatImageModelList = new ArrayList<>();
+    Activity context;
+    SubCatImageClickInterface subCatImageClickInterface;
+    ShowAds showAds = new ShowAds();
+
+    public SubCatImageAdapter(Activity context, SubCatImageClickInterface subCatImageClickInterface) {
         this.context = context;
         this.subCatImageClickInterface = subCatImageClickInterface;
     }
 
+    public int getItemViewType(int position) {
+        if ((position + 1) % ITEM_FEED_COUNT == 0) {
+            return AD_VIEW;
+        }
+        return ITEM_VIEW;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout,parent,false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        if (viewType == ITEM_VIEW) {
+            View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout, parent, false);
+            return new ViewHolder(view);
+        } else if (viewType == AD_VIEW) {
+            View view = LayoutInflater.from(context).inflate(R.layout.ad_layout, parent, false);
+            final ViewGroup.LayoutParams lp = view.getLayoutParams();
+            if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+                StaggeredGridLayoutManager.LayoutParams glp = (StaggeredGridLayoutManager.LayoutParams) lp;
+                glp.setFullSpan(true);
+            }
+            return new AdViewHolder(view);
+        } else return null;
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                +subCatImageModelList.get(position).getImage()).into(holder.itemImage);
-        holder.itemView.setOnClickListener(view -> {
-            subCatImageClickInterface.onClicked(subCatImageModelList.get(position));
-        });
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
+
+        if (holder.getItemViewType() == ITEM_VIEW) {
+            int position = pos - Math.round(pos / ITEM_FEED_COUNT);
+            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + subCatImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage);
+            ((ViewHolder) holder).itemView.setOnClickListener(view -> {
+                subCatImageClickInterface.onClicked(subCatImageModelList.get(position), position);
+            });
+
+        } else if (holder.getItemViewType() == AD_VIEW) {
+            ((AdViewHolder) holder).bindAdData();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return subCatImageModelList.size();
+        if (subCatImageModelList.size() > 0) {
+            return subCatImageModelList.size() + Math.round(subCatImageModelList.size() / ITEM_FEED_COUNT);
+        }
+        return 0;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(List<ImageItemModel> imageItemModels){
+    public void updateList(List<ImageItemModel> imageItemModels) {
         subCatImageModelList.clear();
         subCatImageModelList.addAll(imageItemModels);
         Collections.reverse(subCatImageModelList);
@@ -60,9 +99,29 @@ public class SubCatImageAdapter extends RecyclerView.Adapter<SubCatImageAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemImage  = itemView.findViewById(R.id.item_image);
+            itemImage = itemView.findViewById(R.id.item_image);
+        }
+    }
+
+    public class AdViewHolder extends RecyclerView.ViewHolder {
+        AdLayoutBinding binding;
+
+        public AdViewHolder(@NonNull View itemAdView2) {
+            super(itemAdView2);
+            binding = AdLayoutBinding.bind(itemAdView2);
+
+
+        }
+
+        private void bindAdData() {
+            Log.d("admobAdNative", Paper.book().read(Prevalent.nativeAds));
+
+            showAds.showNativeAds(context, binding.adLayout);
+
+
         }
     }
 }

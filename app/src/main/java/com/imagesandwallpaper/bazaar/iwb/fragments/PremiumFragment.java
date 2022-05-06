@@ -14,38 +14,38 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
+import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.PremiumAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.FragmentPremiumBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModel;
 import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModelList;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelFactory;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemViewModel;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModel;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumViewModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PremiumFragment extends Fragment implements PremiumClickInterface {
+    public static List<ImageItemModel> premiumModels;
     PremiumViewModel premiumViewModel;
     RecyclerView premiumRecyclerView;
     PremiumAdapter premiumAdapter;
@@ -55,7 +55,7 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
     Map<String, String> map = new HashMap<>();
     Map<String, String> banMap = new HashMap<>();
     String banImage, banUrl;
-    List<PremiumModel> premiumModels;
+    ShowAds ads = new ShowAds();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -66,10 +66,23 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         apiInterface = ApiWebServices.getApiInterface();
 
         premiumRecyclerView = binding.premiumRecyclerView;
-        premiumRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 3));
-        premiumRecyclerView.setHasFixedSize(true);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        premiumRecyclerView.setLayoutManager(layoutManager);
+//        premiumRecyclerView.setHasFixedSize(true);
 
 
+        getLifecycle().addObserver(ads);
+//        ads.showTopBanner(requireActivity(), binding.adViewTop);
+
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+
+        } else {
+            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+        }
         premiumModels = new ArrayList<>();
 
         return binding.getRoot();
@@ -125,8 +138,16 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
     }
 
     @Override
-    public void onClicked(PremiumModel premiumModel) {
-
+    public void onClicked(ImageItemModel premiumModel, int position) {
+        ads.showInterstitialAds(requireActivity());
+        Ads.destroyBanner();
+        Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
+        intent.putExtra("id", premiumModel.getId());
+        intent.putExtra("catId", premiumModel.getCatId());
+        intent.putExtra("img", premiumModel.getImage());
+        intent.putExtra("pos", String.valueOf(position));
+        intent.putExtra("key", "premium");
+        startActivity(intent);
     }
 
     @Override
@@ -135,19 +156,20 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         map.put("tableName", "Premium_Images");
         setImageData(requireActivity(), map);
 
-        banMap.put("tableName","premium_banner");
+        banMap.put("tableName", "premium_banner");
         setBannerImage(banMap);
 
         binding.premiumSwipeRefreshLayout.setOnRefreshListener(() -> {
             map.put("tableName", "Premium_Images");
             setImageData(requireActivity(), map);
 
-            banMap.put("tableName","premium_banner");
+            banMap.put("tableName", "premium_banner");
             setBannerImage(banMap);
 
             binding.premiumSwipeRefreshLayout.setRefreshing(false);
         });
     }
+
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
         Uri webpage = Uri.parse(url);

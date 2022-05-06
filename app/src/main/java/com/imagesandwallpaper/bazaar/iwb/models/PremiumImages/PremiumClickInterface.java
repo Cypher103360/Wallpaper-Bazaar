@@ -1,5 +1,7 @@
 package com.imagesandwallpaper.bazaar.iwb.models.PremiumImages;
 
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+
 public interface PremiumClickInterface {
-    void onClicked(PremiumModel imageItemModel);
+    void onClicked(ImageItemModel imageItemModel, int position);
 }

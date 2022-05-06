@@ -27,4 +27,8 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="start">START</string>
     <string name="new_img">New</string>
+    <string name="app_id">ca-app-pub-1306982071797241~2630782596</string>
+    <string name="favorite_wallpaper">Favorite Wallpaper</string>
+    <string name="rate_app">Rate App</string>
+    <string name="no_connection">No connection</string>
 </resources>

@@ -5,13 +5,13 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import java.util.List;
 
 public class PremiumModelList {
-    List<PremiumModel> data = null;
+    List<ImageItemModel> data = null;
 
-    public PremiumModelList(List<PremiumModel> data) {
+    public PremiumModelList(List<ImageItemModel> data) {
         this.data = data;
     }
 
-    public List<PremiumModel> getData() {
+    public List<ImageItemModel> getData() {
         return data;
     }
 }

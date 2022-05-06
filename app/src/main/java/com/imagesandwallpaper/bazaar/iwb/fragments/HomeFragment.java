@@ -6,23 +6,24 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.imagesandwallpaper.bazaar.iwb.R;
+import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.FragmentHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
@@ -33,19 +34,23 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemViewModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ImageItemClickInterface {
+    public static List<ImageItemModel> imageItemModels;
     ImageItemViewModel imageItemViewModel;
     FragmentHomeBinding binding;
     RecyclerView imageItemRecyclerView;
@@ -58,8 +63,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     Map<String, String> banMap = new HashMap<>();
     Dialog loading;
     String banImage, banUrl;
-    List<ImageItemModel> imageItemModels;
-
+    ShowAds ads = new ShowAds();
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -75,8 +79,21 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         apiInterface = ApiWebServices.getApiInterface();
         loading = CommonMethods.loadingDialog(requireActivity());
 
+        getLifecycle().addObserver(ads);
+//        ads.showTopBanner(requireActivity(), binding.adViewTop);
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewTop.setVisibility(View.GONE);
+
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            binding.adViewBottom.setVisibility(View.GONE);
+
+        } else {
+            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+        }
         imageItemRecyclerView = binding.imageItemRecyclerview;
-        imageItemRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 3));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        imageItemRecyclerView.setLayoutManager(layoutManager);
         imageItemRecyclerView.setHasFixedSize(true);
 
         map.put("tableName", "Popular_Images");
@@ -163,12 +180,37 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     }
 
     @Override
-    public void onClicked(ImageItemModel imageItemModel) {
-        //Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
-//        List<ImageItemModel> itemModels = new ArrayList<>();
-//        itemModels.add(imageItemModel);
-//        intent.putExtra("myList", (Serializable) itemModels);
-        // startActivity(intent);
+    public void onClicked(ImageItemModel imageItemModel, int position) {
+        ads.showInterstitialAds(requireActivity());
+        Ads.destroyBanner();
+        Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
+        intent.putExtra("id", imageItemModel.getId());
+        intent.putExtra("catId", imageItemModel.getCatId());
+        intent.putExtra("img", imageItemModel.getImage());
+        intent.putExtra("pos", String.valueOf(position));
+        intent.putExtra("key", "home");
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onShareImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
+
+    }
+
+    @Override
+    public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
+
+    }
+
+    @Override
+    public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
+
+    }
+
+    @Override
+    public void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
+
     }
 
     @SuppressLint("QueryPermissionsNeeded")

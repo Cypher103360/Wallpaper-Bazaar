@@ -3,13 +3,12 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCategoryAdapter;
@@ -19,7 +18,9 @@ import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModel;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatViewModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
+import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 public class SubCategoryActivity extends AppCompatActivity implements SubCatClickInterface {
     ActivitySubCategoryBinding binding;
@@ -29,6 +30,8 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     RecyclerView subCatItemsRecyclerview;
     String catId, activityTitle;
     Dialog loading;
+    ShowAds ads = new ShowAds();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,14 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
 
         apiInterface = ApiWebServices.getApiInterface();
         subCatItemsRecyclerview = binding.subCatRecyclerView;
-        subCatItemsRecyclerview.setLayoutManager(new GridLayoutManager(SubCategoryActivity.this, 3));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        subCatItemsRecyclerview.setLayoutManager(layoutManager);
         subCatItemsRecyclerview.setHasFixedSize(true);
+        getLifecycle().addObserver(ads);
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
+
+
 
         setData();
         binding.subCatSwipeRefresh.setOnRefreshListener(() -> {
@@ -73,7 +82,9 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     }
 
     @Override
-    public void onClicked(SubCatModel subCatModel) {
+    public void onClicked(SubCatModel subCatModel, int position) {
+        ads.showInterstitialAds(this);
+        Ads.destroyBanner();
         Intent intent = new Intent(SubCategoryActivity.this, CatItemsActivity.class);
         intent.putExtra("type","SubCatItem");
         intent.putExtra("id", subCatModel.getCatId());

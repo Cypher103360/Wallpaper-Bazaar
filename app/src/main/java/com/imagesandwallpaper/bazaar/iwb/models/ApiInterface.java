@@ -48,5 +48,9 @@ public interface ApiInterface {
     @POST("fetch_banner.php")
     Call<BannerModelList> getBanners(@FieldMap Map<String, String> map);
 
+    @FormUrlEncoded
+    @POST("fetch_ads.php")
+    Call<AdsModelList> fetchAds(@Field("id") String id);
+
 }
 

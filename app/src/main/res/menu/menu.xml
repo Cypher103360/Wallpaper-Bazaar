@@ -22,6 +22,12 @@
             android:iconTint="#6200EA"
             android:title="@string/share_app"
             tools:targetApi="o" />
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/ic_baseline_star_rate_24"
+            android:iconTint="#6200EA"
+            android:title="@string/rate_app"
+            tools:targetApi="o" />
 
         <item
             android:id="@+id/nav_favorite"
