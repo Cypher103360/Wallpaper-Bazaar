@@ -49,8 +49,13 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         binding.backIcon.setOnClickListener(view -> onBackPressed());
         getLifecycle().addObserver(ads);
         imageItemModels = new ArrayList<>();
-        ads.showTopBanner(this, binding.adViewTop);
-        ads.showBottomBanner(this, binding.adViewBottom);
+
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(() -> {
+            // Background work
+            ads.showTopBanner(this, binding.adViewTop);
+            ads.showBottomBanner(this, binding.adViewBottom);
+        });
 
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
             displayAllContactInBackground();

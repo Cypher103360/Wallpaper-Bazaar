@@ -22,6 +22,9 @@ import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class SubCategoryActivity extends AppCompatActivity implements SubCatClickInterface {
     ActivitySubCategoryBinding binding;
     SubCatViewModel subCatViewModel;
@@ -45,7 +48,6 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
             onBackPressed();
         });
         binding.activityTitle.setText(activityTitle);
-
 
         apiInterface = ApiWebServices.getApiInterface();
         subCatItemsRecyclerview = binding.subCatRecyclerView;
@@ -83,11 +85,12 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
 
     @Override
     public void onClicked(SubCatModel subCatModel, int position) {
+
         ads.showInterstitialAds(this);
         Ads.destroyBanner();
         Intent intent = new Intent(SubCategoryActivity.this, CatItemsActivity.class);
         intent.putExtra("type","SubCatItem");
-        intent.putExtra("id", subCatModel.getCatId());
+        intent.putExtra("id", subCatModel.getId());
         intent.putExtra("title", subCatModel.getTitle());
         startActivity(intent);
     }
@@ -95,6 +98,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Ads.destroyBanner();
         finish();
     }
 }

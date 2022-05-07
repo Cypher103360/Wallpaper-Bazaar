@@ -52,6 +52,8 @@ public class ShowAds implements LifecycleObserver {
     }
 
     public void showInterstitialAds(Activity context) {
+
+
         if ("AdmobWithMeta".equals(Paper.book().read(Prevalent.interstitialNetwork))) {
             Log.d(TAG, "AdmobWithMeta");
             ads.admobInterstitialAd(context, Paper.book().read(Prevalent.interstitialAds));

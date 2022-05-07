@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_color"
     tools:context=".fragments.PremiumFragment">
     <RelativeLayout
         android:id="@+id/adView_top"
@@ -59,6 +60,9 @@
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp"
                     android:clickable="true"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/purple_700"
+                    android:backgroundTint="@color/bg_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -89,7 +93,7 @@
                         android:id="@+id/premium_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

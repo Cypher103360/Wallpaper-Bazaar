@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -47,6 +46,9 @@ import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.paperdb.Paper;
 
@@ -126,12 +128,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
-        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")){
-            ads.showTopBanner(this,binding.adViewTop);
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(() -> {
+            // Background work
+            if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                ads.showTopBanner(this, binding.adViewTop);
 
-        }else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")){
-            ads.showTopBanner(this,binding.adViewTop);
-        }
+            } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                ads.showTopBanner(this, binding.adViewTop);
+            }
+        });
+
+
         //Internet Checking Condition
         intentFilter = new IntentFilter();
         intentFilter.addAction(BroadCastStringForAction);
@@ -190,7 +198,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void animateNavigationDrawer() {
-        drawerLayout.setScrimColor(Color.parseColor("#DEE4EA"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            drawerLayout.setScrimColor(getColor(R.color.bg_color));
+        }
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -355,11 +365,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             drawerLayout.openDrawer(GravityCompat.START);
+            super.onBackPressed();
         }
     }
 }

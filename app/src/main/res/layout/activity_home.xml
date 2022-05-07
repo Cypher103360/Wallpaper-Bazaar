@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_color"
     android:id="@+id/drawerLayout"
     tools:context=".activities.HomeActivity">
 
@@ -12,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/bg_color"
         app:headerLayout="@layout/header"
         app:itemIconPadding="14dp"
-        app:itemIconTint="@color/drawable_item"
-        app:itemTextColor="@color/drawable_item"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
         app:menu="@menu/menu">
 
         <TextView
@@ -27,7 +28,7 @@
             android:padding="13dp"
             android:text="@string/version"
             android:textAlignment="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
     </com.google.android.material.navigation.NavigationView>
 
@@ -93,7 +94,7 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabIndicatorColor="@color/black"/>
+                app:tabIndicatorColor="@color/btn_color"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 

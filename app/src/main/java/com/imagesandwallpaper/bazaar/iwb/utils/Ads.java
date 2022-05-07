@@ -17,16 +17,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleObserver;
 
 import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdListener;
+import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
+import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.applovin.sdk.AppLovinSdk;
-import com.applovin.sdk.AppLovinSdkUtils;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AudienceNetworkAds;
@@ -63,6 +65,7 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
     public static IronSourceBannerLayout banner;
     public static InterstitialAd mInterstitialAd;
     static boolean checkAdLoad = false;
+    private static MaxAd nativeAd;
     public NativeAd nativeAds;
     MaxAdView maxAdView;
     MaxInterstitialAd interstitialAd;
@@ -84,6 +87,7 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
             case "AdmobWithMeta":
                 MobileAds.initialize(context);
                 AudienceNetworkAds.initialize(context);
+
                 AdRequest adRequest = new AdRequest.Builder().build();
                 AdView adView = new AdView(context);
                 container.addView(adView);
@@ -94,10 +98,12 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
 
                 break;
             case "IronSourceWithMeta":
+
+                IronSource.init(context, bannerAdId);
+                AudienceNetworkAds.initialize(context);
                 IronSource.getAdvertiserId(context);
                 IronSource.shouldTrackNetworkState(context, true);
-                AudienceNetworkAds.initialize(context);
-                IronSource.init(context, bannerAdId);
+
                 IronSource.setMetaData("Facebook_IS_CacheFlag", "IMAGE");
                 banner = IronSource.createBanner(context, ISBannerSize.BANNER);
                 container.addView(banner);
@@ -147,9 +153,9 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
 
                 break;
             case "AppLovinWithMeta":
+                AudienceNetworkAds.initialize(context);
                 AppLovinSdk.getInstance(context).setMediationProvider("max");
                 AppLovinSdk.initializeSdk(context);
-                AudienceNetworkAds.initialize(context);
 
                 maxAdView = new MaxAdView(bannerAdId, context);
                 maxAdView.setListener(this);
@@ -169,6 +175,35 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
                 com.facebook.ads.AdView adView1 = new com.facebook.ads.AdView(context, bannerAdId, com.facebook.ads.AdSize.BANNER_HEIGHT_50);
                 container.addView(adView1);
                 adView1.loadAd();
+                com.facebook.ads.AdListener adListener = new com.facebook.ads.AdListener() {
+                    @Override
+                    public void onError(Ad ad, AdError adError) {
+// Ad error callback
+                        Toast.makeText(
+                                context,
+                                "Error: " + adError.getErrorMessage(),
+                                Toast.LENGTH_LONG)
+                                .show();
+                        Log.d("Error: ", adError.getErrorMessage());
+                    }
+
+                    @Override
+                    public void onAdLoaded(Ad ad) {
+// Ad loaded callback
+                        Log.d("adLoaded: ", ad.getPlacementId());
+
+                    }
+
+                    @Override
+                    public void onAdClicked(Ad ad) {
+// Ad clicked callback
+                    }
+
+                    @Override
+                    public void onLoggingImpression(Ad ad) {
+// Ad impression logged callback
+                    }
+                };
                 break;
         }
     }
@@ -219,12 +254,12 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
     }
 
     public void ironSourceInterstitialAd(Activity context, String interstitialId) {
+        IronSource.init(context, interstitialId);
         IronSource.getAdvertiserId(context);
         //Network Connectivity Status
         IronSource.shouldTrackNetworkState(context, true);
         AudienceNetworkAds.initialize(context);
 
-        IronSource.init(context, interstitialId);
         IronSource.loadInterstitial();
         IronSource.setMetaData("Facebook_IS_CacheFlag", "IMAGE");
         IronSource.showInterstitial();
@@ -505,25 +540,43 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
         }
     }
 
-    public void appLovinMRECBanner(Activity context, FrameLayout container) {
-        AppLovinSdk.getInstance(context).setMediationProvider("max");
-        AppLovinSdk.initializeSdk(context);
-        AudienceNetworkAds.initialize(context);
+    public void appLovinMRECBanner(Activity context, FrameLayout frameLayout) {
+        MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(Objects.requireNonNull(Paper.book().read(Prevalent.nativeAds)), context);
+        nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
+            @Override
+            public void onNativeAdLoaded(@Nullable MaxNativeAdView maxNativeAdView, MaxAd maxAd) {
+                // Cleanup any pre-existing native ad to prevent memory leaks.
+                if (nativeAd != null) {
+                    nativeAdLoader.destroy(nativeAd);
+                }
 
-        maxAdView = new MaxAdView(Paper.book().read(Prevalent.nativeAds), MaxAdFormat.MREC, context);
-        maxAdView.setListener(this);
+                // Save ad for cleanup.
+                nativeAd = maxAd;
 
-        // MREC width and height are 300 and 250 respectively, on phones and tablets
-        int widthPx = AppLovinSdkUtils.dpToPx(context, 300);
-        int heightPx = AppLovinSdkUtils.dpToPx(context, 250);
+                // Add ad view to view.
+                frameLayout.removeAllViews();
+                frameLayout.addView(maxNativeAdView);
+                super.onNativeAdLoaded(maxNativeAdView, maxAd);
 
-        maxAdView.setLayoutParams(new FrameLayout.LayoutParams(widthPx, heightPx));
+            }
 
-        maxAdView.setBackgroundColor(Color.WHITE);
-        container.addView(maxAdView);
-        maxAdView.loadAd();
-        //To show a banner, make the following calls:
-        maxAdView.startAutoRefresh();
+            @Override
+            public void onNativeAdLoadFailed(String s, MaxError maxError) {
+                super.onNativeAdLoadFailed(s, maxError);
+                Log.e("aaaaaaaerror", maxError.getMessage());
+
+            }
+
+            @Override
+            public void onNativeAdClicked(MaxAd maxAd) {
+                super.onNativeAdClicked(maxAd);
+            }
+        });
+
+
+        nativeAdLoader.loadAd();
+
+
     }
 
     public void metaRectangleBanner(Activity context, FrameLayout container) {

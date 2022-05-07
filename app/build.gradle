@@ -82,12 +82,13 @@ dependencies {
     implementation 'com.google.ads.mediation:facebook:6.10.0.0'
 
     // IronSource with Meta
-    implementation 'com.ironsource.sdk:mediationsdk:7.2.1'
-    implementation 'com.ironsource.adapters:facebookadapter:4.3.34'
-
+    implementation 'com.ironsource.sdk:mediationsdk:7.2.1.1'
+    // Add Facebook Network
+    implementation 'com.ironsource.adapters:facebookadapter:4.3.35'
+    implementation 'com.facebook.android:audience-network-sdk:6.10.0'
     // applovin with Meta
     implementation 'com.applovin:applovin-sdk:11.3.3'
-    implementation 'com.applovin.mediation:facebook-adapter:6.10.0.1'
+    implementation 'com.applovin.mediation:facebook-adapter:6.10.0.2'
 
     //paper db
     implementation 'io.github.pilgr:paperdb:2.7.2'

@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:elevation="4dp"
     android:background="@drawable/item_bg"
-    android:backgroundTint="@android:color/white"
+    android:backgroundTint="@color/btn_color"
     android:padding="8dp">
 
     <ProgressBar
@@ -15,7 +15,7 @@
         android:progress="@android:integer/config_shortAnimTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint="@color/purple_500"
+        android:indeterminateTint="@color/white"
         />
 </LinearLayout>
 
