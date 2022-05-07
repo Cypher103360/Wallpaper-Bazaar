@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_color"
     tools:context=".fragments.HomeFragment">
 
     <RelativeLayout
@@ -61,6 +62,9 @@
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp"
                     android:clickable="true"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/purple_700"
+                    android:backgroundTint="@color/bg_color"
                     app:layout_constraintBottom_toTopOf="@+id/materialButtonToggleGroup"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +96,9 @@
                         style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:strokeColor="@color/btn_color"
                         android:text="@string/popular"
+                        android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textAllCaps="false" />
 
@@ -102,6 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_img"
+                        android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textAllCaps="false" />
 

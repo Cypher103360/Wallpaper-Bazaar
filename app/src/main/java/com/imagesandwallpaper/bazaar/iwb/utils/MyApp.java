@@ -16,10 +16,13 @@ import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
+import com.ironsource.mediationsdk.IronSource;
 import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -42,25 +45,18 @@ public class MyApp extends Application {
         super.onCreate();
         mInstance = this;
         Paper.init(mInstance);
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(this::fetchAds);
 
-        fetchAds();
+    }
+
+    private void fetchAds() {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
         // OneSignal Initialization
         OneSignal.initWithContext(this);
         OneSignal.setNotificationOpenedHandler(new ExampleNotificationOpenedHandler());
         OneSignal.setAppId(ONESIGNAL_APP_ID);
-    }
 
-    private class ExampleNotificationOpenedHandler implements OneSignal.OSNotificationOpenedHandler {
-        @Override
-        public void notificationOpened(OSNotificationOpenedResult result) {
-            Intent intent = new Intent(MyApp.this, RefreshingActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-
-        }
-    }
-    private void fetchAds() {
         apiInterface = ApiWebServices.getApiInterface();
         Call<AdsModelList> call = apiInterface.fetchAds("Wallpaper Bazaar");
         call.enqueue(new Callback<AdsModelList>() {
@@ -137,5 +133,15 @@ public class MyApp extends Application {
                 Log.d("adsError", t.getMessage());
             }
         });
+    }
+
+    private class ExampleNotificationOpenedHandler implements OneSignal.OSNotificationOpenedHandler {
+        @Override
+        public void notificationOpened(OSNotificationOpenedResult result) {
+            Intent intent = new Intent(MyApp.this, RefreshingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+        }
     }
 }

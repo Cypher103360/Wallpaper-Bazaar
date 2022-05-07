@@ -272,11 +272,10 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             new Handler(Looper.getMainLooper());
             service.execute(() -> {
                 // Background work
-                favoriteAppDatabase.getFavoriteDao().deleteFavorite(favorite);
+               deleteFavorite();
             });
         } else {
             favoriteIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_favorite_24));
-
             ExecutorService service = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
             service.execute(() -> {
@@ -298,8 +297,16 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     }
 
+    private void deleteFavorite() {
+        favoriteAppDatabase.getFavoriteDao().deleteFavorite(favorite);
+        Toast.makeText(this, "Removed from Favorite", Toast.LENGTH_SHORT).show();
+
+    }
+
     private void CreateFavorite(String image, String catId) {
         favoriteAppDatabase.getFavoriteDao().addFavorite(new Favorite(image, catId, 0));
+        Toast.makeText(this, "Saved in Favorite", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

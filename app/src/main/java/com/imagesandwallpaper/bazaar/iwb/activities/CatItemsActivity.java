@@ -2,6 +2,7 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,6 +27,8 @@ import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CatItemsActivity extends AppCompatActivity implements SubCatImageClickInterface, CatItemImageClickInterface {
     public static List<ImageItemModel> imageItemModels = new ArrayList<>();
@@ -56,11 +59,10 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catItemsRecyclerView.setLayoutManager(layoutManager);
         catItemsRecyclerView.setHasFixedSize(true);
-
         getLifecycle().addObserver(ads);
-
         ads.showTopBanner(this, binding.adViewTop);
         ads.showBottomBanner(this, binding.adViewBottom);
+
 
         if (type.equals("CatFragment")) {
             setCatImages();
@@ -78,13 +80,17 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     }
 
     private void setSubCatImages() {
+
         subCatImageAdapter = new SubCatImageAdapter(CatItemsActivity.this, this);
         catItemsRecyclerView.setAdapter(subCatImageAdapter);
         subCatImageViewModel = new ViewModelProvider(CatItemsActivity.this,
                 new SubCatImageModelFactory(getApplication(), id)).get(SubCatImageViewModel.class);
         subCatImageViewModel.getSubCatImageItems().observe(this, subCatImageModelList -> {
-            if (!subCatImageModelList.getData().isEmpty()) {
-                subCatImageAdapter.updateList(subCatImageModelList.getData());
+            if (subCatImageModelList.getData()!=null) {
+                imageItemModels.clear();
+                imageItemModels.addAll(subCatImageModelList.getData());
+                Log.d("check items", imageItemModels.toString()+"   "+imageItemModels.size());
+                subCatImageAdapter.updateList(imageItemModels);
             }
         });
     }
@@ -108,6 +114,7 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
 
     @Override
     public void onClicked(ImageItemModel imageItemModel, int position) {
+
         ads.showInterstitialAds(this);
         Ads.destroyBanner();
         Intent intent = new Intent(this, FullscreenActivity.class);

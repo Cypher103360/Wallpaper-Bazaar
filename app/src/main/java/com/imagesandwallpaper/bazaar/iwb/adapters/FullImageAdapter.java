@@ -79,9 +79,11 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         service.execute(() -> {
             // Background work
             for (Favorite f : favoriteAppDatabase.getFavoriteDao().getAllFavorite()) {
-                if (f.getImage().equals(imageItemModelList.get(position).getImage()) &&
-                        f.getCatId().equals(imageItemModelList.get(position).getCatId())) {
-                    holder.favoriteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_favorite_24));
+                if (f!=null) {
+                    if (f.getImage().equals(imageItemModelList.get(position).getImage()) &&
+                            f.getCatId().equals(imageItemModelList.get(position).getCatId())) {
+                        holder.favoriteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_favorite_24));
+                    }
                 }
             }
 

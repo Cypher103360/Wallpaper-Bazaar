@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         binding.myText.setVisibility(View.VISIBLE);
         binding.lottieNoInternet.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.GONE);
-        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.off_white));
+        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.bg_color));
 
         if (count == 2) {
             new Handler().postDelayed(() -> {
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 if (auth.getCurrentUser() != null | account != null) {
                     startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 } else {
-                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
+                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 }
                 finish();
             }, 2000);

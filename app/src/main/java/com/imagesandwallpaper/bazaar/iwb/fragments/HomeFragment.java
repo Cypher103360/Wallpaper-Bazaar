@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +84,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
         getLifecycle().addObserver(ads);
 //        ads.showTopBanner(requireActivity(), binding.adViewTop);
+
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
 
@@ -118,11 +122,41 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
                 switch (checkedId) {
                     case R.id.pop_btn:
                         loading.show();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
+                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+
+                        }
+                        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
+                            binding.adViewTop.setVisibility(View.GONE);
+
+                        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+                            binding.adViewBottom.setVisibility(View.GONE);
+
+                        } else {
+                            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+                        }
                         map.put("tableName", "Popular_Images");
                         setImageData(requireActivity(), map);
                         break;
                     case R.id.new_img_btn:
                         loading.show();
+                        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
+                            binding.adViewTop.setVisibility(View.GONE);
+
+                        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+                            binding.adViewBottom.setVisibility(View.GONE);
+
+                        } else {
+                            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
+                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+
+                        }
                         map.put("tableName", "New_Images");
                         setImageData(requireActivity(), map);
                         break;
