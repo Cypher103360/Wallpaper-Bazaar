@@ -6,10 +6,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCategoryAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivitySubCategoryBinding;
@@ -18,12 +18,9 @@ import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModel;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatViewModel;
-import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.ironsource.mediationsdk.IronSource;
 
 public class SubCategoryActivity extends AppCompatActivity implements SubCatClickInterface {
     ActivitySubCategoryBinding binding;
@@ -34,7 +31,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     String catId, activityTitle;
     Dialog loading;
     ShowAds ads = new ShowAds();
-
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +56,12 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
         ads.showBottomBanner(this, binding.adViewBottom);
 
 
-
         setData();
         binding.subCatSwipeRefresh.setOnRefreshListener(() -> {
             setData();
+            ads.showTopBanner(this, binding.adViewTop);
+            ads.showBottomBanner(this, binding.adViewBottom);
+
             binding.subCatSwipeRefresh.setRefreshing(false);
         });
     }
@@ -87,18 +86,36 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     public void onClicked(SubCatModel subCatModel, int position) {
 
         ads.showInterstitialAds(this);
-        Ads.destroyBanner();
+        ads.destroyBanner();
         Intent intent = new Intent(SubCategoryActivity.this, CatItemsActivity.class);
-        intent.putExtra("type","SubCatItem");
+        intent.putExtra("type", "SubCatItem");
         intent.putExtra("id", subCatModel.getId());
         intent.putExtra("title", subCatModel.getTitle());
         startActivity(intent);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, subCatModel.getTitle());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/category_images/" + subCatModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Sub Category");
+        mFirebaseAnalytics.logEvent("Clicked_On_Sub_Category", bundle);
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Ads.destroyBanner();
+        ads.destroyBanner();
         finish();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }

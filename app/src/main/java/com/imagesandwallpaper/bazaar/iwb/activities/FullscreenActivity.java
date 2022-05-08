@@ -25,10 +25,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.adapters.FullImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityFullscreenBinding;
@@ -38,14 +40,18 @@ import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
 import com.imagesandwallpaper.bazaar.iwb.models.FavoriteAppDatabase;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
-import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.paperdb.Paper;
 
 public class FullscreenActivity extends AppCompatActivity implements ImageItemClickInterface {
     ActivityFullscreenBinding binding;
@@ -55,6 +61,8 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
     FavoriteAppDatabase favoriteAppDatabase;
     Favorite favorite;
     ShowAds ads = new ShowAds();
+    FirebaseAnalytics mFirebaseAnalytics;
+    ItemTouchHelper.SimpleCallback simpleCallback;
 
 
     @Override
@@ -75,6 +83,12 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
         FullImageAdapter viewPager2Adapter = new FullImageAdapter(this, this);
 
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
+
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
+        }
         // adding the adapter to viewPager2
         // to show the views in recyclerview
         fullImageViewPager.setAdapter(viewPager2Adapter);
@@ -120,18 +134,22 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
         }
 
+
         // To get swipe event of viewpager2
         fullImageViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             // This method is triggered when there is any scrolling activity for the current page
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+//                Log.d("ContentValue", "OnScrolled");
             }
 
             // triggered when you select a new page
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+//                Log.d("ContentValue", "onPageSelected");
+
             }
 
             // triggered when there is
@@ -139,6 +157,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
+//                Log.d("ContentValue", "onPageScrollStateChanged");
             }
         });
     }
@@ -154,6 +173,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
         ImageView cancelBtn = loadImageDialog.findViewById(R.id.cancel_btn);
         FrameLayout nativeAds = loadImageDialog.findViewById(R.id.native_ads);
+
         ads.showNativeAds(this, nativeAds);
         cancelBtn.setOnClickListener(view -> {
             loadImageDialog.dismiss();
@@ -183,7 +203,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Ads.destroyBanner();
+        ads.destroyBanner();
         finish();
     }
 
@@ -193,6 +213,12 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     @Override
     public void onShareImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Share Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Share_Images", bundle);
+
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -221,8 +247,16 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
     @Override
     public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
 
+//        loadImageDialog = new BottomSheetDialog(this);
+//
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Download Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Download_Images", bundle);
+
+
         ads.showInterstitialAds(this);
-        Ads.destroyBanner();
         if (checkPermissionForReadExternalStorage()) {
             String dirPath = "/Wallpaper Bazaar";
             String fileName = "images.jpg";
@@ -258,6 +292,12 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     @Override
     public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
+        Toast.makeText(this, "Saved in Favorite", Toast.LENGTH_SHORT).show();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Added Favorite Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Set_Favorite_Images", bundle);
 
         favoriteAppDatabase = Room.databaseBuilder(
                 this,
@@ -272,7 +312,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             new Handler(Looper.getMainLooper());
             service.execute(() -> {
                 // Background work
-               deleteFavorite();
+                deleteFavorite();
             });
         } else {
             favoriteIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_favorite_24));
@@ -282,14 +322,14 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
                 // Background work
                 Favorite f = favoriteAppDatabase.getFavoriteDao().getFavorite(imageItemModel.getImage());
                 if (f != null) {
-                    if (f.getImage().equals(imageItemModel.getImage())) {
+                    if (f.getImage().equals(imageItemModel.getImage()) && f.getCatId().equals("true")) {
                         favoriteIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_favorite_24));
                     } else {
-                        CreateFavorite(imageItemModel.getImage(), imageItemModel.getCatId());
+                        CreateFavorite(imageItemModel.getImage(), "true");
 
                     }
                 } else {
-                    CreateFavorite(imageItemModel.getImage(), imageItemModel.getCatId());
+                    CreateFavorite(imageItemModel.getImage(), "true");
                 }
             });
 
@@ -305,14 +345,18 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     private void CreateFavorite(String image, String catId) {
         favoriteAppDatabase.getFavoriteDao().addFavorite(new Favorite(image, catId, 0));
-        Toast.makeText(this, "Saved in Favorite", Toast.LENGTH_SHORT).show();
+
 
     }
 
     @Override
     public void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-        ads.showInterstitialAds(this);
-        Ads.destroyBanner();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Set wallpaper Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Set_Wallpaper_Images", bundle);
+
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         BitmapDrawable bitmapDrawable = (BitmapDrawable) itemImage.getDrawable();
         Bitmap bitmap = bitmapDrawable.getBitmap();
@@ -346,6 +390,16 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             e.printStackTrace();
             throw e;
         }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 
 }

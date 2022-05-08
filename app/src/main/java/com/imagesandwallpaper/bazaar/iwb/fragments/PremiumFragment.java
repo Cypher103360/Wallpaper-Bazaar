@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.PremiumAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.FragmentPremiumBinding;
@@ -29,10 +29,10 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumViewModel;
-import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,7 +139,7 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
     @Override
     public void onClicked(ImageItemModel premiumModel, int position) {
         ads.showInterstitialAds(requireActivity());
-        Ads.destroyBanner();
+        ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
         intent.putExtra("id", premiumModel.getId());
         intent.putExtra("catId", premiumModel.getCatId());
@@ -147,6 +147,13 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         intent.putExtra("pos", String.valueOf(position));
         intent.putExtra("key", "premium");
         startActivity(intent);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + premiumModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Premium_Images", bundle);
+
     }
 
     @Override
@@ -176,5 +183,17 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }

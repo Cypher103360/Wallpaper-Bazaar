@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,15 @@ import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
 import com.imagesandwallpaper.bazaar.iwb.models.FavoriteAppDatabase;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.paperdb.Paper;
 
 public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.ViewHolder> {
     List<ImageItemModel> imageItemModelList = new ArrayList<>();
@@ -41,6 +45,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         this.context = context;
         this.imageItemClickInterface = imageItemClickInterface;
     }
+
 
     @NonNull
     @Override
@@ -59,8 +64,19 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         holder.downloadIcon.setOnClickListener(view -> imageItemClickInterface.onDownloadImg(imageItemModelList.get(position), position, holder.itemImage));
         holder.shareIcon.setOnClickListener(view -> imageItemClickInterface.onShareImg(imageItemModelList.get(position), position, holder.itemImage));
         holder.setBtn.setOnClickListener(view -> imageItemClickInterface.onSetImg(imageItemModelList.get(position), position, holder.itemImage));
-        showAds.showBottomBanner(context, holder.adviewBottom);
-        showAds.showTopBanner(context, holder.adviewTop);
+
+
+        Log.d("ContentValue", String.valueOf(position));
+        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
+            holder.adviewTop.setVisibility(View.GONE);
+
+        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
+            holder.adviewBottom.setVisibility(View.GONE);
+
+        } else {
+            showAds.showTopBanner(context, holder.adviewTop);
+            showAds.showBottomBanner(context, holder.adviewBottom);
+        }
 
 
         if (position > 0) {
@@ -68,6 +84,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
                 showAds.showInterstitialAds(context);
             }
         }
+
         favoriteAppDatabase = Room.databaseBuilder(
                 context,
                 FavoriteAppDatabase.class
@@ -79,9 +96,8 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         service.execute(() -> {
             // Background work
             for (Favorite f : favoriteAppDatabase.getFavoriteDao().getAllFavorite()) {
-                if (f!=null) {
-                    if (f.getImage().equals(imageItemModelList.get(position).getImage()) &&
-                            f.getCatId().equals(imageItemModelList.get(position).getCatId())) {
+                if (f != null) {
+                    if (f.getImage().equals(imageItemModelList.get(position).getImage()) && f.getCatId().equals("true")) {
                         holder.favoriteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_favorite_24));
                     }
                 }

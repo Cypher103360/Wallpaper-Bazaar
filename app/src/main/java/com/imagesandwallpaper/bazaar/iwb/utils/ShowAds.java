@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -13,6 +14,7 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.Objects;
 
@@ -48,12 +50,18 @@ public class ShowAds implements LifecycleObserver {
             showBottomBanner(context, bottomAdview);
 
         }
+
+//        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+//            IronSource.init(context,Paper.book().read(Prevalent.bannerTop));
+//        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+//            IronSource.init(context,Paper.book().read(Prevalent.bannerBottom));
+//
+//        }
+
         Log.d(TAG, "onStart");
     }
 
     public void showInterstitialAds(Activity context) {
-
-
         if ("AdmobWithMeta".equals(Paper.book().read(Prevalent.interstitialNetwork))) {
             Log.d(TAG, "AdmobWithMeta");
             ads.admobInterstitialAd(context, Paper.book().read(Prevalent.interstitialAds));
@@ -99,7 +107,7 @@ public class ShowAds implements LifecycleObserver {
     public void showNativeAds(Activity context, FrameLayout frameLayout) {
         nativeAds = Paper.book().read(Prevalent.nativeAds);
         nativeNetwork = Paper.book().read(Prevalent.nativeAdsNetworkName);
-
+        frameLayout.setVisibility(View.VISIBLE);
         switch (Objects.requireNonNull(nativeNetwork)) {
             case "AdmobWithMeta":
                 ads.loadadmobNativeAd(context, frameLayout);
@@ -118,5 +126,17 @@ public class ShowAds implements LifecycleObserver {
         }
     }
 
+    public void destroyBanner() {
+        ads.destroyBanner();
+        Log.d("ContentValue", "destroyBanner");
+    }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume(){
+        IronSource.onResume(context);
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause(){
+        IronSource.onPause(context);
+    }
 }

@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivitySignupBinding;
 
@@ -35,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
     int RC_SIGN_IN = 1000;
     Dialog termsAndServicesDialog;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,8 @@ public class SignupActivity extends AppCompatActivity {
 
         binding.withGoogle.setOnClickListener(view -> {
             signIn();
+
+
         });
     }
 
@@ -143,5 +147,10 @@ public class SignupActivity extends AppCompatActivity {
         finish();
         Intent intent = new Intent(SignupActivity.this, RefreshingActivity.class);
         startActivity(intent);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Google Sign in");
+        mFirebaseAnalytics.logEvent("Clicked_On_Google_SignIn", bundle);
     }
+
 }

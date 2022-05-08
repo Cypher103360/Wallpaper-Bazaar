@@ -96,7 +96,7 @@
                         style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:strokeColor="@color/btn_color"
+                        app:strokeColor="@color/white"
                         android:text="@string/popular"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -108,6 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_img"
+                        app:strokeColor="@color/btn_color"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textAllCaps="false" />

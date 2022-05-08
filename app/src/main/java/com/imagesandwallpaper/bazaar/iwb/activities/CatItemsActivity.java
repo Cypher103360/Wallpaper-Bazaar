@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.adapters.CatItemImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.adapters.SubCatImageClickInterface;
@@ -24,6 +25,7 @@ import com.imagesandwallpaper.bazaar.iwb.models.SubCatImageModelFactory;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatImageViewModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     ApiInterface apiInterface;
     String id, title, type;
     ShowAds ads = new ShowAds();
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,9 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
             setSubCatImages();
         }
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
+            ads.showTopBanner(this, binding.adViewTop);
+            ads.showBottomBanner(this, binding.adViewBottom);
+
             if (type.equals("CatFragment")) {
                 setCatImages();
             } else if (type.equals("SubCatItem")) {
@@ -116,7 +122,7 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     public void onClicked(ImageItemModel imageItemModel, int position) {
 
         ads.showInterstitialAds(this);
-        Ads.destroyBanner();
+        ads.destroyBanner();
         Intent intent = new Intent(this, FullscreenActivity.class);
         intent.putExtra("id", imageItemModel.getId());
         intent.putExtra("catId", imageItemModel.getCatId());
@@ -124,13 +130,28 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         intent.putExtra("pos", String.valueOf(position));
         intent.putExtra("key", "catItem");
         startActivity(intent);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Cat Item Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Cat_Items", bundle);
+
     }
 
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Ads.destroyBanner();
+        ads.destroyBanner();
         finish();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }

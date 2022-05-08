@@ -34,6 +34,8 @@ import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
+import com.ironsource.mediationsdk.IronSource;
+import com.ironsource.mediationsdk.integration.IntegrationHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 if (account != null) {
                     startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 } else {
-                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
+                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
                 }
                 finish();
             }, 2000);
@@ -183,12 +185,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        IronSource.onPause(this);
         unregisterReceiver(receiver);
     }
 

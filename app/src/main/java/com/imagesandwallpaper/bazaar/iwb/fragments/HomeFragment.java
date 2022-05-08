@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.ImageItemAdapter;
@@ -41,6 +42,7 @@ import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,8 +125,8 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
                     case R.id.pop_btn:
                         loading.show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
-                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
 
                         }
                         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
@@ -153,8 +155,8 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
-                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+                            newBtn.setStrokeColor(requireActivity().getColorStateList(R.color.white));
+                            popularBtn.setStrokeColor(requireActivity().getColorStateList(R.color.btn_color));
 
                         }
                         map.put("tableName", "New_Images");
@@ -214,8 +216,14 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
     @Override
     public void onClicked(ImageItemModel imageItemModel, int position) {
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"+imageItemModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Images");
+        mFirebaseAnalytics.logEvent("Clicked_On_Home_Images", bundle);
+
         ads.showInterstitialAds(requireActivity());
-        Ads.destroyBanner();
+        ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
         intent.putExtra("id", imageItemModel.getId());
         intent.putExtra("catId", imageItemModel.getCatId());
@@ -253,5 +261,17 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }
