@@ -186,7 +186,6 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
                 }
                 binding.homeBannerImage.setOnClickListener(view -> {
                     openWebPage(banUrl);
-                    Toast.makeText(requireActivity(), "Home banner", Toast.LENGTH_SHORT).show();
                 });
             }
 

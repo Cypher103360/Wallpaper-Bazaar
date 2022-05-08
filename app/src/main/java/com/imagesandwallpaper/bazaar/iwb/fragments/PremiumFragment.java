@@ -124,7 +124,6 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
 
                     binding.premiumBannerImage.setOnClickListener(view -> {
                         openWebPage(banUrl);
-                        Toast.makeText(requireActivity(), "Home banner", Toast.LENGTH_SHORT).show();
                     });
                 }
 

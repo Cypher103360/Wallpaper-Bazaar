@@ -1,12 +1,19 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivitySignupBinding;
 
 public class SignupActivity extends AppCompatActivity {
@@ -26,6 +34,7 @@ public class SignupActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     int RC_SIGN_IN = 1000;
+    Dialog termsAndServicesDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +50,42 @@ public class SignupActivity extends AppCompatActivity {
 //        if (account!= null){
 //            navigateToNextActivity();
 //        }
-        String firstString = "By continuing, you agree to Wallpaper Bazaar's ";
-        String second = "Terms of Service";
-        String third = " and acknowledge that you've read our ";
-        String fourth = "Privacy Policy";
-        String sourceString = firstString + "<b>" + second + "</b> " + third+ "<b>" + "<font color='#338EEF'>"+fourth+"</font>" + "</b> ";
-        binding.termsText.setText(Html.fromHtml(sourceString));
 
-        binding.termsText.setOnClickListener(view -> {
-            startActivity(new Intent(SignupActivity.this,PrivacyPolicyActivity.class));
-        });
+        // test link span
+        TextView tv =  findViewById(R.id.terms_text);
+        Spannable span = Spannable.Factory.getInstance().newSpannable(
+                "By continuing, you agree to Wallpaper Bazaar's Terms of Service and acknowledge that you've read our Privacy Policy");
+        span.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this,PrivacyPolicyActivity.class);
+                intent.putExtra("key","terms");
+                startActivity(intent);
+            }
+        }, 47, 63, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // All the rest will have the same spannable.
+        ClickableSpan cs = new ClickableSpan() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this,PrivacyPolicyActivity.class);
+                intent.putExtra("key","policy");
+                startActivity(intent);
+            }
+        };
+
+        // set the "test " spannable.
+        span.setSpan(cs, 101, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv.setText(span);
+
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
+
         binding.withGoogle.setOnClickListener(view -> {
             signIn();
         });
     }
+
 
     private void signIn() {
         if (checkPermissionForReadExternalStorage()) {

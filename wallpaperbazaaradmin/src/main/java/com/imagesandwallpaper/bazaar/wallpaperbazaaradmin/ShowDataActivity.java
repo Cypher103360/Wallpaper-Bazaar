@@ -424,6 +424,7 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Category Uploaded", Toast.LENGTH_SHORT).show();
                     catDialog.dismiss();
+                    fetchCategory();
                 } else {
                     assert response.body() != null;
                     Toast.makeText(getApplicationContext(), response.body().getError(), Toast.LENGTH_SHORT).show();

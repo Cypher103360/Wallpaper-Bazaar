@@ -1,31 +1,37 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityPrivacyPolicyBinding;
-import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 public class PrivacyPolicyActivity extends AppCompatActivity {
     WebView webView;
     ShowAds ads = new ShowAds();
     ActivityPrivacyPolicyBinding binding;
+    String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         webView = findViewById(R.id.policy);
-        webView.loadUrl("file:///android_asset/privacy.html");
-        getLifecycle().addObserver(ads);
-        ads.showTopBanner(this, binding.adViewTop);
-        ads.showBottomBanner(this, binding.adViewBottom);
+
+        key = getIntent().getStringExtra("key");
+        if (key.equals("terms")){
+            webView.loadUrl("file:///android_asset/terms_and_conditions.html");
+        }else if (key.equals("policy")){
+            webView.loadUrl("file:///android_asset/privacy_policy.html");
+        }
+
+//        getLifecycle().addObserver(ads);
+//        ads.showTopBanner(this, binding.adViewTop);
+//        ads.showBottomBanner(this, binding.adViewBottom);
 
 
     }
@@ -34,7 +40,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        Ads.destroyBanner();
+        // Ads.destroyBanner();
 
     }
 }

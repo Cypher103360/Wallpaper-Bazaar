@@ -12,13 +12,16 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,17 +43,27 @@ import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.fragments.CategoryFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
+import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
+import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
+import com.imagesandwallpaper.bazaar.iwb.models.MessageModel;
+import com.imagesandwallpaper.bazaar.iwb.models.ProWallModel;
+import com.imagesandwallpaper.bazaar.iwb.models.ProWallModelList;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
@@ -65,9 +78,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityHomeBinding binding;
+    Dialog loading;
     ShowAds ads = new ShowAds();
-
-
+    String proWallUrl;
+    ApiInterface apiInterface;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -82,6 +96,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
+    Map<String, String> map = new HashMap<>();
 
     private void Set_Visibility_ON() {
         binding.lottieHomeNoInternet.setVisibility(View.GONE);
@@ -91,6 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding.tabs.setVisibility(View.VISIBLE);
         getLifecycle().addObserver(ads);
         enableNavItems();
+        fetchProWallUrl();
         if (count == 2) {
             ViewPager viewPager = binding.viewPager;
             viewPager.setAdapter(sectionsPagerAdapter);
@@ -113,8 +129,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        apiInterface = ApiWebServices.getApiInterface();
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
+        loading = CommonMethods.loadingDialog(HomeActivity.this);
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
         drawerLayout = binding.drawerLayout;
@@ -162,8 +180,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
+            loading.show();
             String name = account.getDisplayName();
             String email = account.getEmail();
+            map.put("userName", name);
+            map.put("userEmail", email);
+            uploadUserData(map);
         }
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -172,6 +194,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter.addFragments(new PremiumFragment(), "Premium");
 
     }
+
+    private void uploadUserData(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.uploadUserData(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                loading.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                loading.dismiss();
+            }
+        });
+    }
+
 
     public void navigationDrawer() {
         navigationView = findViewById(R.id.navigation);
@@ -287,7 +330,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
             case R.id.nav_pro:
-
+                openWebPage(proWallUrl, HomeActivity.this);
                 break;
             case R.id.nav_contact:
                 try {
@@ -314,7 +357,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 disclaimerDialog();
                 break;
             case R.id.nav_signOut:
-                CommonMethods.loadingDialog(HomeActivity.this).show();
+                loading.show();
 
                 // Sign Out for google user
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -326,6 +369,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             default:
         }
         return true;
+    }
+
+    private void fetchProWallUrl() {
+        Call<ProWallModelList> call = apiInterface.fetchProWallUrl();
+        call.enqueue(new Callback<ProWallModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
+
+                for (ProWallModel proWallModel : response.body().getData()) {
+                    proWallUrl = proWallModel.getUrl();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProWallModelList> call, @NonNull Throwable t) {
+                Log.d("ggggggggg", t.getMessage());
+            }
+        });
     }
 
     public void disclaimerDialog() {
@@ -340,6 +402,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void googleSignOut() {
         gsc.signOut().addOnCompleteListener(task -> {
             finish();
+            loading.dismiss();
             startActivity(new Intent(HomeActivity.this, SignupActivity.class));
             CommonMethods.loadingDialog(HomeActivity.this).dismiss();
         });
@@ -363,13 +426,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(receiver, intentFilter);
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
+    public void openWebPage(String url, Context context) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
     @Override
     public void onBackPressed() {
-
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            drawerLayout.openDrawer(GravityCompat.START);
+            startActivity(new Intent(HomeActivity.this, RefreshingActivity.class));
             super.onBackPressed();
         }
     }

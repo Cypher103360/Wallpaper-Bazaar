@@ -52,5 +52,12 @@ public interface ApiInterface {
     @POST("fetch_ads.php")
     Call<AdsModelList> fetchAds(@Field("id") String id);
 
+    @POST("fetch_pro_wallpaper_url.php")
+    Call<ProWallModelList> fetchProWallUrl();
+
+    @FormUrlEncoded
+    @POST("upload_user_details.php")
+    Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
+
 }
 

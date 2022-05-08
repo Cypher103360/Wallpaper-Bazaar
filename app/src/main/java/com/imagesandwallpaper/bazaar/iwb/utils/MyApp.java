@@ -45,8 +45,7 @@ public class MyApp extends Application {
         super.onCreate();
         mInstance = this;
         Paper.init(mInstance);
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(this::fetchAds);
+       fetchAds();
 
     }
 
