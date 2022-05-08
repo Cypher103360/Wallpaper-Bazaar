@@ -37,6 +37,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.activities.ui.main.SectionsPagerAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
@@ -52,13 +53,12 @@ import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -97,6 +97,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     };
     Map<String, String> map = new HashMap<>();
+    FirebaseAnalytics mFirebaseAnalytics;
+    Bundle bundle;
 
     private void Set_Visibility_ON() {
         binding.lottieHomeNoInternet.setVisibility(View.GONE);
@@ -136,6 +138,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
         drawerLayout = binding.drawerLayout;
+        bundle = new Bundle();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Setting Version Code
         try {
@@ -146,16 +150,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(() -> {
-            // Background work
-            if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
-                ads.showTopBanner(this, binding.adViewTop);
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
 
-            } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
-                ads.showTopBanner(this, binding.adViewTop);
-            }
-        });
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
+        }
 
 
         //Internet Checking Condition
@@ -172,6 +172,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         binding.lottieContact.setOnClickListener(view -> {
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Contact Home Top");
+            mFirebaseAnalytics.logEvent("Clicked_On_Contact_Home_Top", bundle);
+
             try {
                 CommonMethods.whatsApp(HomeActivity.this);
             } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
@@ -183,8 +186,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             loading.show();
             String name = account.getDisplayName();
             String email = account.getEmail();
-            map.put("userName", name);
-            map.put("userEmail", email);
+            map.put("name", name);
+            map.put("email", email);
             uploadUserData(map);
         }
 
@@ -328,11 +331,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Home_Menu", bundle);
+
                 break;
             case R.id.nav_pro:
                 openWebPage(proWallUrl, HomeActivity.this);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Pro Wallpaper Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Pro_Wallpaper_Menu", bundle);
+
                 break;
             case R.id.nav_contact:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Contact Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Contact_Menu", bundle);
+
                 try {
                     CommonMethods.whatsApp(HomeActivity.this);
                 } catch (UnsupportedEncodingException e) {
@@ -342,23 +354,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_share:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Share Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Share_Menu", bundle);
                 CommonMethods.shareApp(HomeActivity.this);
                 break;
             case R.id.nav_rate:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Rate Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Rate_Menu", bundle);
                 CommonMethods.rateApp(HomeActivity.this);
                 break;
             case R.id.nav_favorite:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Favorite Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Favorite_Menu", bundle);
                 startActivity(new Intent(this, FavoriteActivity.class));
                 break;
             case R.id.nav_privacy:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Privacy Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Privacy_Menu", bundle);
                 startActivity(new Intent(HomeActivity.this, PrivacyPolicyActivity.class));
                 break;
             case R.id.nav_disclaimer:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Disclaimer Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Disclaimer_Menu", bundle);
                 disclaimerDialog();
                 break;
             case R.id.nav_signOut:
                 loading.show();
-
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SignOut Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_SignOut_Menu", bundle);
                 // Sign Out for google user
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
                 if (account != null) {
@@ -417,12 +440,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
+        IronSource.onPause(this);
         unregisterReceiver(receiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
     }
 
@@ -442,6 +467,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             startActivity(new Intent(HomeActivity.this, RefreshingActivity.class));
             super.onBackPressed();
+            ads.destroyBanner();
         }
     }
+
+
 }

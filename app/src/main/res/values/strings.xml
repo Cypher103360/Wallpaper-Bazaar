@@ -16,7 +16,8 @@
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
     <string name="sign_out">Sign out</string>
-    <string name="disclaimer_text">All the contents of this Site are only for general information or use. They do not constitute advice and should not be relied upon in making (or refraining from making) any decision. In case of any omission or discrepancy, information in the original records will be final and binding.</string>
+    <string name="disclaimer_text">All the Pictures available in this app come from Various sources of the Internet Including Public Domain.
+No Copyright Infringement is Intended, and a request to remove any of the Picture is Always Welcome.</string>
     <string name="log_in">Log in</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -32,4 +33,5 @@
     <string name="rate_app">Rate App</string>
     <string name="no_connection">No connection</string>
     <string name="pro_wallpaper">Pro Wallpaper</string>
+    <string name="loading_completed">Loading Completed</string>
 </resources>

@@ -13,13 +13,13 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.applovin.sdk.AppLovinSdk;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityRefreshingBinding;
-import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 import com.ironsource.mediationsdk.integration.IntegrationHelper;
 
 import java.io.UnsupportedEncodingException;
@@ -31,6 +31,7 @@ public class RefreshingActivity extends AppCompatActivity {
     ShowAds showAds;
     ImageView shareBtn;
     LottieAnimationView whatsappLottie;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +51,40 @@ public class RefreshingActivity extends AppCompatActivity {
 
         startBtn.startAnimation(myAnim);
         new Handler().postDelayed(() -> startBtn.setVisibility(View.VISIBLE), 5000);
+        IntegrationHelper.validateIntegration(this);
+//        AppLovinSdk.getInstance( this ).showMediationDebugger();
 
         startBtn.setOnClickListener(view -> {
-            showAds.showInterstitialAds(this);
-            Ads.destroyBanner();
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-            finish();
+            new Handler().postDelayed(() ->
+            {
+                showAds.showInterstitialAds(this);
+                showAds.destroyBanner();
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                finish();
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Start");
+                mFirebaseAnalytics.logEvent("Clicked_On_Start", bundle);
+
+            }, 2000);
+
 
         });
 
         shareBtn.setOnClickListener(view -> {
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Share");
+            mFirebaseAnalytics.logEvent("Clicked_On_Start_Share", bundle);
             CommonMethods.shareApp(this);
         });
         whatsappLottie.setOnClickListener(view -> {
             try {
                 CommonMethods.whatsApp(this);
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Start");
+                mFirebaseAnalytics.logEvent("Clicked_On_Start_Whatsapp", bundle);
             } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -91,5 +111,15 @@ public class RefreshingActivity extends AppCompatActivity {
                     System.exit(0);
                 });
         builder.show();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.ads.AudienceNetworkAds;
 import com.imagesandwallpaper.bazaar.iwb.activities.RefreshingActivity;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
@@ -46,6 +47,7 @@ public class MyApp extends Application {
         mInstance = this;
         Paper.init(mInstance);
        fetchAds();
+
 
     }
 

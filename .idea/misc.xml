@@ -3,20 +3,45 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_main.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.132" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.132" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_cat_items.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_favorite.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_fullscreen.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_home.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_privacy_policy.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_refreshing.xml" value="0.22" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_signup.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_sub_category.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/activity_welcome.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/ad_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/ad_unified.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/cat_item_layout.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/disclaimer_layout.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/fragment_category.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/fragment_premium.xml" value="0.14" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/full_item_layout.xml" value="0.18" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/header.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/image_item_layout.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/load_image_dialog.xml" value="0.25" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/loading.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/layout/set_image_dialog.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/menu/menu.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/app/src/main/res/xml/network_security_config.xml" value="0.19589743589743588" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_data.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_image.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_show_sub_image.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_sub_cat.xml" value="0.19895833333333332" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/activity_update_ads.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/cat_item_layout.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/category_dialog.xml" value="0.19589743589743588" />
+        <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/dropdown_items.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/image_item_layout.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/upload_banner_image_layout.xml" value="0.19895833333333332" />
         <entry key="..\:/ANDROID PROJECTS/Wallpaper-Bazaar/wallpaperbazaaradmin/src/main/res/layout/upload_image_layout.xml" value="0.19895833333333332" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable-v24/start_btn_bg.xml" value="0.145" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/action_bg.xml" value="0.1645" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/drawer_item.xml" value="0.158" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.158" />
@@ -31,10 +56,8 @@
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_privacy_policy.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_refreshing.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_register.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_signup.xml" value="0.22" />
+        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_signup.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/activity_sub_category.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/ad_layout.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/ad_unified.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/cat_item_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/disclaimer_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/fragment_category.xml" value="0.2234375" />
@@ -50,16 +73,9 @@
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/layout/set_dialog_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/menu/menu.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/menu/menu2.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.145" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/drawable/item_back_bg.xml" value="0.142" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/drawable/item_bg.xml" value="0.162" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/activity_main.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/activity_pop_and_premium.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/activity_update_ads.xml" value="0.22" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/cat_item_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/category_dialog.xml" value="0.2234375" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/dropdown_items.xml" value="0.33" />
-        <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/image_item_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/loading.xml" value="0.1700356718192628" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/popular_image_layout.xml" value="0.2234375" />
         <entry key="..\:/New Android Applications/WallpaperBazaar/wallpaperbazaaradmin/src/main/res/layout/upload_image_layout.xml" value="0.2234375" />

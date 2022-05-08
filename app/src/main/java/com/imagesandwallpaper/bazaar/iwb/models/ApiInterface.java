@@ -56,7 +56,7 @@ public interface ApiInterface {
     Call<ProWallModelList> fetchProWallUrl();
 
     @FormUrlEncoded
-    @POST("upload_user_details.php")
+    @POST("upload_user_data.php")
     Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
 
 }

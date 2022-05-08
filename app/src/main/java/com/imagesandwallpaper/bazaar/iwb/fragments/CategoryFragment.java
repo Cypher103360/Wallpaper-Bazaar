@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.activities.CatItemsActivity;
 import com.imagesandwallpaper.bazaar.iwb.activities.SubCategoryActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.CategoryAdapter;
@@ -29,6 +30,7 @@ import com.imagesandwallpaper.bazaar.iwb.utils.Ads;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +101,14 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
     @Override
     public void onClicked(CategoryModel categoryModel, int position) {
         ads.showInterstitialAds(requireActivity());
-        Ads.destroyBanner();
+        ads.destroyBanner();
+
+      FirebaseAnalytics  mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, categoryModel.getTitle());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"+categoryModel.getImage());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Category");
+        mFirebaseAnalytics.logEvent("Clicked_On_Category", bundle);
 
         if (categoryModel.getSubCat().equals("true")) {
             Intent intent = new Intent(requireActivity(), SubCategoryActivity.class);
@@ -115,5 +124,17 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
         } else {
             Toast.makeText(requireActivity(), "No wallpapers available", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(requireActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(requireActivity());
     }
 }
