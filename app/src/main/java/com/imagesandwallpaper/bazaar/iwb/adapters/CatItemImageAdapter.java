@@ -2,8 +2,6 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Notification;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +16,6 @@ import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.AdLayoutBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModel;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
@@ -75,8 +71,12 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    +catItemImageModelList.get(position).getImage()).into(((ViewHolder)holder).itemImage);
+            ((ViewHolder) holder).itemImage.layout(0,0,0,0);
+
+            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + catItemImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage)
+                    ::getRequest);
+
             holder.itemView.setOnClickListener(view -> {
                 catItemImageClickInterface.onClicked(catItemImageModelList.get(position),position);
             });

@@ -2,7 +2,6 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +27,19 @@ import java.util.List;
 import io.paperdb.Paper;
 
 public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    List<SubCatModel> subCatModelList = new ArrayList<>();
-    Activity context;
-    SubCatClickInterface catClickInterface;
     private static final int ITEM_VIEW = 0;
     private static final int AD_VIEW = 1;
     private static final int ITEM_FEED_COUNT = 7;
+    List<SubCatModel> subCatModelList = new ArrayList<>();
+    Activity context;
+    SubCatClickInterface catClickInterface;
     ShowAds showAds = new ShowAds();
 
     public SubCategoryAdapter(Activity context, SubCatClickInterface catClickInterface) {
         this.context = context;
         this.catClickInterface = catClickInterface;
     }
+
     public int getItemViewType(int position) {
         if ((position + 1) % ITEM_FEED_COUNT == 0) {
             return AD_VIEW;
@@ -52,7 +52,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         if (viewType == ITEM_VIEW) {
-            View view = LayoutInflater.from(context).inflate(R.layout.cat_item_layout,parent,false);
+            View view = LayoutInflater.from(context).inflate(R.layout.cat_item_layout, parent, false);
             return new ViewHolder(view);
 
         } else if (viewType == AD_VIEW) {
@@ -71,13 +71,15 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
 
 
-
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
-                    + subCatModelList.get(position).getImage()).into(((ViewHolder)holder).catImage);
-            ((ViewHolder)holder).catTitle.setText(subCatModelList.get(position).getTitle());
-            ((ViewHolder)holder).itemView.setOnClickListener(view -> {
+            ((ViewHolder) holder).catImage.layout(0, 0, 0, 0);
+            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
+                    + subCatModelList.get(position).getImage()).into(((ViewHolder) holder).catImage)::getRequest);
+
+
+            ((ViewHolder) holder).catTitle.setText(subCatModelList.get(position).getTitle());
+            ((ViewHolder) holder).itemView.setOnClickListener(view -> {
                 catClickInterface.onClicked(subCatModelList.get(position), position);
             });
 
@@ -95,7 +97,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(List<SubCatModel> subCatModels){
+    public void updateList(List<SubCatModel> subCatModels) {
         subCatModelList.clear();
         subCatModelList.addAll(subCatModels);
         Collections.reverse(subCatModelList);
@@ -105,6 +107,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView catImage;
         TextView catTitle;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             catImage = itemView.findViewById(R.id.catImage);

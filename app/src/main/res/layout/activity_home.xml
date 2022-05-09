@@ -16,7 +16,7 @@
         android:background="@color/bg_color"
         app:headerLayout="@layout/header"
         app:itemIconPadding="14dp"
-        app:itemIconTint="@color/white"
+        app:itemIconTint="@color/btn_color"
         app:itemTextColor="@color/white"
         app:menu="@menu/menu">
 

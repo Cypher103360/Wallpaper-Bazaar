@@ -34,4 +34,8 @@ No Copyright Infringement is Intended, and a request to remove any of the Pictur
     <string name="no_connection">No connection</string>
     <string name="pro_wallpaper">Pro Wallpaper</string>
     <string name="loading_completed">Loading Completed</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="home_screen">Home Screen</string>
+    <string name="lock_screen">Lock Screen</string>
+    <string name="both">Both</string>
 </resources>

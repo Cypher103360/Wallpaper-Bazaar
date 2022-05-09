@@ -1,6 +1,7 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.WallpaperManager;
 import android.content.ContentResolver;
@@ -23,9 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -56,13 +57,14 @@ import io.paperdb.Paper;
 public class FullscreenActivity extends AppCompatActivity implements ImageItemClickInterface {
     ActivityFullscreenBinding binding;
     BottomSheetDialog loadImageDialog, setImageDialog;
+    Dialog dialog;
     String id, catId, img, pos, key;
     ViewPager2 fullImageViewPager;
     FavoriteAppDatabase favoriteAppDatabase;
     Favorite favorite;
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
-    ItemTouchHelper.SimpleCallback simpleCallback;
+    ConstraintLayout homeScreen, lockScreen, bothScreen;
 
 
     @Override
@@ -236,7 +238,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(Intent.EXTRA_TEXT, "Play store Link : https://play.google.com/store/apps/details?id=" + this.getPackageName());
+            intent.putExtra(Intent.EXTRA_TEXT, "That's Awesome...\uD83D\uDC40 \n\n Install Now!☺☺ \n\n" + "https://play.google.com/store/apps/details?id=" + this.getPackageName());
             startActivity(Intent.createChooser(intent, "Share Image from " + this.getString(R.string.app_name)));
 
         } catch (Exception e) {
@@ -247,14 +249,11 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
     @Override
     public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
 
-//        loadImageDialog = new BottomSheetDialog(this);
-//
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Download Images");
         mFirebaseAnalytics.logEvent("Clicked_On_Download_Images", bundle);
-
 
         ads.showInterstitialAds(this);
         if (checkPermissionForReadExternalStorage()) {
@@ -292,7 +291,14 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     @Override
     public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
-        Toast.makeText(this, "Saved in Favorite", Toast.LENGTH_SHORT).show();
+
+        if (key.equals("fav")) {
+            Toast.makeText(this, "Removed from Favorite", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Saved in Favorite", Toast.LENGTH_SHORT).show();
+        }
+
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
@@ -339,8 +345,6 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     private void deleteFavorite() {
         favoriteAppDatabase.getFavoriteDao().deleteFavorite(favorite);
-        Toast.makeText(this, "Removed from Favorite", Toast.LENGTH_SHORT).show();
-
     }
 
     private void CreateFavorite(String image, String catId) {
@@ -351,27 +355,80 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     @Override
     public void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Set wallpaper Images");
-        mFirebaseAnalytics.logEvent("Clicked_On_Set_Wallpaper_Images", bundle);
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.set_wallpaper_layout);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(true);
+        dialog.show();
+
+        homeScreen = dialog.findViewById(R.id.home_screen);
+        lockScreen = dialog.findViewById(R.id.lock_screen);
+        bothScreen = dialog.findViewById(R.id.both);
 
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         BitmapDrawable bitmapDrawable = (BitmapDrawable) itemImage.getDrawable();
         Bitmap bitmap = bitmapDrawable.getBitmap();
-        try {
+
+        homeScreen.setOnClickListener(view -> {
             loadImageDialog();
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Set wallpaper Home");
+            mFirebaseAnalytics.logEvent("Clicked_On_Set_Wallpaper_Images", bundle);
+            dialog.dismiss();
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                try {
+                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
+        lockScreen.setOnClickListener(view -> {
+            loadImageDialog();
+            dialog.dismiss();
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Set wallpaper LockScreen");
+            mFirebaseAnalytics.logEvent("Clicked_On_Set_Wallpaper_Images", bundle);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                try {
+                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        bothScreen.setOnClickListener(view -> {
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Set wallpaper Both");
+            mFirebaseAnalytics.logEvent("Clicked_On_Set_Wallpaper_Images", bundle);
+            dialog.dismiss();
+
+            try {
+                loadImageDialog();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+
     }
 
     public boolean checkPermissionForReadExternalStorage() {

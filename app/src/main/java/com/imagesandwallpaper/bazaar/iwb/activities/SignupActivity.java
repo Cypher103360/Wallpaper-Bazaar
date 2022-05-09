@@ -92,36 +92,11 @@ public class SignupActivity extends AppCompatActivity {
 
 
     private void signIn() {
-        if (checkPermissionForReadExternalStorage()) {
-            Intent signInIntent = gsc.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
-        } else {
-            try {
-                requestPermissionForReadExternalStorage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        Intent signInIntent = gsc.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
 
-    }
 
-    public boolean checkPermissionForReadExternalStorage() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int result = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            return result == PackageManager.PERMISSION_GRANTED;
-        }
-        return false;
-    }
-
-    public void requestPermissionForReadExternalStorage() {
-        try {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    101);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     @Override

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,8 @@ import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
+import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.ironsource.mediationsdk.IronSource;
 import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
@@ -46,7 +50,9 @@ public class MyApp extends Application {
         super.onCreate();
         mInstance = this;
         Paper.init(mInstance);
-       fetchAds();
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        // Background work
+        service.execute(this::fetchAds);
 
 
     }

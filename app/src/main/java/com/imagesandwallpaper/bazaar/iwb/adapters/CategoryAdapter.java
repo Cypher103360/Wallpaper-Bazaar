@@ -70,8 +70,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
-                    + categoryModelList.get(position).getImage()).into(((ViewHolder) holder).catImage);
+            ((ViewHolder) holder).catImage.layout(0, 0, 0, 0);
+            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
+                    + categoryModelList.get(position).getImage()).into(((ViewHolder) holder).catImage)
+                    ::getRequest);
             ((ViewHolder) holder).catTitle.setText(categoryModelList.get(position).getTitle());
             holder.itemView.setOnClickListener(view -> {
                 catClickInterface.onClicked(categoryModelList.get(position), position);
