@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,18 +44,13 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catItemsRecyclerView.setLayoutManager(layoutManager);
         catItemsRecyclerView.setHasFixedSize(true);
-        catItemImageAdapter = new CatItemImageAdapter(this, this);
-        catItemsRecyclerView.setAdapter(catItemImageAdapter);
+
         binding.backIcon.setOnClickListener(view -> onBackPressed());
         getLifecycle().addObserver(ads);
         imageItemModels = new ArrayList<>();
 
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(() -> {
-            // Background work
-            ads.showTopBanner(this, binding.adViewTop);
-            ads.showBottomBanner(this, binding.adViewBottom);
-        });
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
 
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
             displayAllContactInBackground();
@@ -64,18 +60,21 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
     }
 
     private void displayAllContactInBackground() {
-        imageItemModels.clear();
 
         favoriteAppDatabase = Room.databaseBuilder(
                 this,
                 FavoriteAppDatabase.class
                 , "FavoriteDB")
                 .build();
+        catItemImageAdapter = new CatItemImageAdapter(this, this);
+        catItemsRecyclerView.setAdapter(catItemImageAdapter);
         ExecutorService service = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         service.execute(() -> {
             // Background work
+            imageItemModels.clear();
             for (Favorite f : favoriteAppDatabase.getFavoriteDao().getAllFavorite()) {
+                Log.d("favorite", f.getCatId() + "  " + f.getId() + "  " + f.getImage());
                 imageItemModels.add(new ImageItemModel(String.valueOf(f.getId()), f.getCatId(), f.getImage()));
             }
 

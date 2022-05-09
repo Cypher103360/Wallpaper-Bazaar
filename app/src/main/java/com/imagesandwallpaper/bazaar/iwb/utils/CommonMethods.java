@@ -35,7 +35,7 @@ public class CommonMethods {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-            String shareMessage = "\nMy \n\n";
+            String shareMessage = "My Life's Best Wallpaper Market Place, \n\n Install Now! ☺☺\n\n";
             shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
             shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -72,8 +72,8 @@ public class CommonMethods {
     }
 
     public static void whatsApp(Context context) throws UnsupportedEncodingException, PackageManager.NameNotFoundException {
-        String contact = "+91 7037816888"; // use country code with your phone number
-        String url = "https://api.whatsapp.com/send?phone=" + contact + "&text=" + URLEncoder.encode("Hello, I need some help regarding ", "UTF-8");
+        String contact = "+91 9536419994"; // use country code with your phone number
+        String url = "https://api.whatsapp.com/send?phone=" + contact + "&text=" + URLEncoder.encode("Hey Team Amazing Wallpapers Hope You are Well! \n \n I Need Some Help Regards \n\n Extraordinary & Awesome Wallpapers for My Smart- Phone☺", "UTF-8");
 
         try {
             PackageManager pm = context.getPackageManager();

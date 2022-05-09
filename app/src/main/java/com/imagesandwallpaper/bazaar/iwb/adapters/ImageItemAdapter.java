@@ -2,7 +2,6 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +27,19 @@ import java.util.List;
 import io.paperdb.Paper;
 
 public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    List<ImageItemModel> imageItemModelList = new ArrayList<>();
-    Activity context;
-    ImageItemClickInterface imageItemClickInterface;
     private static final int ITEM_VIEW = 0;
     private static final int AD_VIEW = 1;
     private static final int ITEM_FEED_COUNT = 7;
+    List<ImageItemModel> imageItemModelList = new ArrayList<>();
+    Activity context;
+    ImageItemClickInterface imageItemClickInterface;
     ShowAds showAds = new ShowAds();
 
     public ImageItemAdapter(Activity context, ImageItemClickInterface imageItemClickInterface) {
         this.context = context;
         this.imageItemClickInterface = imageItemClickInterface;
     }
+
     public int getItemViewType(int position) {
         if ((position + 1) % ITEM_FEED_COUNT == 0) {
             return AD_VIEW;
@@ -52,7 +52,7 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         if (viewType == ITEM_VIEW) {
-            View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout,parent,false);
+            View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout, parent, false);
             return new ViewHolder(view);
         } else if (viewType == AD_VIEW) {
             View view = LayoutInflater.from(context).inflate(R.layout.ad_layout, parent, false);
@@ -70,12 +70,14 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
 
 
-
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    +imageItemModelList.get(position).getImage()).into(((ViewHolder)holder).itemImage);
-            ((ViewHolder)holder).itemView.setOnClickListener(view -> {
+            ((ViewHolder) holder).itemImage.layout(0, 0, 0, 0);
+            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + imageItemModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage)::getRequest);
+
+
+            ((ViewHolder) holder).itemView.setOnClickListener(view -> {
                 imageItemClickInterface.onClicked(imageItemModelList.get(position), position);
             });
 
@@ -94,7 +96,7 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(List<ImageItemModel> imageItemModels){
+    public void updateList(List<ImageItemModel> imageItemModels) {
         imageItemModelList.clear();
         imageItemModelList.addAll(imageItemModels);
         Collections.reverse(imageItemModelList);
@@ -103,9 +105,10 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemImage  = itemView.findViewById(R.id.item_image);
+            itemImage = itemView.findViewById(R.id.item_image);
         }
     }
 

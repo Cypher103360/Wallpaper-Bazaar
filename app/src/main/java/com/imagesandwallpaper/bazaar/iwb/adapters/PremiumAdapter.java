@@ -72,8 +72,11 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    + premiumModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage);
+            ((ViewHolder) holder).itemImage.layout(0, 0, 0, 0);
+            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + premiumModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage)::getRequest);
+
+
             ((ViewHolder) holder).itemView.setOnClickListener(view -> {
                 premiumClickInterface.onClicked(premiumModelList.get(position), position);
             });

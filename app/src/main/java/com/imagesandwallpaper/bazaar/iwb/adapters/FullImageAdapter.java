@@ -56,8 +56,10 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                + imageItemModelList.get(position).getImage()).into(holder.itemImage);
+        ((ViewHolder) holder).itemImage.layout(0, 0, 0, 0);
+        context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                + imageItemModelList.get(position).getImage()).into(holder.itemImage)::getRequest);
+
 //        holder.itemView.setOnClickListener(view -> imageItemClickInterface.onClicked(imageItemModelList.get(position), position));
 
         holder.favoriteIcon.setOnClickListener(view -> imageItemClickInterface.onFavoriteImg(imageItemModelList.get(position), position, holder.favoriteIcon));
