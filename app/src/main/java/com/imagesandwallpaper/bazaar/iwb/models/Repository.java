@@ -21,6 +21,7 @@ public class Repository {
     MutableLiveData<CatModelList> categoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<CatItemImageModelList> catItemImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<ImageItemModelList> newImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
@@ -60,26 +61,39 @@ public class Repository {
     }
 
     public MutableLiveData<ImageItemModelList> getImageItemModelListMutableLiveData(Map<String, String> map) {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(() -> {
-            // Background work
 
-            Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
-            call.enqueue(new Callback<ImageItemModelList>() {
-                @Override
-                public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
-                    if (response.isSuccessful()) {
-                        imageItemModelListMutableLiveData.setValue(response.body());
-                    }
+        Call<ImageItemModelList> call = apiInterface.getPopularImageItem(map);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    imageItemModelListMutableLiveData.setValue(response.body());
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
 
-                }
-            });
+            }
         });
         return imageItemModelListMutableLiveData;
+    }public MutableLiveData<ImageItemModelList> getNewImageItemModelListMutableLiveData(String  id) {
+
+        Call<ImageItemModelList> call = apiInterface.getNewImageItem(id);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    newImageItemModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return newImageItemModelListMutableLiveData;
     }
 
     public MutableLiveData<ImageItemModelList> getPremiumImageItemModelListMutableLiveData(Map<String, String> map) {

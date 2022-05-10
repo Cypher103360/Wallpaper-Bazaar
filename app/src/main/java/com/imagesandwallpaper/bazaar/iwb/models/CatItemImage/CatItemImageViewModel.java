@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.Repository;
 
 public class CatItemImageViewModel extends AndroidViewModel {
@@ -25,5 +26,8 @@ public class CatItemImageViewModel extends AndroidViewModel {
 
     public LiveData<CatItemImageModelList> getCatItemImages(){
         return repository.getCatItemImageModelListMutableLiveData(id);
+    }
+    public LiveData<ImageItemModelList> getNewImageItems(){
+        return repository.getNewImageItemModelListMutableLiveData(id);
     }
 }

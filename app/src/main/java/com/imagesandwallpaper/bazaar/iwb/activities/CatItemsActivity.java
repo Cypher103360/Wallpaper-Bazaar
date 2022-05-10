@@ -35,8 +35,8 @@ import java.util.concurrent.Executors;
 public class CatItemsActivity extends AppCompatActivity implements SubCatImageClickInterface, CatItemImageClickInterface {
     public static List<ImageItemModel> imageItemModels;
     SubCatImageViewModel subCatImageViewModel;
-    CatItemImageViewModel catItemImageViewModel;
     ActivityCatItemsBinding binding;
+    CatItemImageViewModel catItemImageViewModel;
     CatItemImageAdapter catItemImageAdapter;
     SubCatImageAdapter subCatImageAdapter;
     RecyclerView catItemsRecyclerView;

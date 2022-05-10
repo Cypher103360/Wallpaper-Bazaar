@@ -83,7 +83,6 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
 
     public void showBannerAd(Activity context, RelativeLayout container, String networkName, String bannerAdId) {
 
-        Log.d("banner", bannerAdId);
         switch (networkName) {
             case "AdmobWithMeta":
                 MobileAds.initialize(context);
