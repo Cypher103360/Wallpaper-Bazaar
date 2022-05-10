@@ -35,7 +35,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.adapters.FullImageAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityFullscreenBinding;
-import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
+import com.imagesandwallpaper.bazaar.iwb.fragments.NewFragment;
+import com.imagesandwallpaper.bazaar.iwb.fragments.PopularFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
 import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
 import com.imagesandwallpaper.bazaar.iwb.models.FavoriteAppDatabase;
@@ -94,46 +95,62 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
         // adding the adapter to viewPager2
         // to show the views in recyclerview
         fullImageViewPager.setAdapter(viewPager2Adapter);
-        if (key.equals("home")) {
-            for (ImageItemModel m : HomeFragment.imageItemModels) {
-                if (id.equals(m.getId())) {
-                    HomeFragment.imageItemModels.remove(m);
-                    break;
+        switch (key) {
+            case "new":
+                for (ImageItemModel m : NewFragment.imageItemModels) {
+                    if (id.equals(m.getId())) {
+                        NewFragment.imageItemModels.remove(m);
+                        break;
+                    }
                 }
-            }
-            HomeFragment.imageItemModels.add(0, new ImageItemModel(id, catId, img));
-            viewPager2Adapter.updateList(HomeFragment.imageItemModels);
+                NewFragment.imageItemModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(NewFragment.imageItemModels);
 
-        } else if (key.equals("premium")) {
-            for (ImageItemModel m : PremiumFragment.premiumModels) {
-                if (id.equals(m.getId())) {
-                    PremiumFragment.premiumModels.remove(m);
-                    break;
+                break;
+            case "pop":
+                for (ImageItemModel m : PopularFragment.imageItemModels) {
+                    if (id.equals(m.getId())) {
+                        PopularFragment.imageItemModels.remove(m);
+                        break;
+                    }
                 }
-            }
-            PremiumFragment.premiumModels.add(0, new ImageItemModel(id, catId, img));
-            viewPager2Adapter.updateList(PremiumFragment.premiumModels);
+                PopularFragment.imageItemModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(PopularFragment.imageItemModels);
 
-        } else if (key.equals("catItem")) {
-            for (ImageItemModel m : CatItemsActivity.imageItemModels) {
-                if (id.equals(m.getId())) {
-                    CatItemsActivity.imageItemModels.remove(m);
-                    break;
+                break;
+            case "premium":
+                for (ImageItemModel m : PremiumFragment.premiumModels) {
+                    if (id.equals(m.getId())) {
+                        PremiumFragment.premiumModels.remove(m);
+                        break;
+                    }
                 }
-            }
-            CatItemsActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
-            viewPager2Adapter.updateList(CatItemsActivity.imageItemModels);
+                PremiumFragment.premiumModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(PremiumFragment.premiumModels);
 
-        } else if (key.equals("fav")) {
-            for (ImageItemModel m : FavoriteActivity.imageItemModels) {
-                if (id.equals(m.getId())) {
-                    FavoriteActivity.imageItemModels.remove(m);
-                    break;
+                break;
+            case "catItem":
+                for (ImageItemModel m : CatItemsActivity.imageItemModels) {
+                    if (id.equals(m.getId())) {
+                        CatItemsActivity.imageItemModels.remove(m);
+                        break;
+                    }
                 }
-            }
-            CatItemsActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
-            viewPager2Adapter.updateList(CatItemsActivity.imageItemModels);
+                CatItemsActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(CatItemsActivity.imageItemModels);
 
+                break;
+            case "fav":
+                for (ImageItemModel m : FavoriteActivity.imageItemModels) {
+                    if (id.equals(m.getId())) {
+                        FavoriteActivity.imageItemModels.remove(m);
+                        break;
+                    }
+                }
+                CatItemsActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(CatItemsActivity.imageItemModels);
+
+                break;
         }
 
 

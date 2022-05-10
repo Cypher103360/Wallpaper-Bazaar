@@ -45,14 +45,11 @@ public class RefreshingActivity extends AppCompatActivity {
         getLifecycle().addObserver(showAds);
         showAds.showTopBanner(this, binding.adViewTop);
         showAds.showBottomBanner(this, binding.adViewBottom);
-//        AppLovinSdk.getInstance( this ).showMediationDebugger();
 
         final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         startBtn.startAnimation(myAnim);
         new Handler().postDelayed(() -> startBtn.setVisibility(View.VISIBLE), 5000);
-        IntegrationHelper.validateIntegration(this);
-//        AppLovinSdk.getInstance( this ).showMediationDebugger();
 
         startBtn.setOnClickListener(view -> {
             new Handler().postDelayed(() ->
