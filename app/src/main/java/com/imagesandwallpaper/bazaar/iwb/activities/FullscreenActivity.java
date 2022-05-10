@@ -431,6 +431,12 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     }
 
+    @Override
+    public void onClicked() {
+        onBackPressed();
+
+    }
+
     public boolean checkPermissionForReadExternalStorage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int result = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);

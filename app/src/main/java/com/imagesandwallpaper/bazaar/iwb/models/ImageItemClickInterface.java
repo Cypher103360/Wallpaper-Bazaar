@@ -12,4 +12,6 @@ public interface ImageItemClickInterface {
     void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon);
 
     void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage);
+
+    void onClicked();
 }

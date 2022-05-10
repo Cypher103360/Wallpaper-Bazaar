@@ -102,6 +102,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         imageItemRecyclerView.setLayoutManager(layoutManager);
         imageItemRecyclerView.setHasFixedSize(true);
 
+
         map.put("tableName", "Popular_Images");
         setImageData(requireActivity(), map);
         banMap.put("tableName", "home_banner");
@@ -199,11 +200,10 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
     }
 
     private void setImageData(Activity context, Map<String, String> map) {
-        imageItemAdapter = new ImageItemAdapter(context, this);
+        imageItemAdapter = new ImageItemAdapter(requireActivity(), this);
         imageItemRecyclerView.setAdapter(imageItemAdapter);
         imageItemViewModel = new ViewModelProvider(requireActivity(),
                 new ImageItemModelFactory(requireActivity().getApplication(), map)).get(ImageItemViewModel.class);
-
         imageItemViewModel.getImageItems().observe(requireActivity(), imageItemModelList -> {
             if (!imageItemModelList.getData().isEmpty()) {
                 imageItemModels.clear();
@@ -251,6 +251,11 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
     @Override
     public void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
+
+    }
+
+    @Override
+    public void onClicked() {
 
     }
 

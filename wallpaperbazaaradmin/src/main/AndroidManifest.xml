@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperBazaar">
         <activity
+            android:name=".activities.UserDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.UpdateAdsActivity"
             android:exported="false" />
         <activity

@@ -145,7 +145,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             String version = pInfo.versionName;
-            binding.versionCode.setText("Version : " + version);
+            binding.versionCode.setText(getString(R.string.version,version));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -205,14 +205,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 loading.dismiss();
             }
 
             @Override
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 loading.dismiss();
             }
         });
@@ -371,7 +370,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_privacy:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Privacy Menu");
                 mFirebaseAnalytics.logEvent("Clicked_On_Privacy_Menu", bundle);
-                startActivity(new Intent(HomeActivity.this, PrivacyPolicyActivity.class));
+                Intent intent = new Intent(HomeActivity.this,PrivacyPolicyActivity.class);
+                intent.putExtra("key","policy");
+                startActivity(intent);
                 break;
             case R.id.nav_disclaimer:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Disclaimer Menu");

@@ -70,10 +70,9 @@ public class SubCatImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            ((ViewHolder) holder).itemImage.layout(0, 0, 0, 0);
 
-            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    + subCatImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage)::getRequest);
+            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + subCatImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage);
 
 
             ((ViewHolder) holder).itemView.setOnClickListener(view -> {

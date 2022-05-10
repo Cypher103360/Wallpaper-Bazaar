@@ -70,6 +70,10 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         premiumRecyclerView.setLayoutManager(layoutManager);
 //        premiumRecyclerView.setHasFixedSize(true);
 
+        premiumAdapter = new PremiumAdapter(requireActivity(), this);
+        premiumRecyclerView.setAdapter(premiumAdapter);
+        premiumViewModel = new ViewModelProvider(requireActivity(),
+                new PremiumModelFactory(requireActivity().getApplication(), map)).get(PremiumViewModel.class);
 
         getLifecycle().addObserver(ads);
 //        ads.showTopBanner(requireActivity(), binding.adViewTop);
@@ -92,10 +96,6 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
 
     private void setImageData(Activity context, Map<String, String> map) {
         loading.show();
-        premiumAdapter = new PremiumAdapter(context, this);
-        premiumRecyclerView.setAdapter(premiumAdapter);
-        premiumViewModel = new ViewModelProvider(requireActivity(),
-                new PremiumModelFactory(requireActivity().getApplication(), map)).get(PremiumViewModel.class);
 
         premiumViewModel.getPremiumImages().observe(requireActivity(), premiumModelList -> {
             if (!premiumModelList.getData().isEmpty()) {

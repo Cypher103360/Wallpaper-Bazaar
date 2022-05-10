@@ -3,6 +3,9 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModel;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
+
 import java.util.Map;
 
 import retrofit2.Call;
@@ -18,6 +21,7 @@ public class Repository {
     MutableLiveData<CatItemModelList> catItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<UserDataModelList> userDataModelListMutableLiveData = new MutableLiveData<>();
 
 
     public Repository() {
@@ -137,5 +141,23 @@ public class Repository {
             }
         });
         return premiumImageItemModelListMutableLiveData;
+    }
+
+    public MutableLiveData<UserDataModelList> getUserDataModelListMutableLiveData(){
+        Call<UserDataModelList> call = apiInterface.getAllUserData();
+        call.enqueue(new Callback<UserDataModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<UserDataModelList> call, @NonNull Response<UserDataModelList> response) {
+                if (response.isSuccessful()){
+                    userDataModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserDataModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return userDataModelListMutableLiveData;
     }
 }

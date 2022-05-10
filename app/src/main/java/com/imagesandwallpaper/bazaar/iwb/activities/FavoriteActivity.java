@@ -43,7 +43,7 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         catItemsRecyclerView = binding.catItemsRecyclerView;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catItemsRecyclerView.setLayoutManager(layoutManager);
-        catItemsRecyclerView.setHasFixedSize(true);
+
 
         binding.backIcon.setOnClickListener(view -> onBackPressed());
         getLifecycle().addObserver(ads);

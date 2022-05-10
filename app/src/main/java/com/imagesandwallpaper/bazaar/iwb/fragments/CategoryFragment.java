@@ -75,6 +75,7 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
         }
         categoryAdapter = new CategoryAdapter(requireActivity(), this);
         catRecyclerView.setAdapter(categoryAdapter);
+        catViewModel = new ViewModelProvider(this).get(CatViewModel.class);
 
         setCategoryData(requireActivity());
 
@@ -87,7 +88,6 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
     }
 
     private void setCategoryData(FragmentActivity context) {
-        catViewModel = new ViewModelProvider(context).get(CatViewModel.class);
         catViewModel.getCategories().observe(requireActivity(), catModelList -> {
             if (!catModelList.getData().isEmpty()) {
                 categoryModels.clear();

@@ -1,6 +1,7 @@
 package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.Ads.AdsModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
 
 import java.util.Map;
 
@@ -78,5 +79,16 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("update_ads_id.php")
     Call<MessageModel> updateAdsId(@FieldMap Map<String, String> map);
+
+    @POST("fetch_user_data.php")
+    Call<UserDataModelList> getAllUserData();
+
+    @POST("fetch_pro_wallpaper_url.php")
+    Call<ProWallModelList> fetchProWallUrl();
+
+
+    @FormUrlEncoded
+    @POST("update_pro_wallpaper_url.php")
+    Call<MessageModel> updateProWallUrl(@FieldMap Map<String, String> map);
 }
 

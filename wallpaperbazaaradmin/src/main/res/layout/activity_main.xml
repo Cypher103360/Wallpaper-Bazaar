@@ -1,95 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <Button
-        android:id="@+id/pop_img_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
-        android:text="Upload Popular Image"
-        android:textAllCaps="false"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/new_img_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_marginTop="8dp"
-        android:text="Upload Premium Images"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pop_img_btn" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/category_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_marginTop="8dp"
-        android:text="@string/upload_category"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_img_btn" />
+            <Button
+                android:id="@+id/pop_img_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:text="Upload Popular Image"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/show_data_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_marginTop="8dp"
-        android:text="@string/show_data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_btn" />
+            <Button
+                android:id="@+id/new_img_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Upload Premium Images"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/upload_banner_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/upload_banner_image"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_data_btn" />
+            <Button
+                android:id="@+id/category_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/upload_category"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/popular_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Show Popular Images"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upload_banner_btn" />
+            <Button
+                android:id="@+id/show_data_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/show_data"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/premium_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Show Premium Images"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popular_btn" />
+            <Button
+                android:id="@+id/upload_banner_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/upload_banner_image"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/ads_id_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Update Ads Ids"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/premium_btn" />
+            <Button
+                android:id="@+id/popular_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Show Popular Images"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/premium_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Show Premium Images"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/ads_id_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Update Ads Ids"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/user_data_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Show User Data"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/pro_wall_url_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Update Pro Wall Url"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

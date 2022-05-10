@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,14 +24,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputLayout;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremiumActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.BannerModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.BannerModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.MessageModel;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModel;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.utils.CommonMethods;
 
 import java.io.ByteArrayOutputStream;
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String encodedImage;
     Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog;
     ApiInterface apiInterface;
-    String id, image2;
+    String id, image2,proWallUrl,proWallId;
     EditText choseImgQuality;
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
@@ -93,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fetchProWallUrl();
 
         binding.popImgBtn.setOnClickListener(view -> {
             uploadImage("Popular_Images");
@@ -123,6 +130,14 @@ public class MainActivity extends AppCompatActivity {
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
             startActivity(intent);
+        });
+        binding.userDataBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, UserDataActivity.class);
+            startActivity(intent);
+        });
+
+        binding.proWallUrlBtn.setOnClickListener(view -> {
+            proWallUrlDialog();
         });
     }
 
@@ -259,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void uploadCategory() {
         catDialog = new Dialog(MainActivity.this);
         catDialog.setContentView(R.layout.category_dialog);
@@ -391,6 +405,91 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
+            }
+        });
+    }
+
+    private void proWallUrlDialog() {
+        imageDialog = new Dialog(MainActivity.this);
+        imageDialog.setContentView(R.layout.upload_image_layout);
+        imageDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        imageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        imageDialog.setCancelable(false);
+        imageDialog.show();
+
+        TextView dialogTitle = imageDialog.findViewById(R.id.dialog_title);
+        EditText proUrlEditText = imageDialog.findViewById(R.id.img_quality);
+        TextInputLayout textInputLayout = imageDialog.findViewById(R.id.textInputLayout);
+        textInputLayout.setHint("Pro Wallpaper Url");
+        proUrlEditText.setHint("Enter Pro Wallpaper Url");
+        proUrlEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        chooseImage = imageDialog.findViewById(R.id.choose_imageView);
+        Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
+        Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
+
+        dialogTitle.setText("Update Pro Wallpaper Url");
+        proUrlEditText.setText(proWallUrl);
+        cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
+        chooseImage.setVisibility(View.GONE);
+
+        uploadImageBtn.setText("Upload Url");
+        uploadImageBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            String proUrl =  proUrlEditText.getText().toString().trim();
+
+            if (TextUtils.isEmpty(proUrl)) {
+                proUrlEditText.setError("Url Required");
+                proUrlEditText.requestFocus();
+                loadingDialog.dismiss();
+            }else {
+                map.put("id",proWallId);
+                map.put("url", proUrl);
+                updateProWallUrl(map);
+            }
+        });
+
+
+    }
+
+    private void updateProWallUrl(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateProWallUrl(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    fetchProWallUrl();
+                    loadingDialog.dismiss();
+                    imageDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+            }
+        });
+    }
+
+    private void fetchProWallUrl() {
+        Call<ProWallModelList> call = apiInterface.fetchProWallUrl();
+        call.enqueue(new Callback<ProWallModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
+
+                assert response.body() != null;
+                for (ProWallModel proWallModel : response.body().getData()) {
+                    proWallId = proWallModel.getId();
+                    proWallUrl = proWallModel.getUrl();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProWallModelList> call, @NonNull Throwable t) {
+                Log.d("ggggggggg", t.getMessage());
             }
         });
     }

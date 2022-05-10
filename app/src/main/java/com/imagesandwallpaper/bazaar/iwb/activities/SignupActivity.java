@@ -35,7 +35,6 @@ public class SignupActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     int RC_SIGN_IN = 1000;
-    Dialog termsAndServicesDialog;
     FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -94,9 +93,6 @@ public class SignupActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-
-
-
     }
 
     @Override

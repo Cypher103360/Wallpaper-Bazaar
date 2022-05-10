@@ -38,6 +38,9 @@ public class Repository {
     }
 
     public MutableLiveData<CatModelList> getCategoryMutableLiveData() {
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(() -> {
+            // Background work
         Call<CatModelList> call = apiInterface.getAllCategory();
         call.enqueue(new Callback<CatModelList>() {
             @Override
@@ -51,6 +54,7 @@ public class Repository {
             public void onFailure(@NonNull Call<CatModelList> call, @NonNull Throwable t) {
 
             }
+        });
         });
         return categoryMutableLiveData;
     }

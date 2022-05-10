@@ -22,6 +22,9 @@ import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SubCategoryActivity extends AppCompatActivity implements SubCatClickInterface {
     ActivitySubCategoryBinding binding;
     SubCatViewModel subCatViewModel;
@@ -32,6 +35,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     Dialog loading;
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
+    List<SubCatModel> subCatModels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +54,12 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
         subCatItemsRecyclerview = binding.subCatRecyclerView;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         subCatItemsRecyclerview.setLayoutManager(layoutManager);
-        subCatItemsRecyclerview.setHasFixedSize(true);
+
+        subCatViewModel = new ViewModelProvider(SubCategoryActivity.this,
+                new SubCatModelFactory(this.getApplication(), catId)).get(SubCatViewModel.class);
+        subCategoryAdapter = new SubCategoryAdapter(SubCategoryActivity.this, this);
+        subCatItemsRecyclerview.setAdapter(subCategoryAdapter);
+
         getLifecycle().addObserver(ads);
         ads.showTopBanner(this, binding.adViewTop);
         ads.showBottomBanner(this, binding.adViewBottom);
@@ -68,15 +77,12 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
 
     private void setData() {
         loading.show();
-        subCategoryAdapter = new SubCategoryAdapter(SubCategoryActivity.this, this);
-        subCatItemsRecyclerview.setAdapter(subCategoryAdapter);
-
-        subCatViewModel = new ViewModelProvider(SubCategoryActivity.this,
-                new SubCatModelFactory(this.getApplication(), catId)).get(SubCatViewModel.class);
 
         subCatViewModel.getSubCategories().observe(this, subCatModelList -> {
-            if (!subCatModelList.data.isEmpty()) {
-                subCategoryAdapter.updateList(subCatModelList.getData());
+            if (subCatModelList.data != null) {
+                subCatModels.clear();
+                subCatModels.addAll(subCatModelList.getData());
+                subCategoryAdapter.updateList(subCatModels);
                 loading.dismiss();
             }
         });

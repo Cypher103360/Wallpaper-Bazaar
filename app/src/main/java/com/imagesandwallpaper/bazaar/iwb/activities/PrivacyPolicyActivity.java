@@ -2,7 +2,6 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.os.Bundle;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,9 +22,9 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         webView = findViewById(R.id.policy);
 
         key = getIntent().getStringExtra("key");
-        if (key.equals("terms")){
+        if (key.equals("terms")) {
             webView.loadUrl("file:///android_asset/terms_and_conditions.html");
-        }else if (key.equals("policy")){
+        } else if (key.equals("policy")) {
             webView.loadUrl("file:///android_asset/privacy_policy.html");
         }
 

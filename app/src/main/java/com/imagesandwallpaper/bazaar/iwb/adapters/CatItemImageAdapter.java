@@ -71,12 +71,9 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
-            ((ViewHolder) holder).itemImage.layout(0,0,0,0);
 
-            context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    + catItemImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage)
-                    ::getRequest);
-
+            Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                    + catItemImageModelList.get(position).getImage()).into(((ViewHolder) holder).itemImage);
             holder.itemView.setOnClickListener(view -> {
                 catItemImageClickInterface.onClicked(catItemImageModelList.get(position),position);
             });

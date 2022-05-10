@@ -72,7 +72,7 @@ public class CommonMethods {
     }
 
     public static void whatsApp(Context context) throws UnsupportedEncodingException, PackageManager.NameNotFoundException {
-        String contact = "+91 9536419994"; // use country code with your phone number
+        String contact = "+91 7037816888"; // use country code with your phone number
         String url = "https://api.whatsapp.com/send?phone=" + contact + "&text=" + URLEncoder.encode("Hey Team Amazing Wallpapers Hope You are Well! \n \n I Need Some Help Regards \n\n Extraordinary & Awesome Wallpapers for My Smart- Phone☺", "UTF-8");
 
         try {

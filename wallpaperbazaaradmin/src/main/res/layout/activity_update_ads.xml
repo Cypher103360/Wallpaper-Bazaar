@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="App Id"
+                app:endIconMode="clear_text"
                 app:boxStrokeColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
@@ -54,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:hint="AppLovinSdkKey"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -86,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:hint="BannerTop"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -117,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:hint="BannerBottom"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -146,6 +150,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
                 android:hint="InterstitialAds"
                 app:boxStrokeColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -179,6 +184,7 @@
                 android:layout_height="wrap_content"
                 android:hint="NativeAds"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -192,8 +198,9 @@
             <Button
                 android:id="@+id/upload_ads_btn"
                 android:layout_margin="5dp"
+                android:textSize="18sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:text="Update" />
 
 

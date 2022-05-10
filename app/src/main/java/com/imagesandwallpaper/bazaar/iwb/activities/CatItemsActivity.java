@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CatItemsActivity extends AppCompatActivity implements SubCatImageClickInterface, CatItemImageClickInterface {
-    public static List<ImageItemModel> imageItemModels = new ArrayList<>();
+    public static List<ImageItemModel> imageItemModels;
     SubCatImageViewModel subCatImageViewModel;
     CatItemImageViewModel catItemImageViewModel;
     ActivityCatItemsBinding binding;
@@ -57,14 +57,26 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
             onBackPressed();
         });
         binding.activityTitle.setText(title);
+        imageItemModels = new ArrayList<>();
         apiInterface = ApiWebServices.getApiInterface();
         catItemsRecyclerView = binding.catItemsRecyclerView;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catItemsRecyclerView.setLayoutManager(layoutManager);
-        catItemsRecyclerView.setHasFixedSize(true);
         getLifecycle().addObserver(ads);
         ads.showTopBanner(this, binding.adViewTop);
         ads.showBottomBanner(this, binding.adViewBottom);
+
+        catItemImageAdapter = new CatItemImageAdapter(this, this);
+        catItemsRecyclerView.setAdapter(catItemImageAdapter);
+
+        catItemImageViewModel = new ViewModelProvider(this,
+                new CatItemImageModelFactory(getApplication(), id)).get(CatItemImageViewModel.class);
+
+
+        subCatImageAdapter = new SubCatImageAdapter(this, this);
+        catItemsRecyclerView.setAdapter(subCatImageAdapter);
+        subCatImageViewModel = new ViewModelProvider(this,
+                new SubCatImageModelFactory(getApplication(), id)).get(SubCatImageViewModel.class);
 
 
         if (type.equals("CatFragment")) {
@@ -86,29 +98,18 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     }
 
     private void setSubCatImages() {
-
-        subCatImageAdapter = new SubCatImageAdapter(CatItemsActivity.this, this);
-        catItemsRecyclerView.setAdapter(subCatImageAdapter);
-        subCatImageViewModel = new ViewModelProvider(CatItemsActivity.this,
-                new SubCatImageModelFactory(getApplication(), id)).get(SubCatImageViewModel.class);
         subCatImageViewModel.getSubCatImageItems().observe(this, subCatImageModelList -> {
             if (subCatImageModelList.getData()!=null) {
                 imageItemModels.clear();
                 imageItemModels.addAll(subCatImageModelList.getData());
-                Log.d("check items", imageItemModels.toString()+"   "+imageItemModels.size());
+
                 subCatImageAdapter.updateList(imageItemModels);
             }
         });
     }
 
     private void setCatImages() {
-        catItemImageAdapter = new CatItemImageAdapter(CatItemsActivity.this, this);
-        catItemsRecyclerView.setAdapter(catItemImageAdapter);
-
-        catItemImageViewModel = new ViewModelProvider(CatItemsActivity.this,
-                new CatItemImageModelFactory(getApplication(), id)).get(CatItemImageViewModel.class);
-
-        catItemImageViewModel.getCatItemImages().observe(this, catItemImageModelList -> {
+          catItemImageViewModel.getCatItemImages().observe(this, catItemImageModelList -> {
             if (!catItemImageModelList.getData().isEmpty()) {
                 imageItemModels.clear();
                 imageItemModels.addAll(catItemImageModelList.getData());

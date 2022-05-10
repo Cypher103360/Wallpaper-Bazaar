@@ -56,12 +56,14 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ((ViewHolder) holder).itemImage.layout(0, 0, 0, 0);
+
+        holder.itemImage.layout(0, 0, 0, 0);
+
         context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                + imageItemModelList.get(position).getImage()).into(holder.itemImage)::getRequest);
+                + imageItemModelList.get(position).getImage()).into(holder.itemImage)
+                ::getRequest);
 
-//        holder.itemView.setOnClickListener(view -> imageItemClickInterface.onClicked(imageItemModelList.get(position), position));
-
+        holder.backIcon.setOnClickListener(view -> imageItemClickInterface.onClicked());
         holder.favoriteIcon.setOnClickListener(view -> imageItemClickInterface.onFavoriteImg(imageItemModelList.get(position), position, holder.favoriteIcon));
         holder.downloadIcon.setOnClickListener(view -> imageItemClickInterface.onDownloadImg(imageItemModelList.get(position), position, holder.itemImage));
         holder.shareIcon.setOnClickListener(view -> imageItemClickInterface.onShareImg(imageItemModelList.get(position), position, holder.itemImage));
@@ -121,7 +123,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImage, favoriteIcon, downloadIcon, shareIcon;
+        ImageView itemImage, favoriteIcon, downloadIcon, shareIcon, backIcon;
         Button setBtn;
         RelativeLayout adviewTop, adviewBottom;
         ShowAds showAds = new ShowAds();
@@ -132,6 +134,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
             favoriteIcon = itemView.findViewById(R.id.favorite_icon);
             downloadIcon = itemView.findViewById(R.id.download_icon);
             shareIcon = itemView.findViewById(R.id.share_icon);
+            backIcon = itemView.findViewById(R.id.back_icon);
             setBtn = itemView.findViewById(R.id.set_btn);
             adviewTop = itemView.findViewById(R.id.adView_top);
             adviewBottom = itemView.findViewById(R.id.adView_bottom);
