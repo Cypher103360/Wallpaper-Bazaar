@@ -96,6 +96,15 @@
                 android:textSize="18sp" />
 
             <Button
+                android:id="@+id/turbo_ads_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Turbo share ads Id"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
                 android:id="@+id/user_data_btn"
                 android:layout_width="300dp"
                 android:layout_height="56dp"

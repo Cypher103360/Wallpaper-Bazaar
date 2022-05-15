@@ -37,6 +37,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
     EditText AppId, AppLovinSdkKey, BannerTop, BannerBottom, InterstitialAds, NativeAds;
     ApiInterface apiInterface;
     Button UploadAdsBtn;
+    String key;
     Dialog loading;
     Map<String, String> map = new HashMap<>();
     String appId, appLovinSdkKey, bannerTopNetworkName, bannerTop, bannerBottomNetworkName,
@@ -49,6 +50,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityUpdateAdsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        key = getIntent().getStringExtra("key");
         apiInterface = ApiWebServices.getApiInterface();
         loading = CommonMethods.loadingDialog(UpdateAdsActivity.this);
         BannerTopNetworkName = binding.bannerTopNetworkName;
@@ -70,7 +72,11 @@ public class UpdateAdsActivity extends AppCompatActivity {
         BannerBottomNetworkName.setAdapter(arrayAdapter);
         InterstitialNetwork.setAdapter(arrayAdapter);
         NativeAdsNetworkName.setAdapter(arrayAdapter);
-        fetchAds();
+        if (key.equals("wall")){
+            fetchAds("Wallpaper Bazaar");
+        }else if (key.equals("turbo")){
+            fetchAds("Turbo Share");
+        }
 
         UploadAdsBtn.setOnClickListener(view -> {
             loading.show();
@@ -127,7 +133,11 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 NativeAds.requestFocus();
                 loading.dismiss();
             } else {
-                map.put("id", "Wallpaper Bazaar");
+                if (key.equals("wall")){
+                    map.put("id", "Wallpaper Bazaar");
+                }else if (key.equals("turbo")){
+                    map.put("id", "Turbo Share");
+                }
                 map.put("appId", appId);
                 map.put("appLovinSdkKey", appLovinSdkKey);
                 map.put("bannerTop", bannerTop);
@@ -145,10 +155,10 @@ public class UpdateAdsActivity extends AppCompatActivity {
 
     }
 
-    private void fetchAds() {
+    private void fetchAds(String id) {
         loading.show();
         apiInterface = ApiWebServices.getApiInterface();
-        Call<AdsModelList> call = apiInterface.fetchAds("Wallpaper Bazaar");
+        Call<AdsModelList> call = apiInterface.fetchAds(id);
         call.enqueue(new Callback<AdsModelList>() {
             @Override
             public void onResponse(@NonNull Call<AdsModelList> call, @NonNull Response<AdsModelList> response) {
@@ -191,7 +201,8 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     Toast.makeText(UpdateAdsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    fetchAds();
+
+                    fetchAds(map.get("id"));
                     loading.dismiss();
                 }
             }

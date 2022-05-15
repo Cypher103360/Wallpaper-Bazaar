@@ -129,8 +129,16 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
+            intent.putExtra("key","wall");
             startActivity(intent);
         });
+
+        binding.turboAdsBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
+            intent.putExtra("key","turbo");
+            startActivity(intent);
+        });
+
         binding.userDataBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UserDataActivity.class);
             startActivity(intent);
@@ -139,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         binding.proWallUrlBtn.setOnClickListener(view -> {
             proWallUrlDialog();
         });
+
     }
 
     private void updateBannerImage() {
@@ -220,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
 
         updateBanBtn.setOnClickListener(view -> {
             loadingDialog.show();
-
             String url = urlEdt.getText().toString().trim();
+
             if (encodedImage.length() <= 100) {
 
                 map.put("id", id);
