@@ -10,7 +10,7 @@ public class Prevalent {
     public static final String bannerTopNetworkName = "bannerTopNetworkName";
 
     public static final String bannerBottom = "bannerBottom";
-    public static final String bannerBottomNetworkName = "bannerTopNetworkName";
+    public static final String bannerBottomNetworkName = "bannerBottomNetworkName";
 
     public static final String interstitialAds = "inter";
     public static final String interstitialNetwork = "interstitialNetwork";

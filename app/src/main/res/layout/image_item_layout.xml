@@ -5,7 +5,7 @@
     android:layout_height="200dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="6dp"
-    android:backgroundTint="@color/bg_color"
+    android:backgroundTint="#DADADA"
     app:cardElevation="3dp">
 
 
@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/bg_color" />
+            android:src="#DADADA" />
 
         <ImageView
             android:id="@+id/pre_logo"
@@ -37,5 +37,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/crown" />
+
+        <ProgressBar
+            android:id="@+id/image_progressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

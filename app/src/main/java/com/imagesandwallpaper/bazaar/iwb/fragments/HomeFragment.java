@@ -42,9 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ImageItemClickInterface {
-
     FragmentHomeBinding binding;
-
     ApiInterface apiInterface;
 
     Map<String, String> banMap = new HashMap<>();
@@ -72,9 +70,9 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
 
         } else {
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
-
         }
-        popNewPagerAdapter = new PopNewPagerAdapter(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        popNewPagerAdapter = new PopNewPagerAdapter(getChildFragmentManager(),
+                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         popNewPagerAdapter.addFragments(new PopularFragment(), "Popular");
         popNewPagerAdapter.addFragments(new NewFragment(), "New");
 

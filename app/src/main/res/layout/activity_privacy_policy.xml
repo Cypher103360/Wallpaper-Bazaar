@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".activities.PrivacyPolicyActivity">
+
     <RelativeLayout
         android:id="@+id/adView_top"
         android:layout_width="match_parent"

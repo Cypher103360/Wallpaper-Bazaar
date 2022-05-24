@@ -44,8 +44,8 @@
     <Button
         android:id="@+id/startBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="120dp"
         android:background="@drawable/start_btn_bg"
         android:backgroundTint="@color/btn_color"
         android:paddingLeft="60dp"

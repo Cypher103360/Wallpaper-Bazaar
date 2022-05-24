@@ -96,7 +96,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
-    Map<String, String> map = new HashMap<>();
+  //  Map<String, String> map = new HashMap<>();
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle;
 
@@ -132,8 +132,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         apiInterface = ApiWebServices.getApiInterface();
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(this, gso);
+//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+//        gsc = GoogleSignIn.getClient(this, gso);
         loading = CommonMethods.loadingDialog(HomeActivity.this);
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
@@ -181,15 +181,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         });
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            loading.show();
-            String name = account.getDisplayName();
-            String email = account.getEmail();
-            map.put("name", name);
-            map.put("email", email);
-            uploadUserData(map);
-        }
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//        if (account != null) {
+//            loading.show();
+//            String name = account.getDisplayName();
+//            String email = account.getEmail();
+//            map.put("name", name);
+//            map.put("email", email);
+//            uploadUserData(map);
+//        }
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
@@ -198,24 +198,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void uploadUserData(Map<String, String> map) {
-        Call<MessageModel> call = apiInterface.uploadUserData(map);
-        call.enqueue(new Callback<MessageModel>() {
-            @Override
-            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                   // Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                loading.dismiss();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-                loading.dismiss();
-            }
-        });
-    }
+//    private void uploadUserData(Map<String, String> map) {
+//        Call<MessageModel> call = apiInterface.uploadUserData(map);
+//        call.enqueue(new Callback<MessageModel>() {
+//            @Override
+//            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+//                if (response.isSuccessful()) {
+//                    assert response.body() != null;
+//                   // Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//                loading.dismiss();
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+//                loading.dismiss();
+//            }
+//        });
+//    }
 
 
     public void navigationDrawer() {
@@ -286,8 +286,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         MenuItem nav_disclaimer = navMenu.findItem(R.id.nav_disclaimer);
         nav_disclaimer.setEnabled(false);
 
-        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
-        nav_signOut.setEnabled(false);
+//        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
+//        nav_signOut.setEnabled(false);
     }
 
     public void enableNavItems() {
@@ -311,8 +311,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         MenuItem nav_disclaimer = navMenu.findItem(R.id.nav_disclaimer);
         nav_disclaimer.setEnabled(true);
 
-        MenuItem nav_signOut = navMenu.findItem(R.id.nav_disclaimer);
-        nav_signOut.setEnabled(true);
+//        MenuItem nav_signOut = navMenu.findItem(R.id.nav_signOut);
+//        nav_signOut.setEnabled(true);
     }
 
     public boolean isOnline(Context context) {
@@ -346,9 +346,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 try {
                     CommonMethods.whatsApp(HomeActivity.this);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (PackageManager.NameNotFoundException e) {
+                } catch (UnsupportedEncodingException | PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -379,17 +377,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mFirebaseAnalytics.logEvent("Clicked_On_Disclaimer_Menu", bundle);
                 disclaimerDialog();
                 break;
-            case R.id.nav_signOut:
-                loading.show();
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SignOut Menu");
-                mFirebaseAnalytics.logEvent("Clicked_On_SignOut_Menu", bundle);
-                // Sign Out for google user
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                if (account != null) {
-                    googleSignOut();
-                }
-
-                break;
+//            case R.id.nav_signOut:
+//                loading.show();
+//                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SignOut Menu");
+//                mFirebaseAnalytics.logEvent("Clicked_On_SignOut_Menu", bundle);
+//                // Sign Out for google user
+//                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//                if (account != null) {
+//                    googleSignOut();
+//                }
+//
+//                break;
             default:
         }
         return true;
@@ -428,7 +426,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             finish();
             loading.dismiss();
             startActivity(new Intent(HomeActivity.this, SignupActivity.class));
-            CommonMethods.loadingDialog(HomeActivity.this).dismiss();
         });
     }
 

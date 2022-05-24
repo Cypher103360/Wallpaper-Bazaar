@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerDrawable;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.AdLayoutBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.SubCatModel;
@@ -69,13 +71,25 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
+        Shimmer shimmer = new Shimmer.AlphaHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
+                .setDuration(700) // how long the shimmering animation takes to do one full sweep
+                .setBaseAlpha(0.9f) //the alpha of the underlying children
+                .setHighlightAlpha(0.7f) // the shimmer alpha amount
+                .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+                .setAutoStart(true)
+                .build();
 
+        // This is the placeholder for the imageView
+        ShimmerDrawable shimmerDrawable = new ShimmerDrawable();
+        shimmerDrawable.setShimmer(shimmer);
 
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
 
             Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
-                    + subCatModelList.get(position).getImage()).into(((ViewHolder) holder).catImage);
+                    + subCatModelList.get(position).getImage())
+                    .placeholder(shimmerDrawable)
+                    .into(((ViewHolder) holder).catImage);
 
 
             ((ViewHolder) holder).catTitle.setText(subCatModelList.get(position).getTitle());

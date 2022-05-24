@@ -13,11 +13,6 @@ public class CatItemImageViewModel extends AndroidViewModel {
     private final Repository repository;
     String id;
 
-    public CatItemImageViewModel(@NonNull Application application) {
-        super(application);
-        repository = Repository.getInstance();
-    }
-
     public CatItemImageViewModel(@NonNull Application application,String id) {
         super(application);
         this.id = id;

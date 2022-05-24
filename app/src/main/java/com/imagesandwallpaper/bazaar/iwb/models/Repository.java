@@ -42,20 +42,20 @@ public class Repository {
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             // Background work
-        Call<CatModelList> call = apiInterface.getAllCategory();
-        call.enqueue(new Callback<CatModelList>() {
-            @Override
-            public void onResponse(@NonNull Call<CatModelList> call, @NonNull Response<CatModelList> response) {
-                if (response.isSuccessful()) {
-                    categoryMutableLiveData.setValue(response.body());
+            Call<CatModelList> call = apiInterface.getAllCategory();
+            call.enqueue(new Callback<CatModelList>() {
+                @Override
+                public void onResponse(@NonNull Call<CatModelList> call, @NonNull Response<CatModelList> response) {
+                    if (response.isSuccessful()) {
+                        categoryMutableLiveData.setValue(response.body());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<CatModelList> call, @NonNull Throwable t) {
+                @Override
+                public void onFailure(@NonNull Call<CatModelList> call, @NonNull Throwable t) {
 
-            }
-        });
+                }
+            });
         });
         return categoryMutableLiveData;
     }
@@ -77,7 +77,9 @@ public class Repository {
             }
         });
         return imageItemModelListMutableLiveData;
-    }public MutableLiveData<ImageItemModelList> getNewImageItemModelListMutableLiveData(String  id) {
+    }
+
+    public MutableLiveData<ImageItemModelList> getNewImageItemModelListMutableLiveData(String id) {
 
         Call<ImageItemModelList> call = apiInterface.getNewImageItem(id);
         call.enqueue(new Callback<ImageItemModelList>() {
