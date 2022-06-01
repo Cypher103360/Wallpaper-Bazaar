@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.Shimmer;
-import com.facebook.shimmer.ShimmerDrawable;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.AdLayoutBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageClickInterface;
@@ -30,12 +28,12 @@ import java.util.List;
 import io.paperdb.Paper;
 
 public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    List<ImageItemModel> catItemImageModelList = new ArrayList<>();
-    Activity context;
-    CatItemImageClickInterface catItemImageClickInterface;
     private static final int ITEM_VIEW = 0;
     private static final int AD_VIEW = 1;
     private static final int ITEM_FEED_COUNT = 7;
+    List<ImageItemModel> catItemImageModelList = new ArrayList<>();
+    Activity context;
+    CatItemImageClickInterface catItemImageClickInterface;
     ShowAds showAds = new ShowAds();
 
 
@@ -50,12 +48,13 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
         return ITEM_VIEW;
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         if (viewType == ITEM_VIEW) {
-            View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout,parent,false);
+            View view = LayoutInflater.from(context).inflate(R.layout.image_item_layout, parent, false);
             return new ViewHolder(view);
         } else if (viewType == AD_VIEW) {
             View view1 = LayoutInflater.from(context).inflate(R.layout.ad_layout, parent, false);
@@ -89,15 +88,16 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         circularProgressDrawable.setCenterRadius(30f);
         circularProgressDrawable.start();
 
+
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
 
             Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    + catItemImageModelList.get(position).getImage())
+                            + catItemImageModelList.get(position).getImage())
                     .placeholder(circularProgressDrawable)
                     .into(((ViewHolder) holder).itemImage);
             holder.itemView.setOnClickListener(view -> {
-                catItemImageClickInterface.onClicked(catItemImageModelList.get(position),position);
+                catItemImageClickInterface.onClicked(catItemImageModelList.get(position), position);
             });
 
         } else if (holder.getItemViewType() == AD_VIEW) {
@@ -114,7 +114,7 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(List<ImageItemModel> catItemImageModels){
+    public void updateList(List<ImageItemModel> catItemImageModels) {
         catItemImageModelList.clear();
         catItemImageModelList.addAll(catItemImageModels);
         Collections.reverse(catItemImageModelList);
@@ -123,11 +123,13 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemImage  = itemView.findViewById(R.id.item_image);
+            itemImage = itemView.findViewById(R.id.item_image);
         }
     }
+
     public class AdViewHolder extends RecyclerView.ViewHolder {
         AdLayoutBinding binding;
 

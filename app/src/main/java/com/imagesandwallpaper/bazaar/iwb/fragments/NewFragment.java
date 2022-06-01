@@ -59,7 +59,6 @@ public class NewFragment extends Fragment implements ImageItemClickInterface, Ca
         imageItemRecyclerView.setLayoutManager(layoutManager);
         imageItemRecyclerView.setHasFixedSize(true);
 
-        getLifecycle().addObserver(ads);
         id = "New_Images";
         catItemImageViewModel = new ViewModelProvider(this,
                 new CatItemImageModelFactory(requireActivity().getApplication(), id)).get(CatItemImageViewModel.class);
@@ -91,14 +90,13 @@ public class NewFragment extends Fragment implements ImageItemClickInterface, Ca
 
     @Override
     public void onClicked(ImageItemModel imageItemModel, int position) {
+
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "New Images");
         mFirebaseAnalytics.logEvent("Clicked_On_New_Images", bundle);
 
-        ads.showInterstitialAds(requireActivity());
-        ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
         intent.putExtra("id", imageItemModel.getId());
         intent.putExtra("catId", imageItemModel.getCatId());
@@ -106,6 +104,8 @@ public class NewFragment extends Fragment implements ImageItemClickInterface, Ca
         intent.putExtra("pos", String.valueOf(position));
         intent.putExtra("key", "new");
         startActivity(intent);
+        ads.showInterstitialAds(requireActivity());
+//        ads.destroyBanner();
     }
 
     @Override

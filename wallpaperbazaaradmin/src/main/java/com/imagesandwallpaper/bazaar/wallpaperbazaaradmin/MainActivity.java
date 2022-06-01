@@ -57,12 +57,13 @@ public class MainActivity extends AppCompatActivity {
     String encodedImage;
     Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog;
     ApiInterface apiInterface;
-    String id, image2,proWallUrl,proWallId;
+    String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl;
     EditText choseImgQuality;
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, imageQuality, stream);
+
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         InputStream inputStream = this.getContentResolver().openInputStream(result);
                         bitmap = BitmapFactory.decodeStream(inputStream);
                         encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
-                        Toast.makeText(this, "Image quality is "+ imgQuality, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Image quality is " + imgQuality, Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (FileNotFoundException e) {
@@ -99,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fetchGetWallpaperapp();
         fetchProWallUrl();
+        fetchProFileShareUrl();
 
         binding.popImgBtn.setOnClickListener(view -> {
             uploadImage("Popular_Images");
@@ -119,23 +122,23 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.popularBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, PopAndPremiumActivity.class);
-            intent.putExtra("type","popular");
+            intent.putExtra("type", "popular");
             startActivity(intent);
         });
         binding.premiumBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, PopAndPremiumActivity.class);
-            intent.putExtra("type","premium");
+            intent.putExtra("type", "premium");
             startActivity(intent);
         });
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key","wall");
+            intent.putExtra("key", "wall");
             startActivity(intent);
         });
 
         binding.turboAdsBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key","turbo");
+            intent.putExtra("key", "turbo");
             startActivity(intent);
         });
 
@@ -146,6 +149,16 @@ public class MainActivity extends AppCompatActivity {
 
         binding.proWallUrlBtn.setOnClickListener(view -> {
             proWallUrlDialog();
+
+        });
+        binding.proFileShareUrlBtn.setOnClickListener(view -> {
+            proFileShareUrlDialog();
+
+
+        });
+        binding.getFreeWallBtn.setOnClickListener(view -> {
+            getFreeWallpaperDialog();
+
         });
 
     }
@@ -158,14 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 .setNeutralButton("Cancel", (dialogInterface, i) -> {
 
                 }).setNegativeButton("Home", ((dialogInterface, i) -> {
-            map.put("tableName", "home_banner");
-            updateBanner(map);
+                    map.put("tableName", "home_banner");
+                    updateBanner(map);
 
-        })).setPositiveButton("Premium", ((dialogInterface, i) -> {
-            map.put("tableName", "premium_banner");
-            updateBanner(map);
+                })).setPositiveButton("Premium", ((dialogInterface, i) -> {
+                    map.put("tableName", "premium_banner");
+                    updateBanner(map);
 
-        })).show();
+                })).show();
     }
 
     private void updateBanner(Map<String, String> map) {
@@ -191,10 +204,10 @@ public class MainActivity extends AppCompatActivity {
             String quality = choseImgQuality.getText().toString().trim();
             if (quality.isEmpty()) {
                 Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
-            } else if (Integer.parseInt(quality)>=10){
+            } else if (Integer.parseInt(quality) >= 10) {
 
                 launcher.launch("image/*");
-            }else{
+            } else {
                 choseImgQuality.setError("Minimum Quality must be 10.");
             }
 
@@ -302,10 +315,10 @@ public class MainActivity extends AppCompatActivity {
             String quality = choseImgQuality.getText().toString().trim();
             if (quality.isEmpty()) {
                 Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
-            } else if (Integer.parseInt(quality)>=10){
+            } else if (Integer.parseInt(quality) >= 10) {
 
                 launcher.launch("image/*");
-            }else{
+            } else {
                 choseImgQuality.setError("Minimum Quality must be 10.");
             }
 
@@ -374,10 +387,10 @@ public class MainActivity extends AppCompatActivity {
             String quality = choseImgQuality.getText().toString().trim();
             if (quality.isEmpty()) {
                 Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
-            } else if (Integer.parseInt(quality)>=10){
+            } else if (Integer.parseInt(quality) >= 10) {
 
                 launcher.launch("image/*");
-            }else{
+            } else {
                 choseImgQuality.setError("Minimum Quality must be 10.");
             }
         });
@@ -444,14 +457,98 @@ public class MainActivity extends AppCompatActivity {
         uploadImageBtn.setText("Upload Url");
         uploadImageBtn.setOnClickListener(view -> {
             loadingDialog.show();
-            String proUrl =  proUrlEditText.getText().toString().trim();
+            String proUrl = proUrlEditText.getText().toString().trim();
 
             if (TextUtils.isEmpty(proUrl)) {
                 proUrlEditText.setError("Url Required");
                 proUrlEditText.requestFocus();
                 loadingDialog.dismiss();
-            }else {
-                map.put("id",proWallId);
+            } else {
+                map.put("id", proWallId);
+                map.put("url", proUrl);
+                updateProWallUrl(map);
+            }
+        });
+
+
+    }
+
+    private void getFreeWallpaperDialog() {
+        imageDialog = new Dialog(MainActivity.this);
+        imageDialog.setContentView(R.layout.upload_image_layout);
+        imageDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        imageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        imageDialog.setCancelable(false);
+        imageDialog.show();
+
+        TextView dialogTitle = imageDialog.findViewById(R.id.dialog_title);
+        EditText proUrlEditText = imageDialog.findViewById(R.id.img_quality);
+        TextInputLayout textInputLayout = imageDialog.findViewById(R.id.textInputLayout);
+        textInputLayout.setHint("Get Wallpaper App");
+        proUrlEditText.setHint("Enter Url");
+        proUrlEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        chooseImage = imageDialog.findViewById(R.id.choose_imageView);
+        Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
+        Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
+
+        dialogTitle.setText("Get Wallpaper App");
+        proUrlEditText.setText(getWallUrl);
+        cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
+        chooseImage.setVisibility(View.GONE);
+
+        uploadImageBtn.setText("Upload Url");
+        uploadImageBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            String proUrl = proUrlEditText.getText().toString().trim();
+
+            if (TextUtils.isEmpty(proUrl)) {
+                proUrlEditText.setError("Url Required");
+                proUrlEditText.requestFocus();
+                loadingDialog.dismiss();
+            } else {
+                map.put("id", getWallId);
+                map.put("url", proUrl);
+                updateProWallUrl(map);
+            }
+        });
+
+
+    }
+
+    private void proFileShareUrlDialog() {
+        imageDialog = new Dialog(MainActivity.this);
+        imageDialog.setContentView(R.layout.upload_image_layout);
+        imageDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        imageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        imageDialog.setCancelable(false);
+        imageDialog.show();
+
+        TextView dialogTitle = imageDialog.findViewById(R.id.dialog_title);
+        EditText proUrlEditText = imageDialog.findViewById(R.id.img_quality);
+        TextInputLayout textInputLayout = imageDialog.findViewById(R.id.textInputLayout);
+        textInputLayout.setHint("File Transfer Url");
+        proUrlEditText.setHint("Enter Pro Wallpaper Url");
+        proUrlEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        chooseImage = imageDialog.findViewById(R.id.choose_imageView);
+        Button cancelBtn = imageDialog.findViewById(R.id.cancel_btn);
+        Button uploadImageBtn = imageDialog.findViewById(R.id.upload_image_btn);
+
+        dialogTitle.setText("Update File Transfer Url");
+        proUrlEditText.setText(fileShareUrl);
+        cancelBtn.setOnClickListener(view -> imageDialog.dismiss());
+        chooseImage.setVisibility(View.GONE);
+
+        uploadImageBtn.setText("Upload Url");
+        uploadImageBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            String proUrl = proUrlEditText.getText().toString().trim();
+
+            if (TextUtils.isEmpty(proUrl)) {
+                proUrlEditText.setError("Url Required");
+                proUrlEditText.requestFocus();
+                loadingDialog.dismiss();
+            } else {
+                map.put("id", fileShareId);
                 map.put("url", proUrl);
                 updateProWallUrl(map);
             }
@@ -465,10 +562,12 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Toast.makeText(MainActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     fetchProWallUrl();
+                    fetchProFileShareUrl();
+                    fetchGetWallpaperapp();
                     loadingDialog.dismiss();
                     imageDialog.dismiss();
                 }
@@ -492,6 +591,50 @@ public class MainActivity extends AppCompatActivity {
                 for (ProWallModel proWallModel : response.body().getData()) {
                     proWallId = proWallModel.getId();
                     proWallUrl = proWallModel.getUrl();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProWallModelList> call, @NonNull Throwable t) {
+//                Log.d("ggggggggg", t.getMessage());
+            }
+        });
+    }
+
+    private void fetchGetWallpaperapp() {
+        Call<ProWallModelList> call = apiInterface.fetchGetWallpaperMessage();
+        call.enqueue(new Callback<ProWallModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
+
+                assert response.body() != null;
+                for (ProWallModel proWallModel : response.body().getData()) {
+                    getWallId = proWallModel.getId();
+                    getWallUrl = proWallModel.getUrl();
+                    Log.d("ggggggggg", getWallUrl);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProWallModelList> call, @NonNull Throwable t) {
+//                Log.d("ggggggggg", t.getMessage());
+            }
+        });
+    }
+
+    private void fetchProFileShareUrl() {
+        Call<ProWallModelList> call = apiInterface.fetchFileTransferUrl();
+        call.enqueue(new Callback<ProWallModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
+
+                assert response.body() != null;
+                for (ProWallModel proWallModel : response.body().getData()) {
+                    fileShareId = proWallModel.getId();
+                    fileShareUrl = proWallModel.getUrl();
                 }
 
             }

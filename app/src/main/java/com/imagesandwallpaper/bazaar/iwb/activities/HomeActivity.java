@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -31,8 +30,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
@@ -46,7 +43,6 @@ import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
-import com.imagesandwallpaper.bazaar.iwb.models.MessageModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModelList;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
@@ -56,8 +52,6 @@ import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import io.paperdb.Paper;
@@ -96,7 +90,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
-  //  Map<String, String> map = new HashMap<>();
+    //  Map<String, String> map = new HashMap<>();
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle;
 
@@ -109,10 +103,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         getLifecycle().addObserver(ads);
         enableNavItems();
         fetchProWallUrl();
+        fetchGetWallUrl();
         if (count == 2) {
             ViewPager viewPager = binding.viewPager;
             viewPager.setAdapter(sectionsPagerAdapter);
             TabLayout tabs = binding.tabs;
+            viewPager.setOffscreenPageLimit(3);
             tabs.setupWithViewPager(viewPager);
             navigationDrawer();
         }
@@ -145,16 +141,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             String version = pInfo.versionName;
-            binding.versionCode.setText(getString(R.string.version,version));
+            binding.versionCode.setText(getString(R.string.version, version));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }
-
-        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
-            ads.showTopBanner(this, binding.adViewTop);
-
-        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
-            ads.showTopBanner(this, binding.adViewTop);
         }
 
 
@@ -340,6 +329,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mFirebaseAnalytics.logEvent("Clicked_On_Pro_Wallpaper_Menu", bundle);
 
                 break;
+            case R.id.nav_get_wallpaper_ads:
+                openWebPage(proWallUrl, HomeActivity.this);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Get Free Ads Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_Get_Free_Ads_Menu", bundle);
+
+                break;
             case R.id.nav_contact:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Contact Menu");
                 mFirebaseAnalytics.logEvent("Clicked_On_Contact_Menu", bundle);
@@ -366,10 +361,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, FavoriteActivity.class));
                 break;
             case R.id.nav_privacy:
+                ads.destroyBanner();
+                ads.showInterstitialAds(this);
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Privacy Menu");
                 mFirebaseAnalytics.logEvent("Clicked_On_Privacy_Menu", bundle);
-                Intent intent = new Intent(HomeActivity.this,PrivacyPolicyActivity.class);
-                intent.putExtra("key","policy");
+                Intent intent = new Intent(HomeActivity.this, PrivacyPolicyActivity.class);
+                intent.putExtra("key", "policy");
                 startActivity(intent);
                 break;
             case R.id.nav_disclaimer:
@@ -395,6 +392,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void fetchProWallUrl() {
         Call<ProWallModelList> call = apiInterface.fetchProWallUrl();
+        call.enqueue(new Callback<ProWallModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
+
+                for (ProWallModel proWallModel : response.body().getData()) {
+                    proWallUrl = proWallModel.getUrl();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProWallModelList> call, @NonNull Throwable t) {
+                Log.d("ggggggggg", t.getMessage());
+            }
+        });
+    }
+    private void fetchGetWallUrl() {
+        Call<ProWallModelList> call = apiInterface.fetchGetWallUrl();
         call.enqueue(new Callback<ProWallModelList>() {
             @Override
             public void onResponse(@NonNull Call<ProWallModelList> call, @NonNull Response<ProWallModelList> response) {
@@ -439,6 +454,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onPause() {
         super.onPause();
         IronSource.onPause(this);
+        ads.destroyBanner();
         unregisterReceiver(receiver);
     }
 
@@ -446,6 +462,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         IronSource.onResume(this);
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showBottomBanner(this, binding.adViewBottom);
+        }
         registerReceiver(receiver, intentFilter);
     }
 
@@ -458,13 +479,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+        if (
+                drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             startActivity(new Intent(HomeActivity.this, RefreshingActivity.class));
             super.onBackPressed();
+            if (Objects.equals(Paper.book().read(Prevalent.interstitialNetwork), "AdmobWithMeta"))
+                ads.showInterstitialAds(this);
+            finish();
             ads.destroyBanner();
         }
     }

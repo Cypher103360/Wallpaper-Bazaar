@@ -49,9 +49,6 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         getLifecycle().addObserver(ads);
         imageItemModels = new ArrayList<>();
 
-        ads.showTopBanner(this, binding.adViewTop);
-        ads.showBottomBanner(this, binding.adViewBottom);
-
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
             displayAllContactInBackground();
             binding.catItemSwipeRefresh.setRefreshing(false);
@@ -119,6 +116,10 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
 
     protected void onResume() {
         super.onResume();
+
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
+
         IronSource.onResume(this);
     }
 

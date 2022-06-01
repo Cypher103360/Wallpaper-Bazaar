@@ -30,6 +30,7 @@ android {
         dataBinding true
     }
     buildToolsVersion '33.0.0 rc2'
+    namespace 'com.imagesandwallpaper.bazaar.wallpaperbazaaradmin'
 }
 
 dependencies {

@@ -63,8 +63,6 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catItemsRecyclerView.setLayoutManager(layoutManager);
         getLifecycle().addObserver(ads);
-        ads.showTopBanner(this, binding.adViewTop);
-        ads.showBottomBanner(this, binding.adViewBottom);
 
         catItemImageAdapter = new CatItemImageAdapter(this, this);
         catItemsRecyclerView.setAdapter(catItemImageAdapter);
@@ -85,9 +83,6 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
             setSubCatImages();
         }
         binding.catItemSwipeRefresh.setOnRefreshListener(() -> {
-            ads.showTopBanner(this, binding.adViewTop);
-            ads.showBottomBanner(this, binding.adViewBottom);
-
             if (type.equals("CatFragment")) {
                 setCatImages();
             } else if (type.equals("SubCatItem")) {
@@ -149,10 +144,14 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
 
     protected void onResume() {
         super.onResume();
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
         IronSource.onResume(this);
     }
     protected void onPause() {
         super.onPause();
         IronSource.onPause(this);
     }
+
+
 }

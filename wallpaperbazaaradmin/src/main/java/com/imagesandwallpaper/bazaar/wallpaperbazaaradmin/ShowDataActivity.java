@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -154,14 +156,14 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
                                 .setNegativeButton("Cancel", (dialog1, which1) -> {
 
                                 }).setPositiveButton("Delete", (dialog12, which12) -> {
-                            loadingDialog.show();
-                            catId = categoryModel.getId();
-                            catImage = categoryModel.getImage();
-                            map.put("id", catId);
-                            map.put("title", "category");
-                            map.put("path", "category_images/" + catImage);
-                            deleteCategory(map, "category");
-                        }).show();
+                                    loadingDialog.show();
+                                    catId = categoryModel.getId();
+                                    catImage = categoryModel.getImage();
+                                    map.put("id", catId);
+                                    map.put("title", "category");
+                                    map.put("path", "category_images/" + catImage);
+                                    deleteCategory(map, "category");
+                                }).show();
                         break;
                 }
             });
@@ -312,15 +314,15 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
                     map.put("deleteImg", catImage);
                     map.put("title", cTitle);
                     map.put("imgKey", "0");
-                    map.put("tableName","Cat");
+                    map.put("tableName", "Cat");
                     updateCategory(map);
-                }else {
+                } else {
                     map.put("catId", catId);
                     map.put("img", encodedImage);
                     map.put("deleteImg", catImage);
                     map.put("title", cTitle);
                     map.put("imgKey", "1");
-                    map.put("tableName","Cat");
+                    map.put("tableName", "Cat");
                     updateCategory(map);
                 }
 
@@ -333,7 +335,7 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     assert response.body() != null;
                     Toast.makeText(ShowDataActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     fetchCategory();
@@ -506,6 +508,7 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
             }
         });
     }
+
 
 }
 
