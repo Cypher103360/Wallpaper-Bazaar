@@ -75,16 +75,17 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         premiumViewModel = new ViewModelProvider(requireActivity(),
                 new PremiumModelFactory(requireActivity().getApplication(), map)).get(PremiumViewModel.class);
 
-        getLifecycle().addObserver(ads);
-//        ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
+            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
 
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewBottom.setVisibility(View.GONE);
+            ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         } else {
+            ads.showTopBanner(requireActivity(), binding.adViewTop);
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         premiumModels = new ArrayList<>();
@@ -138,8 +139,8 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
 
     @Override
     public void onClicked(ImageItemModel premiumModel, int position) {
+
         ads.showInterstitialAds(requireActivity());
-        ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
         intent.putExtra("id", premiumModel.getId());
         intent.putExtra("catId", premiumModel.getCatId());
@@ -153,7 +154,6 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + premiumModel.getImage());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Images");
         mFirebaseAnalytics.logEvent("Clicked_On_Premium_Images", bundle);
-
     }
 
     @Override

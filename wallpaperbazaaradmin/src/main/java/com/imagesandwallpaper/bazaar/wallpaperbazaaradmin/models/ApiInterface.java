@@ -86,6 +86,12 @@ public interface ApiInterface {
     @POST("fetch_pro_wallpaper_url.php")
     Call<ProWallModelList> fetchProWallUrl();
 
+    @POST("fetch_getWallpaper.php")
+    Call<ProWallModelList> fetchGetWallpaperMessage();
+
+    @POST("fetch_file_transfer_url.php")
+    Call<ProWallModelList> fetchFileTransferUrl();
+
 
     @FormUrlEncoded
     @POST("update_pro_wallpaper_url.php")

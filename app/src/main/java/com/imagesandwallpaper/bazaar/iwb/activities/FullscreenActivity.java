@@ -42,6 +42,7 @@ import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
 import com.imagesandwallpaper.bazaar.iwb.models.FavoriteAppDatabase;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
@@ -58,7 +59,7 @@ import io.paperdb.Paper;
 public class FullscreenActivity extends AppCompatActivity implements ImageItemClickInterface {
     ActivityFullscreenBinding binding;
     BottomSheetDialog loadImageDialog, setImageDialog;
-    Dialog dialog;
+    Dialog dialog, loadingDialog;
     String id, catId, img, pos, key;
     ViewPager2 fullImageViewPager;
     FavoriteAppDatabase favoriteAppDatabase;
@@ -77,6 +78,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
         getLifecycle().addObserver(ads);
 
+        loadingDialog = CommonMethods.loadingDialog(this);
         id = getIntent().getStringExtra("id");
         catId = getIntent().getStringExtra("catId");
         img = getIntent().getStringExtra("img");
@@ -86,12 +88,6 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
         FullImageAdapter viewPager2Adapter = new FullImageAdapter(this, this);
 
-        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
-            ads.showTopBanner(this, binding.adViewTop);
-
-        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
-            ads.showTopBanner(this, binding.adViewTop);
-        }
         // adding the adapter to viewPager2
         // to show the views in recyclerview
         fullImageViewPager.setAdapter(viewPager2Adapter);
@@ -147,8 +143,8 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
                         break;
                     }
                 }
-                CatItemsActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
-                viewPager2Adapter.updateList(CatItemsActivity.imageItemModels);
+                FavoriteActivity.imageItemModels.add(0, new ImageItemModel(id, catId, img));
+                viewPager2Adapter.updateList(FavoriteActivity.imageItemModels);
 
                 break;
         }
@@ -188,6 +184,7 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
         loadImageDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         loadImageDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         loadImageDialog.setCancelable(false);
+        loadingDialog.dismiss();
         loadImageDialog.show();
 
         ImageView cancelBtn = loadImageDialog.findViewById(R.id.cancel_btn);
@@ -323,9 +320,9 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
         mFirebaseAnalytics.logEvent("Clicked_On_Set_Favorite_Images", bundle);
 
         favoriteAppDatabase = Room.databaseBuilder(
-                this,
-                FavoriteAppDatabase.class
-                , "FavoriteDB")
+                        this,
+                        FavoriteAppDatabase.class
+                        , "FavoriteDB")
                 .build();
 
         if (key.equals("fav")) {
@@ -388,7 +385,10 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
         Bitmap bitmap = bitmapDrawable.getBitmap();
 
         homeScreen.setOnClickListener(view -> {
+            loadingDialog.show();
             loadImageDialog();
+
+
             mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
@@ -398,14 +398,17 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 try {
-                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+
+                    wallpaperManager.setBitmap(bitmap, null, false, WallpaperManager.FLAG_SYSTEM);
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             }
 
         });
         lockScreen.setOnClickListener(view -> {
+            loadingDialog.show();
             loadImageDialog();
             dialog.dismiss();
             mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -416,14 +419,17 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 try {
-                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                    wallpaperManager.setBitmap(bitmap, null, false, WallpaperManager.FLAG_LOCK);
+
                 } catch (IOException e) {
+
                     e.printStackTrace();
                 }
             }
 
         });
         bothScreen.setOnClickListener(view -> {
+            loadingDialog.show();
             mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
@@ -434,10 +440,11 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
             try {
                 loadImageDialog();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                    wallpaperManager.setBitmap(bitmap, null, false, WallpaperManager.FLAG_LOCK);
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                    loadingDialog.dismiss();
+                    wallpaperManager.setBitmap(bitmap, null, false, WallpaperManager.FLAG_SYSTEM);
                 }
 
             } catch (IOException e) {
@@ -474,6 +481,11 @@ public class FullscreenActivity extends AppCompatActivity implements ImageItemCl
 
     protected void onResume() {
         super.onResume();
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showTopBanner(this, binding.adViewTop);
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            ads.showBottomBanner(this, binding.adViewBottom);
+        }
         IronSource.onResume(this);
     }
 

@@ -99,7 +99,6 @@ public class PopularFragment extends Fragment implements ImageItemClickInterface
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         imageItemRecyclerView.setLayoutManager(layoutManager);
         imageItemRecyclerView.setHasFixedSize(true);
-        getLifecycle().addObserver(ads);
         map.put("tableName", "Popular_Images");
 
         imageItemAdapter = new ImageItemAdapter(requireActivity(), this);
@@ -125,7 +124,7 @@ public class PopularFragment extends Fragment implements ImageItemClickInterface
         imageItemViewModel.getImageItems().observe(requireActivity(), imageItemModelList -> {
             if (!imageItemModelList.getData().isEmpty()) {
                 imageItemModels.clear();
-                Log.d("ContentValue", String.valueOf(imageItemModelList.getData()));
+//                Log.d("ContentValue", String.valueOf(imageItemModelList.getData()));
 
                 imageItemModels.addAll(imageItemModelList.getData());
                 imageItemAdapter.updateList(imageItemModels);
@@ -136,14 +135,13 @@ public class PopularFragment extends Fragment implements ImageItemClickInterface
 
     @Override
     public void onClicked(ImageItemModel imageItemModel, int position) {
+
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Popular Images");
         mFirebaseAnalytics.logEvent("Clicked_On_Popular_Images", bundle);
 
-        ads.showInterstitialAds(requireActivity());
-        ads.destroyBanner();
         Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
         intent.putExtra("id", imageItemModel.getId());
         intent.putExtra("catId", imageItemModel.getCatId());
@@ -151,6 +149,8 @@ public class PopularFragment extends Fragment implements ImageItemClickInterface
         intent.putExtra("pos", String.valueOf(position));
         intent.putExtra("key", "pop");
         startActivity(intent);
+        ads.showInterstitialAds(requireActivity());
+//        ads.destroyBanner();
     }
 
     @Override

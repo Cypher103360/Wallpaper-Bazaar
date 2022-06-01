@@ -41,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements ImageItemClickInterface {
+public class HomeFragment extends Fragment {
     FragmentHomeBinding binding;
     ApiInterface apiInterface;
 
@@ -59,16 +59,18 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         apiInterface = ApiWebServices.getApiInterface();
         loading = CommonMethods.loadingDialog(requireActivity());
 
-        getLifecycle().addObserver(ads);
 //        ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
+            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
 
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewBottom.setVisibility(View.GONE);
+            ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         } else {
+            ads.showTopBanner(requireActivity(), binding.adViewTop);
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         popNewPagerAdapter = new PopNewPagerAdapter(getChildFragmentManager(),
@@ -80,6 +82,7 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         viewPager.setAdapter(popNewPagerAdapter);
         TabLayout tabs = binding.tabs;
         tabs.setupWithViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(2);
 
 
         banMap.put("tableName", "home_banner");
@@ -117,51 +120,6 @@ public class HomeFragment extends Fragment implements ImageItemClickInterface {
         });
     }
 
-
-    @Override
-    public void onClicked(ImageItemModel imageItemModel, int position) {
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Images");
-        mFirebaseAnalytics.logEvent("Clicked_On_Home_Images", bundle);
-
-        ads.showInterstitialAds(requireActivity());
-        ads.destroyBanner();
-        Intent intent = new Intent(requireActivity(), FullscreenActivity.class);
-        intent.putExtra("id", imageItemModel.getId());
-        intent.putExtra("catId", imageItemModel.getCatId());
-        intent.putExtra("img", imageItemModel.getImage());
-        intent.putExtra("pos", String.valueOf(position));
-        intent.putExtra("key", "home");
-        startActivity(intent);
-    }
-
-
-    @Override
-    public void onShareImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-
-    }
-
-    @Override
-    public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-
-    }
-
-    @Override
-    public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
-
-    }
-
-    @Override
-    public void onSetImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-
-    }
-
-    @Override
-    public void onClicked() {
-
-    }
 
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
