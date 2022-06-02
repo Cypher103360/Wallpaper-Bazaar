@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.R;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ImageItemModel;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +44,20 @@ public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.View
         holder.itemView.setOnClickListener(view -> {
             imageItemClickInterface.onClicked(imageItemModelList.get(position));
         });
+
+        switch (FilenameUtils.getExtension(imageItemModelList.get(position).getImage())) {
+            case "jpeg":
+            case "jpg":
+            case "png":
+                Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                        + imageItemModelList.get(position).getImage()).into(holder.itemImage);
+                break;
+            case "gif":
+                Glide.with(context).asGif().load("https://gedgetsworld.in/Wallpaper_Bazaar/live_wallpapers/"
+                        + imageItemModelList.get(position).getImage()).into(holder.itemImage);
+                break;
+        }
+
     }
 
     @Override

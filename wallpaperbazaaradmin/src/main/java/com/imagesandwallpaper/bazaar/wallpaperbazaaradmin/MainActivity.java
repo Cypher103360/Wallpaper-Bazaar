@@ -1,9 +1,11 @@
 package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -29,6 +33,7 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremi
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadLiveWallpaperLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.BannerModel;
@@ -38,12 +43,19 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.utils.CommonMethods;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,11 +66,14 @@ public class MainActivity extends AppCompatActivity {
     Map<String, String> map = new HashMap<>();
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
-    String encodedImage;
-    Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog;
+    String encodedImage, liveWallImg;
+    Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog;
     ApiInterface apiInterface;
     String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl;
     EditText choseImgQuality;
+    UploadLiveWallpaperLayoutBinding uploadLiveWallpaperLayoutBinding;
+    Intent intent;
+    Uri uri;
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -130,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("type", "premium");
             startActivity(intent);
         });
+        binding.liveBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, PopAndPremiumActivity.class);
+            intent.putExtra("type", "live");
+            startActivity(intent);
+        });
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
             intent.putExtra("key", "wall");
@@ -161,7 +181,101 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        binding.uploadLiveWallpaper.setOnClickListener(view -> uploadLiveWallpaperDialog("live_wallpaper"));
+
     }
+
+    public void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+
+    }
+
+    private void uploadLiveWallpaperDialog(String id) {
+        liveWallDialog = new Dialog(this);
+        uploadLiveWallpaperLayoutBinding = UploadLiveWallpaperLayoutBinding.inflate(getLayoutInflater());
+        liveWallDialog.setContentView(uploadLiveWallpaperLayoutBinding.getRoot());
+        liveWallDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        liveWallDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        liveWallDialog.setCancelable(false);
+        liveWallDialog.show();
+
+
+        TextView dialogTitle = uploadLiveWallpaperLayoutBinding.dialogTitle;
+        choseImgQuality = uploadLiveWallpaperLayoutBinding.imgQuality;
+        chooseImage = uploadLiveWallpaperLayoutBinding.chooseImageView;
+        Button cancelBtn = uploadLiveWallpaperLayoutBinding.cancelBtn;
+        Button uploadImageBtn = uploadLiveWallpaperLayoutBinding.uploadImageBtn;
+
+        dialogTitle.setText(id);
+        cancelBtn.setOnClickListener(view -> liveWallDialog.dismiss());
+
+        choseImgQuality.setVisibility(View.GONE);
+        chooseImage.setOnClickListener(view -> {
+            requestPermission();
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 101);
+        });
+
+        uploadImageBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            if (liveWallImg == null) {
+                Toast.makeText(MainActivity.this, "Please select a gif file for live wallpaper", Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+            } else {
+                if (FilenameUtils.getExtension(liveWallImg).equals("gif")) {
+                    File liveWallFile = new File(Uri.parse(liveWallImg).getPath());
+                    RequestBody liveWallRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), liveWallFile);
+                    MultipartBody.Part liveWallPart = MultipartBody.Part.createFormData("img", liveWallFile.getName(), liveWallRequestBody);
+                    MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
+
+                    Call<ResponseBody> call = apiInterface.uploadLiveWallpaper(liveWallPart, idPart);
+                    UploadLiveWallpaper(call);
+                } else {
+                    Toast.makeText(this, "Please select a gif file for live wallpaper", Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
+
+                }
+
+            }
+        });
+
+
+    }
+
+    private void UploadLiveWallpaper(Call<ResponseBody> call) {
+        loadingDialog.show();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    liveWallDialog.dismiss();
+
+                    Toast.makeText(MainActivity.this, "Data Upload Successfully", Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            liveWallImg = FileUtils.getPath(this, uri);
+            Glide.with(this).asGif().load(uri).into(uploadLiveWallpaperLayoutBinding.chooseImageView);
+        }
+    }
+
 
     private void updateBannerImage() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);

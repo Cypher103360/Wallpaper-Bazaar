@@ -73,7 +73,7 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Show Popular Images"
+                android:text="@string/show_popular_images"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
@@ -82,7 +82,15 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Show Premium Images"
+                android:text="@string/show_premium_images"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+            <Button
+                android:id="@+id/live_btn"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/show_live_wallpapers"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
@@ -91,7 +99,7 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Update Ads Ids"
+                android:text="@string/update_ads_ids"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
@@ -100,7 +108,7 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Turbo share ads Id"
+                android:text="@string/turbo_share_ads_id"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
@@ -109,7 +117,7 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Show User Data"
+                android:text="@string/show_user_data"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
@@ -118,7 +126,7 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Update Pro Wall Url"
+                android:text="@string/update_pro_wall_url"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
             <Button
@@ -134,7 +142,15 @@
                 android:layout_width="300dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:text="Update Pro File  Url"
+                android:text="@string/update_pro_file_url"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+            <Button
+                android:id="@+id/upload_live_wallpaper"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/upload_live_wallpaper"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 
