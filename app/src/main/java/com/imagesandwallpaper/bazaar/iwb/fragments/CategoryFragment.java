@@ -61,13 +61,14 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         catRecyclerView.setLayoutManager(layoutManager);
         catRecyclerView.setHasFixedSize(true);
-        getLifecycle().addObserver(ads);
 
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
+            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
 
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewBottom.setVisibility(View.GONE);
+            ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         } else {
             ads.showTopBanner(requireActivity(), binding.adViewTop);
@@ -100,8 +101,6 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
 
     @Override
     public void onClicked(CategoryModel categoryModel, int position) {
-        ads.showInterstitialAds(requireActivity());
-        ads.destroyBanner();
 
       FirebaseAnalytics  mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
@@ -124,6 +123,8 @@ public class CategoryFragment extends Fragment implements CatClickInterface {
         } else {
             Toast.makeText(requireActivity(), "No wallpapers available", Toast.LENGTH_SHORT).show();
         }
+        ads.showInterstitialAds(requireActivity());
+//        ads.destroyBanner();
     }
 
     @Override

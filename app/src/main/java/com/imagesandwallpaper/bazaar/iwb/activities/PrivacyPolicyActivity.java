@@ -5,7 +5,6 @@ import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityPrivacyPolicyBinding;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 
@@ -18,8 +17,9 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_privacy_policy);
-        webView = findViewById(R.id.policy);
+        binding = ActivityPrivacyPolicyBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        webView = binding.policy;
 
         key = getIntent().getStringExtra("key");
         if (key.equals("terms")) {
@@ -28,9 +28,9 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
             webView.loadUrl("file:///android_asset/privacy_policy.html");
         }
 
-//        getLifecycle().addObserver(ads);
-//        ads.showTopBanner(this, binding.adViewTop);
-//        ads.showBottomBanner(this, binding.adViewBottom);
+        getLifecycle().addObserver(ads);
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
 
 
     }
@@ -38,8 +38,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        // Ads.destroyBanner();
+        ads.destroyBanner();
 
     }
 }

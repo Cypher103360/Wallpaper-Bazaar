@@ -94,23 +94,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void Set_Visibility_OFF() {
         binding.lottieLoading.setVisibility(View.GONE);
-        binding.myText.setVisibility(View.GONE);
+//        binding.myText.setVisibility(View.GONE);
         binding.lottieNoInternet.setVisibility(View.VISIBLE);
         binding.tvNotConnected.setVisibility(View.VISIBLE);
-        binding.mainBackground.setBackgroundColor(0);
+//        binding.mainBackground.setBackgroundColor(0);
 
     }
 
     private void Set_Visibility_ON() {
         binding.lottieLoading.setVisibility(View.VISIBLE);
-        binding.myText.setVisibility(View.VISIBLE);
+//        binding.myText.setVisibility(View.VISIBLE);
         binding.lottieNoInternet.setVisibility(View.GONE);
         binding.tvNotConnected.setVisibility(View.GONE);
-        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.bg_color));
+//        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.bg_color));
 
         if (count == 2) {
             new Handler().postDelayed(() -> {
-               // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
                 startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
 
 //                if (account != null) {

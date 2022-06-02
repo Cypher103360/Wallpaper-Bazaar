@@ -20,7 +20,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("fetch_popular_images.php")
     Call<ImageItemModelList> getPopularImageItem(@FieldMap Map<String, String> map);
- @FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("fetch_popular_images.php")
     Call<ImageItemModelList> getNewImageItem(@Field("tableName") String id);
 
@@ -57,6 +58,9 @@ public interface ApiInterface {
 
     @POST("fetch_pro_wallpaper_url.php")
     Call<ProWallModelList> fetchProWallUrl();
+
+    @POST("fetch_getWallpaper.php")
+    Call<ProWallModelList> fetchGetWallUrl();
 
     @FormUrlEncoded
     @POST("upload_user_data.php")

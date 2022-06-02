@@ -7,5 +7,14 @@
     <string name="enter_url">Enter Url</string>
     <string name="upload_banner">Update Banner</string>
     <string name="cancel">cancel</string>
+    <string name="upload_live_wallpaper">Upload Live Wallpaper</string>
+    <string name="update_pro_file_url">Update Pro File Url</string>
+    <string name="show_live_wallpapers">Show Live Wallpapers</string>
+    <string name="show_premium_images">Show Premium Images</string>
+    <string name="show_popular_images">Show Popular Images</string>
+    <string name="update_ads_ids">Update Ads Ids</string>
+    <string name="turbo_share_ads_id">Turbo share ads Id</string>
+    <string name="show_user_data">Show User Data</string>
+    <string name="update_pro_wall_url">Update Pro Wall Url</string>
 
 </resources>

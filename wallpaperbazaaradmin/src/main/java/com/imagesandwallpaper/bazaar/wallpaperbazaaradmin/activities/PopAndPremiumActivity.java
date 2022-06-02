@@ -64,6 +64,10 @@ public class PopAndPremiumActivity extends AppCompatActivity implements ImageIte
             loading.show();
             map.put("tableName", "Premium_Images");
             fetchPremium(this, map);
+        } else if (type.equals("live")) {
+            loading.show();
+            map.put("tableName", "live_wallpaper");
+            fetchPremium(this, map);
         }
 
     }
@@ -135,6 +139,21 @@ public class PopAndPremiumActivity extends AppCompatActivity implements ImageIte
                         map.put("path", "all_images/" + itemImage);
                         deletePopPremiumImages(map, "premium");
                     }).show();
+        } else if (type.equals("live")) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle("Delete this Item?")
+                    .setNegativeButton("Cancel", (dialog1, which1) -> {
+
+                    })
+                    .setPositiveButton("Delete", (dialog12, which12) -> {
+                        loading.show();
+                        itemId = imageItemModel.getId();
+                        itemImage = imageItemModel.getImage();
+                        map.put("id", itemId);
+                        map.put("title", "live");
+                        map.put("path", "live_wallpapers/" + itemImage);
+                        deletePopPremiumImages(map, "live");
+                    }).show();
         }
     }
 
@@ -153,6 +172,10 @@ public class PopAndPremiumActivity extends AppCompatActivity implements ImageIte
                     } else if (type.equals("premium")) {
                         loading.show();
                         map.put("tableName", "Premium_Images");
+                        fetchPremium(PopAndPremiumActivity.this, map);
+                    } else if (type.equals("live")) {
+                        loading.show();
+                        map.put("tableName", "live_wallpaper");
                         fetchPremium(PopAndPremiumActivity.this, map);
                     }
                 }

@@ -5,11 +5,15 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDa
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiInterface {
 
@@ -86,9 +90,20 @@ public interface ApiInterface {
     @POST("fetch_pro_wallpaper_url.php")
     Call<ProWallModelList> fetchProWallUrl();
 
+    @POST("fetch_getWallpaper.php")
+    Call<ProWallModelList> fetchGetWallpaperMessage();
+
+    @POST("fetch_file_transfer_url.php")
+    Call<ProWallModelList> fetchFileTransferUrl();
+
 
     @FormUrlEncoded
     @POST("update_pro_wallpaper_url.php")
     Call<MessageModel> updateProWallUrl(@FieldMap Map<String, String> map);
+
+    @Multipart
+    @POST("upload_live_wallpaper.php")
+    Call<ResponseBody> uploadLiveWallpaper(@Part MultipartBody.Part liveWallPart, @Part MultipartBody.Part idPart);
+
 }
 

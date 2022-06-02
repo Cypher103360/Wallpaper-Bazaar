@@ -88,10 +88,10 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
         Log.d("ContentValue", String.valueOf(position));
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             holder.adviewTop.setVisibility(View.GONE);
-
+            showAds.showBottomBanner(context, holder.adviewBottom);
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             holder.adviewBottom.setVisibility(View.GONE);
-
+            showAds.showTopBanner(context, holder.adviewTop);
         } else {
             showAds.showTopBanner(context, holder.adviewTop);
             showAds.showBottomBanner(context, holder.adviewBottom);

@@ -41,15 +41,15 @@ public class ShowAds implements LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onStart() {
 
-        if (topAdview != null && bottomAdview != null) {
-            showTopBanner(context, bottomAdview);
-        } else if (topAdview != null) {
-            showTopBanner(context, topAdview);
-
-        } else if (bottomAdview != null) {
-            showBottomBanner(context, bottomAdview);
-
-        }
+//        if (topAdview != null && bottomAdview != null) {
+//            showTopBanner(context, bottomAdview);
+//        } else if (topAdview != null) {
+//            showTopBanner(context, topAdview);
+//
+//        } else if (bottomAdview != null) {
+//            showBottomBanner(context, bottomAdview);
+//
+//        }
 
 //        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
 //            IronSource.init(context,Paper.book().read(Prevalent.bannerTop));
@@ -93,14 +93,14 @@ public class ShowAds implements LifecycleObserver {
     public void showTopBanner(Activity context, RelativeLayout topAdView) {
         networkName = Paper.book().read(Prevalent.bannerTopNetworkName);
         bannerId = Paper.book().read(Prevalent.bannerTop);
-        ads.showBannerAd(context, topAdView, networkName, bannerId);
+        ads.showTopBannerAd(context, topAdView, networkName, bannerId);
 
     }
 
     public void showBottomBanner(Activity context, RelativeLayout bottomAdView) {
         networkName = Paper.book().read(Prevalent.bannerBottomNetworkName);
         bannerId = Paper.book().read(Prevalent.bannerBottom);
-        ads.showBannerAd(context, bottomAdView, networkName, bannerId);
+        ads.showBottomBannerAd(context, bottomAdView, networkName, bannerId);
 
     }
 
@@ -132,11 +132,12 @@ public class ShowAds implements LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume(){
+    public void onResume() {
         IronSource.onResume(context);
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void onPause(){
+    public void onPause() {
         IronSource.onPause(context);
     }
 }

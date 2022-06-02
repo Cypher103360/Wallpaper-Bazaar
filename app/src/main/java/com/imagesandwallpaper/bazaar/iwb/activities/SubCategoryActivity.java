@@ -49,6 +49,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
             onBackPressed();
         });
         binding.activityTitle.setText(activityTitle);
+        getLifecycle().addObserver(ads);
 
         apiInterface = ApiWebServices.getApiInterface();
         subCatItemsRecyclerview = binding.subCatRecyclerView;
@@ -60,17 +61,9 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
         subCategoryAdapter = new SubCategoryAdapter(SubCategoryActivity.this, this);
         subCatItemsRecyclerview.setAdapter(subCategoryAdapter);
 
-        getLifecycle().addObserver(ads);
-        ads.showTopBanner(this, binding.adViewTop);
-        ads.showBottomBanner(this, binding.adViewBottom);
-
-
         setData();
         binding.subCatSwipeRefresh.setOnRefreshListener(() -> {
             setData();
-            ads.showTopBanner(this, binding.adViewTop);
-            ads.showBottomBanner(this, binding.adViewBottom);
-
             binding.subCatSwipeRefresh.setRefreshing(false);
         });
     }
@@ -90,9 +83,8 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
 
     @Override
     public void onClicked(SubCatModel subCatModel, int position) {
-
-        ads.showInterstitialAds(this);
         ads.destroyBanner();
+        ads.showInterstitialAds(this);
         Intent intent = new Intent(SubCategoryActivity.this, CatItemsActivity.class);
         intent.putExtra("type", "SubCatItem");
         intent.putExtra("id", subCatModel.getId());
@@ -123,5 +115,14 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     protected void onPause() {
         super.onPause();
         IronSource.onPause(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ads.showTopBanner(this, binding.adViewTop);
+        ads.showBottomBanner(this, binding.adViewBottom);
+
     }
 }

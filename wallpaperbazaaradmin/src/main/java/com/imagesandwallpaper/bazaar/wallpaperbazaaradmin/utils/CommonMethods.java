@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.R;
 
 public class CommonMethods {
+
     public static Dialog loadingDialog(Context context) {
         Dialog loadingDialog;
         loadingDialog = new Dialog(context);

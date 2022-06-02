@@ -1,5 +1,6 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityRefreshingBinding;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.integration.IntegrationHelper;
 
 import java.io.UnsupportedEncodingException;
 
@@ -33,6 +33,8 @@ public class RefreshingActivity extends AppCompatActivity {
     LottieAnimationView whatsappLottie;
     FirebaseAnalytics mFirebaseAnalytics;
 
+    Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,7 @@ public class RefreshingActivity extends AppCompatActivity {
         shareBtn = findViewById(R.id.share_icon);
         whatsappLottie = findViewById(R.id.lottie_contact);
         showAds = new ShowAds();
+        dialog = CommonMethods.loadingDialog(this);
         getLifecycle().addObserver(showAds);
         showAds.showTopBanner(this, binding.adViewTop);
         showAds.showBottomBanner(this, binding.adViewBottom);
@@ -52,6 +55,7 @@ public class RefreshingActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> startBtn.setVisibility(View.VISIBLE), 5000);
 
         startBtn.setOnClickListener(view -> {
+            dialog.show();
             new Handler().postDelayed(() ->
             {
                 showAds.showInterstitialAds(this);
@@ -62,6 +66,7 @@ public class RefreshingActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Start");
                 mFirebaseAnalytics.logEvent("Clicked_On_Start", bundle);
+                dialog.dismiss();
 
             }, 2000);
 

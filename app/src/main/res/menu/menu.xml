@@ -16,6 +16,12 @@
             android:title="@string/pro_wallpaper"
             tools:targetApi="o" />
         <item
+            android:id="@+id/nav_get_wallpaper_ads"
+            android:icon="@drawable/ad_block"
+            android:iconTint="#6200EA"
+            android:title="Get Ads Free"
+            tools:targetApi="o" />
+        <item
             android:id="@+id/nav_contact"
             android:icon="@drawable/ic_baseline_contact_support_24"
             android:iconTint="#6200EA"
