@@ -18,5 +18,8 @@ public class Prevalent {
     public static final String nativeAds = "nativeNetwork";
     public static final String nativeAdsNetworkName = "network";
 
+    public static final String openAds = "openAds";
+    public static final String openAdsNetworkName = "openAdsNetwork";
+
 
 }

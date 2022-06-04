@@ -33,6 +33,8 @@ import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,9 +104,22 @@ public class HomeFragment extends Fragment {
                         banImage = bannerModel.getImage();
                         banUrl = bannerModel.getUrl();
 
-                        Glide.with(requireActivity())
-                                .load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + banImage)
-                                .into(binding.homeBannerImage);
+                        switch (FilenameUtils.getExtension(banImage)) {
+                            case "jpeg":
+                            case "jpg":
+                            case "png":
+                                Glide.with(requireActivity()).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                                        + banImage).into(binding.homeBannerImage);
+                                break;
+                            case "gif":
+                                Glide.with(requireActivity()).asGif().load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                                        + banImage).into(binding.homeBannerImage);
+                                break;
+                        }
+
+//                        Glide.with(requireActivity())
+//                                .load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + banImage)
+//                                .into(binding.homeBannerImage);
 
                     }
                 }

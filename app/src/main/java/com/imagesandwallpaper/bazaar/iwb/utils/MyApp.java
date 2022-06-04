@@ -57,6 +57,21 @@ public class MyApp extends Application {
 
     }
 
+    public void intent() {
+        new Handler().postDelayed(() -> {
+
+            if (!AppOpenManager.isIsShowingAd) {
+
+                Intent intent = new Intent(getApplicationContext(), RefreshingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                AppOpenManager.isIsShowingAd = false;
+
+            }
+
+        }, 2400);
+    }
+
     private void fetchAds() {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
         // OneSignal Initialization
@@ -84,6 +99,8 @@ public class MyApp extends Application {
                                             + "\n" + ads.getInterstitialNetwork()
                                             + "\n" + ads.getNativeAds()
                                             + "\n" + ads.getNativeAdsNetworkName()
+                                            + "\n" + ads.getOpenAds()
+                                            + "\n" + ads.getOpenAdsNetworkName()
                             );
 
                             Paper.book().write(Prevalent.id, ads.getId());
@@ -97,6 +114,8 @@ public class MyApp extends Application {
                             Paper.book().write(Prevalent.interstitialNetwork, ads.getInterstitialNetwork());
                             Paper.book().write(Prevalent.nativeAds, ads.getNativeAds());
                             Paper.book().write(Prevalent.nativeAdsNetworkName, ads.getNativeAdsNetworkName());
+                            Paper.book().write(Prevalent.openAds,ads.getOpenAds());
+                            Paper.book().write(Prevalent.openAdsNetworkName,ads.getOpenAdsNetworkName());
 
                             try {
                                 ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -125,7 +144,18 @@ public class MyApp extends Application {
                             } catch (NullPointerException e) {
                                 Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
                             }
+                        }
 
+                        if (!Objects.equals(Paper.book().read(Prevalent.openAds), "null")) {
+                            new AppOpenManager(mInstance, Paper.book().read(Prevalent.openAds), getApplicationContext());
+                        } else {
+                            new Handler().postDelayed(() -> {
+
+                                Intent intent = new Intent(getApplicationContext(), RefreshingActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+
+                            }, 2000);
 
                         }
                     }

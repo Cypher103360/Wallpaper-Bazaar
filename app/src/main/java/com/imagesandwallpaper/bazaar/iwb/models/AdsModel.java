@@ -12,8 +12,10 @@ public class AdsModel {
     String interstitialNetwork;
     String nativeAds;
     String nativeAdsNetworkName;
+    String openAds;
+    String openAdsNetworkName;
 
-    public AdsModel(String id, String appId, String appLovinSdkKey, String bannerTop, String bannerTopNetworkName, String bannerBottom, String bannerBottomNetworkName, String interstitialAds, String interstitialNetwork, String nativeAds, String nativeAdsNetworkName) {
+    public AdsModel(String id, String appId, String appLovinSdkKey, String bannerTop, String bannerTopNetworkName, String bannerBottom, String bannerBottomNetworkName, String interstitialAds, String interstitialNetwork, String nativeAds, String nativeAdsNetworkName, String openAds, String openAdsNetworkName) {
         this.id = id;
         this.appId = appId;
         this.appLovinSdkKey = appLovinSdkKey;
@@ -25,6 +27,8 @@ public class AdsModel {
         this.interstitialNetwork = interstitialNetwork;
         this.nativeAds = nativeAds;
         this.nativeAdsNetworkName = nativeAdsNetworkName;
+        this.openAds = openAds;
+        this.openAdsNetworkName = openAdsNetworkName;
     }
 
     public String getId() {
@@ -69,6 +73,14 @@ public class AdsModel {
 
     public String getNativeAdsNetworkName() {
         return nativeAdsNetworkName;
+    }
+
+    public String getOpenAds() {
+        return openAds;
+    }
+
+    public String getOpenAdsNetworkName() {
+        return openAdsNetworkName;
     }
 }
 

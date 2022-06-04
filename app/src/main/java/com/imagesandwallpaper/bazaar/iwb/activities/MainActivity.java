@@ -108,19 +108,20 @@ public class MainActivity extends AppCompatActivity {
         binding.tvNotConnected.setVisibility(View.GONE);
 //        binding.mainBackground.setBackgroundColor(ContextCompat.getColor(this, R.color.bg_color));
 
-        if (count == 2) {
-            new Handler().postDelayed(() -> {
-                // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
-
-//                if (account != null) {
-//                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
-//                } else {
-//                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
-//                }
-                finish();
-            }, 2000);
-        }
+//        if (count == 2) {
+//            new Handler().postDelayed(() -> {
+//                // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//
+//                //startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
+//
+////                if (account != null) {
+////                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
+////                } else {
+////                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
+////                }
+//               // finish();
+//            }, 2000);
+//        }
     }
 
     public boolean isOnline(Context context) {

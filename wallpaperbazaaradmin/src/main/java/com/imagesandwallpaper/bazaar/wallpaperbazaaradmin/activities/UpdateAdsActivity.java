@@ -33,8 +33,9 @@ import retrofit2.Response;
 public class UpdateAdsActivity extends AppCompatActivity {
     ActivityUpdateAdsBinding binding;
     String[] items = new String[]{"AdmobWithMeta", "IronSourceWithMeta", "AppLovinWithMeta", "Meta"};
-    AutoCompleteTextView BannerTopNetworkName, BannerBottomNetworkName, InterstitialNetwork, NativeAdsNetworkName;
-    EditText AppId, AppLovinSdkKey, BannerTop, BannerBottom, InterstitialAds, NativeAds;
+    AutoCompleteTextView BannerTopNetworkName, BannerBottomNetworkName, InterstitialNetwork,
+            NativeAdsNetworkName, OpenAdsNetworkName;
+    EditText AppId, AppLovinSdkKey, BannerTop, BannerBottom, InterstitialAds, NativeAds, OpenAds;
     ApiInterface apiInterface;
     Button UploadAdsBtn;
     String key;
@@ -42,7 +43,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
     Map<String, String> map = new HashMap<>();
     String appId, appLovinSdkKey, bannerTopNetworkName, bannerTop, bannerBottomNetworkName,
             bannerBottom, interstitialNetwork, interstitialAds, nativeAdsNetworkName,
-            nativeAds;
+            nativeAds, openAds, openAdsNetworkName;
 
 
     @Override
@@ -57,6 +58,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
         BannerBottomNetworkName = binding.bannerBottomNetworkName;
         InterstitialNetwork = binding.interstitialNetwork;
         NativeAdsNetworkName = binding.nativeAdsNetworkName;
+        OpenAdsNetworkName = binding.openAdsNetworkName;
         UploadAdsBtn = binding.uploadAdsBtn;
 
         AppId = binding.appId;
@@ -65,6 +67,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
         BannerBottom = binding.bannerBottom;
         InterstitialAds = binding.interstitialAds;
         NativeAds = binding.nativeAds;
+        OpenAds = binding.openAds;
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(UpdateAdsActivity.this,
                 R.layout.dropdown_items, items);
@@ -72,9 +75,10 @@ public class UpdateAdsActivity extends AppCompatActivity {
         BannerBottomNetworkName.setAdapter(arrayAdapter);
         InterstitialNetwork.setAdapter(arrayAdapter);
         NativeAdsNetworkName.setAdapter(arrayAdapter);
-        if (key.equals("wall")){
+        OpenAdsNetworkName.setAdapter(arrayAdapter);
+        if (key.equals("wall")) {
             fetchAds("Wallpaper Bazaar");
-        }else if (key.equals("turbo")){
+        } else if (key.equals("turbo")) {
             fetchAds("Turbo Share");
         }
 
@@ -91,6 +95,9 @@ public class UpdateAdsActivity extends AppCompatActivity {
             interstitialAds = InterstitialAds.getText().toString().trim();
             nativeAdsNetworkName = NativeAdsNetworkName.getText().toString().trim();
             nativeAds = NativeAds.getText().toString().trim();
+            openAds = OpenAds.getText().toString().trim();
+            openAdsNetworkName = OpenAdsNetworkName.getText().toString();
+
 
             if (TextUtils.isEmpty(appId)) {
                 AppId.setError("App id is required");
@@ -132,10 +139,18 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 NativeAds.setError("NativeAds is required");
                 NativeAds.requestFocus();
                 loading.dismiss();
+            } else if (TextUtils.isEmpty(openAds)) {
+                OpenAds.setError("OpenAds is required");
+                OpenAds.requestFocus();
+                loading.dismiss();
+            } else if (TextUtils.isEmpty(openAdsNetworkName)) {
+                OpenAdsNetworkName.setError("OpenAdsNetworkName is required");
+                OpenAdsNetworkName.requestFocus();
+                loading.dismiss();
             } else {
-                if (key.equals("wall")){
+                if (key.equals("wall")) {
                     map.put("id", "Wallpaper Bazaar");
-                }else if (key.equals("turbo")){
+                } else if (key.equals("turbo")) {
                     map.put("id", "Turbo Share");
                 }
                 map.put("appId", appId);
@@ -148,6 +163,8 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 map.put("interstitialNetwork", interstitialNetwork);
                 map.put("nativeAds", nativeAds);
                 map.put("nativeAdsNetworkName", nativeAdsNetworkName);
+                map.put("openAdsNetworkName", openAdsNetworkName);
+                map.put("openAds", openAds);
                 updateAdIds(map);
             }
 
@@ -175,6 +192,8 @@ public class UpdateAdsActivity extends AppCompatActivity {
                             InterstitialAds.setText(ads.getInterstitialAds());
                             NativeAdsNetworkName.setText(ads.getNativeAdsNetworkName());
                             NativeAds.setText(ads.getNativeAds());
+                            OpenAds.setText(ads.getOpenAds());
+                            OpenAdsNetworkName.setText(ads.getOpenAdsNetworkName());
 
                         }
                         loading.dismiss();

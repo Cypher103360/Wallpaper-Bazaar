@@ -21,12 +21,12 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="8dp"
                 android:text="Update Ads Ids"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -37,8 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="App Id"
-                app:endIconMode="clear_text"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -71,8 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="BannerTopNetworkName"
-                app:endIconMode="dropdown_menu"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="dropdown_menu"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <AutoCompleteTextView
@@ -82,6 +82,7 @@
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -98,6 +99,7 @@
                     tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
@@ -114,6 +116,7 @@
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -130,13 +133,14 @@
                     tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                app:endIconMode="dropdown_menu"
                 android:layout_height="wrap_content"
                 android:hint="InterstitialNetwork"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="dropdown_menu"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <AutoCompleteTextView
@@ -146,13 +150,14 @@
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:endIconMode="clear_text"
                 android:hint="InterstitialAds"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <EditText
@@ -162,13 +167,14 @@
                     tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="NativeAdsNetworkName"
-                app:endIconMode="dropdown_menu"
                 app:boxStrokeColor="@color/black"
+                app:endIconMode="dropdown_menu"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <AutoCompleteTextView
@@ -178,6 +184,7 @@
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -195,19 +202,52 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OpenAds"
+                app:boxStrokeColor="@color/black"
+                app:endIconMode="clear_text"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <EditText
+                    android:id="@+id/openAds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OpenAdsNetworkName"
+                app:boxStrokeColor="@color/black"
+                app:endIconMode="dropdown_menu"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <AutoCompleteTextView
+                    android:id="@+id/openAdsNetworkName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/upload_ads_btn"
-                android:layout_margin="5dp"
-                android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Update" />
+                android:layout_margin="5dp"
+                android:text="Update"
+                android:textSize="18sp" />
 
 
         </LinearLayout>
 
     </ScrollView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

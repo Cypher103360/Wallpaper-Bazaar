@@ -51,6 +51,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     Map<String, String> map = new HashMap<>();
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
-    String encodedImage, liveWallImg;
+    String encodedImage, liveWallImg,checkImage;
     Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog;
     ApiInterface apiInterface;
     String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl;
@@ -187,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
-
     }
 
     private void uploadLiveWallpaperDialog(String id) {
@@ -225,8 +225,12 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 if (FilenameUtils.getExtension(liveWallImg).equals("gif")) {
                     File liveWallFile = new File(Uri.parse(liveWallImg).getPath());
-                    RequestBody liveWallRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), liveWallFile);
-                    MultipartBody.Part liveWallPart = MultipartBody.Part.createFormData("img", liveWallFile.getName(), liveWallRequestBody);
+                    RequestBody liveWallRequestBody =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), liveWallFile);
+
+                    MultipartBody.Part liveWallPart =
+                            MultipartBody.Part.createFormData("img", liveWallFile.getName(), liveWallRequestBody);
+
                     MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
 
                     Call<ResponseBody> call = apiInterface.uploadLiveWallpaper(liveWallPart, idPart);
@@ -273,6 +277,10 @@ public class MainActivity extends AppCompatActivity {
             uri = data.getData();
             liveWallImg = FileUtils.getPath(this, uri);
             Glide.with(this).asGif().load(uri).into(uploadLiveWallpaperLayoutBinding.chooseImageView);
+        } else if (requestCode == 102 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            encodedImage = FileUtils.getPath(this, uri);
+            Glide.with(this).load(uri).into(categoryImage);
         }
     }
 
@@ -285,17 +293,18 @@ public class MainActivity extends AppCompatActivity {
                 .setNeutralButton("Cancel", (dialogInterface, i) -> {
 
                 }).setNegativeButton("Home", ((dialogInterface, i) -> {
-                    map.put("tableName", "home_banner");
-                    updateBanner(map);
+
+
+                    updateBanner("home_banner");
 
                 })).setPositiveButton("Premium", ((dialogInterface, i) -> {
-                    map.put("tableName", "premium_banner");
-                    updateBanner(map);
+
+                    updateBanner("premium_banner");
 
                 })).show();
     }
 
-    private void updateBanner(Map<String, String> map) {
+    private void updateBanner(String key) {
         bannerImgDialog = new Dialog(this);
         bannerImgDialog.setContentView(R.layout.upload_banner_image_layout);
         bannerImgDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -319,14 +328,17 @@ public class MainActivity extends AppCompatActivity {
             if (quality.isEmpty()) {
                 Toast.makeText(this, "Before Selecting an image please enter image quality!", Toast.LENGTH_LONG).show();
             } else if (Integer.parseInt(quality) >= 10) {
-
-                launcher.launch("image/*");
+                requestPermission();
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, 102);
+                //launcher.launch("image/*");
             } else {
                 choseImgQuality.setError("Minimum Quality must be 10.");
             }
 
         });
-
+        map.put("tableName", key);
         Call<BannerModelList> call = apiInterface.fetchBanner(map);
         call.enqueue(new Callback<BannerModelList>() {
             @Override
@@ -337,10 +349,25 @@ public class MainActivity extends AppCompatActivity {
                     if (response.body().getData() != null) {
 
                         for (BannerModel ban : response.body().getData()) {
-                            Glide.with(MainActivity.this).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + ban.getImage()).into(categoryImage);
+
+                            switch (FilenameUtils.getExtension(ban.getImage())) {
+                                case "jpeg":
+                                case "jpg":
+                                case "png":
+                                    Glide.with(MainActivity.this).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                                            + ban.getImage()).into(categoryImage);
+                                    break;
+                                case "gif":
+                                    Glide.with(MainActivity.this).asGif().load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                                            + ban.getImage()).into(categoryImage);
+                                    break;
+                            }
+
+                            //Glide.with(MainActivity.this).asGif().load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + ban.getImage()).into(categoryImage);
                             urlEdt.setText(ban.getUrl());
                             id = ban.getId();
                             image2 = ban.getImage();
+                            checkImage = ban.getImage();
                             encodedImage = image2;
                             loadingDialog.dismiss();
                         }
@@ -356,26 +383,49 @@ public class MainActivity extends AppCompatActivity {
 
         updateBanBtn.setOnClickListener(view -> {
             loadingDialog.show();
+            Log.d("checkEncodedImg",encodedImage);
+
             String url = urlEdt.getText().toString().trim();
 
-            if (encodedImage.length() <= 100) {
+            if (encodedImage.equals(checkImage)) {
 
-                map.put("id", id);
-                map.put("img", encodedImage);
-                map.put("url", url);
-                map.put("deleteImg", image2);
-                map.put("imgKey", "0");
+//                map.put("id", id);
+//                map.put("img", encodedImage);
+//                map.put("url", url);
+//                map.put("deleteImg", image2);
+//                map.put("imgKey", "0");
 
-                updateBannerData(map);
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img",encodedImage);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", image2);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "0");
+                MultipartBody.Part tablePart = MultipartBody.Part.createFormData("tableName", key);
+
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart,idPart,urlPart,deleteImgPart,imgKeyPart,tablePart);
+
+                updateBannerData(call1);
             } else {
+                File imgFile = new File(Uri.parse(encodedImage).getPath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),imgFile);
 
-                map.put("id", id);
-                map.put("img", encodedImage);
-                map.put("url", url);
-                map.put("deleteImg", image2);
-                map.put("imgKey", "1");
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img",imgFile.getName(),requestBody);
 
-                updateBannerData(map);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", image2);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "1");
+                MultipartBody.Part tablePart = MultipartBody.Part.createFormData("tableName",key);
+
+
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart,idPart,urlPart,deleteImgPart,imgKeyPart,tablePart);
+                updateBannerData(call1);
+
+//                map.put("id", id);
+//                map.put("img", encodedImage);
+//                map.put("url", url);
+//                map.put("deleteImg", image2);
+//                map.put("imgKey", "1");
 
             }
         });
@@ -383,19 +433,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateBannerData(Map<String, String> map) {
-
-        Log.d("CheckMap", map.toString());
-        Call<MessageModel> call = apiInterface.updateBanner(map);
+    private void updateBannerData(Call<MessageModel> call) {
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Banner Uploaded", Toast.LENGTH_SHORT).show();
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     bannerImgDialog.dismiss();
                 } else {
                     assert response.body() != null;
-                    Toast.makeText(MainActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,response.message() , Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.dismiss();
             }

@@ -52,9 +52,6 @@ public interface ApiInterface {
     @POST("fetch_sub_category.php")
     Call<SubCatModelList> getAllSubCategory(@Field("catId") String catId);
 
-    @FormUrlEncoded
-    @POST("update_banner.php")
-    Call<MessageModel> updateBanner(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("fetch_banner.php")
@@ -102,8 +99,17 @@ public interface ApiInterface {
     Call<MessageModel> updateProWallUrl(@FieldMap Map<String, String> map);
 
     @Multipart
+    @POST("update_banner.php")
+    Call<MessageModel> updateBanner(@Part MultipartBody.Part idPart,
+                                    @Part MultipartBody.Part imgPart,
+                                    @Part MultipartBody.Part urlPart,
+                                    @Part MultipartBody.Part deleteImgPart,
+                                    @Part MultipartBody.Part imgKeyPart,@Part MultipartBody.Part tablePart);
+
+    @Multipart
     @POST("upload_live_wallpaper.php")
-    Call<ResponseBody> uploadLiveWallpaper(@Part MultipartBody.Part liveWallPart, @Part MultipartBody.Part idPart);
+    Call<ResponseBody> uploadLiveWallpaper(@Part MultipartBody.Part liveWallPart,
+                                           @Part MultipartBody.Part idPart);
 
 }
 
