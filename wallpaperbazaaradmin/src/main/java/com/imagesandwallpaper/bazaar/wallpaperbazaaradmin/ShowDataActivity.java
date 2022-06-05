@@ -134,7 +134,9 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
 
         if (categoryModel.getSubCat().equals("false") && categoryModel.getItem().equals("false")) {
             String[] items = new String[]{"Add Sub Category", "Add Item", "Update Category", "Delete Category"};
-            builder.setTitle("Add Sub Category or Item").setCancelable(true).setItems(items, (dialogInterface, which) -> {
+            builder.setTitle("Add Sub Category or Item")
+                    .setCancelable(true)
+                    .setItems(items, (dialogInterface, which) -> {
                 switch (which) {
                     case 0:
                         uploadCategory(categoryModel);

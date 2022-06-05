@@ -51,7 +51,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     Map<String, String> map = new HashMap<>();
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
-    String encodedImage, liveWallImg,checkImage;
+    String encodedImage, liveWallImg, checkImage;
     Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog;
     ApiInterface apiInterface;
     String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl;
@@ -286,22 +285,27 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void updateBannerImage() {
+        String[] items = new String[]{"Home", "Premium", "Pro Home","Pro Premium"};
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle("Update Banner")
-                .setIcon(R.drawable.ic_baseline_add_alert_24)
-                .setMessage("Update banner in Home or Premium?")
-                .setNeutralButton("Cancel", (dialogInterface, i) -> {
-
-                }).setNegativeButton("Home", ((dialogInterface, i) -> {
-
-
-                    updateBanner("home_banner");
-
-                })).setPositiveButton("Premium", ((dialogInterface, i) -> {
-
-                    updateBanner("premium_banner");
-
-                })).show();
+                .setCancelable(true)
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            updateBanner("home_banner");
+                            break;
+                        case 1:
+                            updateBanner("premium_banner");
+                            break;
+                        case 2:
+                            updateBanner("pro_home");
+                            break;
+                        case 3:
+                            updateBanner("pro_premium");
+                            break;
+                        default:
+                    }
+                }).show();
     }
 
     private void updateBanner(String key) {
@@ -383,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
 
         updateBanBtn.setOnClickListener(view -> {
             loadingDialog.show();
-            Log.d("checkEncodedImg",encodedImage);
+            Log.d("checkEncodedImg", encodedImage);
 
             String url = urlEdt.getText().toString().trim();
 
@@ -395,30 +399,30 @@ public class MainActivity extends AppCompatActivity {
 //                map.put("deleteImg", image2);
 //                map.put("imgKey", "0");
 
-                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img",encodedImage);
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", encodedImage);
                 MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
                 MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
                 MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", image2);
                 MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "0");
                 MultipartBody.Part tablePart = MultipartBody.Part.createFormData("tableName", key);
 
-                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart,idPart,urlPart,deleteImgPart,imgKeyPart,tablePart);
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart, tablePart);
 
                 updateBannerData(call1);
             } else {
                 File imgFile = new File(Uri.parse(encodedImage).getPath());
-                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),imgFile);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imgFile);
 
-                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img",imgFile.getName(),requestBody);
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", imgFile.getName(), requestBody);
 
                 MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", id);
                 MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
                 MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", image2);
                 MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "1");
-                MultipartBody.Part tablePart = MultipartBody.Part.createFormData("tableName",key);
+                MultipartBody.Part tablePart = MultipartBody.Part.createFormData("tableName", key);
 
 
-                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart,idPart,urlPart,deleteImgPart,imgKeyPart,tablePart);
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart, tablePart);
                 updateBannerData(call1);
 
 //                map.put("id", id);
@@ -443,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                     bannerImgDialog.dismiss();
                 } else {
                     assert response.body() != null;
-                    Toast.makeText(MainActivity.this,response.message() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.dismiss();
             }
