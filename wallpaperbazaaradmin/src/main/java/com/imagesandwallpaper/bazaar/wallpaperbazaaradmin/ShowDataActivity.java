@@ -91,6 +91,7 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
         binding.showRV.setLayoutManager(layoutManager);
         binding.showRV.setAdapter(categoryAdapter);
         fetchCategory();
+
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
             if (result != null) {
                 if (chooseImage != null) {
@@ -130,7 +131,6 @@ public class ShowDataActivity extends AppCompatActivity implements CatClickInter
     @Override
     public void onClicked(CategoryModel categoryModel) {
         builder = new MaterialAlertDialogBuilder(ShowDataActivity.this);
-
 
         if (categoryModel.getSubCat().equals("false") && categoryModel.getItem().equals("false")) {
             String[] items = new String[]{"Add Sub Category", "Add Item", "Update Category", "Delete Category"};

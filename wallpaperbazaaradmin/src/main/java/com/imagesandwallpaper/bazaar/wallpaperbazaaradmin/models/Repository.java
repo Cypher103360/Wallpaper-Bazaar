@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,6 +25,8 @@ public class Repository {
     MutableLiveData<ImageItemModelList> imageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<UserDataModelList> userDataModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<FeaturedModelList> featuredModelListMutableLiveData = new MutableLiveData<>();
+
 
 
     public Repository() {
@@ -141,6 +146,28 @@ public class Repository {
             }
         });
         return premiumImageItemModelListMutableLiveData;
+    }
+
+    public MutableLiveData<FeaturedModelList> getFeaturedModelMutableLiveData() {
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(() -> {
+            // Background work
+            Call<FeaturedModelList> call = apiInterface.getAllFeatured();
+            call.enqueue(new Callback<FeaturedModelList>() {
+                @Override
+                public void onResponse(@NonNull Call<FeaturedModelList> call, @NonNull Response<FeaturedModelList> response) {
+                    if (response.isSuccessful()) {
+                        featuredModelListMutableLiveData.setValue(response.body());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<FeaturedModelList> call, @NonNull Throwable t) {
+
+                }
+            });
+        });
+        return featuredModelListMutableLiveData;
     }
 
     public MutableLiveData<UserDataModelList> getUserDataModelListMutableLiveData(){

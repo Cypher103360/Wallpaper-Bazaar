@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremiumActivity;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.ShowFeaturedActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
@@ -41,6 +43,7 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.BannerModelList
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.MessageModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ProWallModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UrlModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.utils.CommonMethods;
 
 import org.apache.commons.io.FilenameUtils;
@@ -49,8 +52,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -67,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
     String encodedImage, liveWallImg, checkImage;
-    Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog;
+    Dialog loadingDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog, textAndUrlsDialog;
     ApiInterface apiInterface;
-    String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl;
+    String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl, textAndUrls, textAndUrlsId;
     EditText choseImgQuality;
     UploadLiveWallpaperLayoutBinding uploadLiveWallpaperLayoutBinding;
     Intent intent;
@@ -81,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
 
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+    public static String decodeEmoji(String message) {
+        try {
+            return URLDecoder.decode(
+                    message, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return message;
+        }
+    }
+
+    public static String encodeEmoji(String message) {
+        try {
+            return URLEncoder.encode(message,
+                    "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return message;
+        }
     }
 
     @Override
@@ -127,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             uploadImage("Premium_Images");
         });
         binding.categoryBtn.setOnClickListener(view -> {
-            uploadCategory();
+            uploadCategory("category");
         });
         binding.showDataBtn.setOnClickListener(view -> {
             startActivity(new Intent(this, ShowDataActivity.class));
@@ -153,6 +178,12 @@ public class MainActivity extends AppCompatActivity {
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
             intent.putExtra("key", "wall");
+            startActivity(intent);
+        });
+
+        binding.hdWallpaperAds.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
+            intent.putExtra("key", "HDWall");
             startActivity(intent);
         });
 
@@ -183,6 +214,116 @@ public class MainActivity extends AppCompatActivity {
 
         binding.uploadLiveWallpaper.setOnClickListener(view -> uploadLiveWallpaperDialog("live_wallpaper"));
 
+        binding.uploadFeaturedItems.setOnClickListener(v -> {
+            uploadCategory("featured");
+        });
+        binding.showFeaturedItems.setOnClickListener(v -> {
+           startActivity(new Intent(this,ShowFeaturedActivity.class));
+        });
+
+        binding.updateTextUrls.setOnClickListener(v -> {
+            showUrlAndTextDialog();
+        });
+    }
+
+    private void showUrlAndTextDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this, R.style.MyTheme);
+        String[] textUrlItems = new String[]{
+                "Update Share Text",
+                "Update Whatsapp Text",
+                "Website Url"};
+        builder.setTitle("Update your texts and Urls").setCancelable(true).setItems(textUrlItems, (dialogInterface, which) -> {
+            switch (which) {
+                case 0:
+                    fetchTextAndUrls("share");
+                    break;
+
+                case 1:
+                    fetchTextAndUrls("whatsapp");
+                    break;
+
+                case 2:
+                    fetchTextAndUrls("website");
+                    break;
+                default:
+            }
+        });
+
+        builder.show();
+    }
+
+    private void fetchTextAndUrls(String key) {
+        textAndUrlsDialog = new Dialog(this);
+        textAndUrlsDialog.setContentView(R.layout.text_and_urls_layout);
+        textAndUrlsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        textAndUrlsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        textAndUrlsDialog.setCancelable(false);
+        textAndUrlsDialog.show();
+
+        EditText textAndUrlsEdt = textAndUrlsDialog.findViewById(R.id.text_and_urls_edt);
+        Button uploadButton = textAndUrlsDialog.findViewById(R.id.upload_text_urls);
+        Button cancelBtn = textAndUrlsDialog.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(v -> {
+            textAndUrlsDialog.dismiss();
+        });
+
+        Call<UrlModel> call = apiInterface.getUrls(key);
+        call.enqueue(new Callback<UrlModel>() {
+            @Override
+            public void onResponse(@NonNull Call<UrlModel> call, @NonNull Response<UrlModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    textAndUrlsId = response.body().getId();
+                    textAndUrls = decodeEmoji(response.body().getUrl());
+                    textAndUrlsEdt.setText(textAndUrls);
+                    Log.d("urlsText", textAndUrlsId + " " + textAndUrls);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UrlModel> call, @NonNull Throwable t) {
+
+            }
+        });
+
+        uploadButton.setOnClickListener(v -> {
+            loadingDialog.show();
+            String url = textAndUrlsEdt.getText().toString().trim();
+
+            if (TextUtils.isEmpty(url)) {
+                textAndUrlsEdt.setError("Url Required");
+                textAndUrlsEdt.requestFocus();
+                loadingDialog.dismiss();
+            } else {
+                map.put("id", textAndUrlsId);
+                map.put("url", encodeEmoji(url));
+
+                updateTextAndUrls(map);
+
+            }
+        });
+    }
+
+    private void updateTextAndUrls(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.updateUrls(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    textAndUrlsDialog.dismiss();
+                } else {
+                    Toast.makeText(MainActivity.this, Objects.requireNonNull(response.body()).getError(), Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Log.d("responseError", t.getMessage());
+                loadingDialog.dismiss();
+            }
+        });
     }
 
     public void requestPermission() {
@@ -285,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void updateBannerImage() {
-        String[] items = new String[]{"Home", "Premium", "Pro Home","Pro Premium"};
+        String[] items = new String[]{"Home", "Premium", "Pro Home", "Pro Premium"};
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle("Update Banner")
                 .setCancelable(true)
@@ -462,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadCategory() {
+    private void uploadCategory(String key) {
         catDialog = new Dialog(MainActivity.this);
         catDialog.setContentView(R.layout.category_dialog);
         catDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -472,8 +613,15 @@ public class MainActivity extends AppCompatActivity {
 
         categoryImage = catDialog.findViewById(R.id.choose_cat_imageView);
         EditText catTitle = catDialog.findViewById(R.id.cat_title);
+        TextInputLayout textInputLayout = catDialog.findViewById(R.id.textInputLayout);
+        if (key.equals("featured")) {
+            textInputLayout.setHint("Enter Url");
+        } else {
+            textInputLayout.setHint("Enter Title");
+        }
         Button uploadCatBtn = catDialog.findViewById(R.id.upload_cat_btn);
         choseImgQuality = catDialog.findViewById(R.id.img_quality);
+
 
         Button cancelBtn = catDialog.findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(view -> catDialog.dismiss());
@@ -498,13 +646,48 @@ public class MainActivity extends AppCompatActivity {
                 loadingDialog.dismiss();
                 Toast.makeText(MainActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
             } else if (TextUtils.isEmpty(cTitle)) {
-                catTitle.setError("Name Required");
+                if (key.equals("featured")) {
+                    catTitle.setError("Url Required");
+                } else {
+                    catTitle.setError("Name Required");
+                }
                 catTitle.requestFocus();
                 loadingDialog.dismiss();
             } else {
-                map.put("img", encodedImage);
-                map.put("title", cTitle);
-                uploadCatData(map);
+                if (key.equals("featured")) {
+                    map.put("img", encodedImage);
+                    map.put("url", cTitle);
+                    map.put("tableName", "Featured_Images");
+                    uploadFeatured(map);
+                } else {
+                    map.put("img", encodedImage);
+                    map.put("title", cTitle);
+                    uploadCatData(map);
+                }
+            }
+        });
+    }
+
+    private void uploadFeatured(Map<String, String> map) {
+        Call<MessageModel> call = apiInterface.uploadFeatured(map);
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    catDialog.dismiss();
+                } else {
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
             }
         });
     }
@@ -515,7 +698,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Category Uploaded", Toast.LENGTH_SHORT).show();
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     catDialog.dismiss();
                 } else {
                     assert response.body() != null;

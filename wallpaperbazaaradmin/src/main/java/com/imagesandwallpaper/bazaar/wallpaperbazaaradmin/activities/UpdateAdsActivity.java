@@ -76,10 +76,16 @@ public class UpdateAdsActivity extends AppCompatActivity {
         InterstitialNetwork.setAdapter(arrayAdapter);
         NativeAdsNetworkName.setAdapter(arrayAdapter);
         OpenAdsNetworkName.setAdapter(arrayAdapter);
-        if (key.equals("wall")) {
-            fetchAds("Wallpaper Bazaar");
-        } else if (key.equals("turbo")) {
-            fetchAds("Turbo Share");
+        switch (key) {
+            case "wall":
+                fetchAds("Wallpaper Bazaar");
+                break;
+            case "turbo":
+                fetchAds("Turbo Share");
+                break;
+            case "HDWall":
+                fetchAds("HD Wallpaper");
+                break;
         }
 
         UploadAdsBtn.setOnClickListener(view -> {
@@ -148,10 +154,16 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 OpenAdsNetworkName.requestFocus();
                 loading.dismiss();
             } else {
-                if (key.equals("wall")) {
-                    map.put("id", "Wallpaper Bazaar");
-                } else if (key.equals("turbo")) {
-                    map.put("id", "Turbo Share");
+                switch (key) {
+                    case "wall":
+                        map.put("id", "Wallpaper Bazaar");
+                        break;
+                    case "turbo":
+                        map.put("id", "Turbo Share");
+                        break;
+                    case "HDWall":
+                        map.put("id", "HD Wallpaper");
+                        break;
                 }
                 map.put("appId", appId);
                 map.put("appLovinSdkKey", appLovinSdkKey);

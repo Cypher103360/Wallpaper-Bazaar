@@ -104,6 +104,15 @@
                 android:textSize="18sp" />
 
             <Button
+                android:id="@+id/hd_wallpaper_ads"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="HD Wallpapers Ads"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
                 android:id="@+id/turbo_ads_btn"
                 android:layout_width="300dp"
                 android:layout_height="56dp"
@@ -151,6 +160,33 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/upload_live_wallpaper"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/upload_featured_items"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Upload Featured Items"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/show_featured_items"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Show Featured Items"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/update_text_urls"
+                android:layout_width="300dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:text="Update Text and Urls"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 

@@ -2,6 +2,7 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.Ads.AdsModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
 
 import java.util.Map;
 
@@ -34,6 +35,10 @@ public interface ApiInterface {
     Call<MessageModel> uploadCategory(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
+    @POST("upload_featured.php")
+    Call<MessageModel> uploadFeatured(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
     @POST("upload_sub_category_images.php")
     Call<MessageModel> uploadSubCategory(@FieldMap Map<String, String> map);
 
@@ -47,6 +52,17 @@ public interface ApiInterface {
 
     @POST("fetch_category.php")
     Call<CatModelList> getAllCategory();
+
+    @POST("fetch_featured.php")
+    Call<FeaturedModelList> getAllFeatured();
+
+    @FormUrlEncoded
+    @POST("fetch_urls.php")
+    Call<UrlModel> getUrls(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("update_urls.php")
+    Call<MessageModel> updateUrls(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("fetch_sub_category.php")
