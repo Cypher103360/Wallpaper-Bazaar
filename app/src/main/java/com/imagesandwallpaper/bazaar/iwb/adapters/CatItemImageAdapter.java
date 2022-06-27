@@ -2,6 +2,8 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     Activity context;
     CatItemImageClickInterface catItemImageClickInterface;
     ShowAds showAds = new ShowAds();
+    SharedPreferences preferences;
 
 
     public CatItemImageAdapter(Activity context, CatItemImageClickInterface catItemImageClickInterface) {
@@ -100,6 +103,19 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 catItemImageClickInterface.onClicked(catItemImageModelList.get(position), position);
             });
 
+            if (preferences.getString("action", "").equals("cat")) {
+                if (!preferences.getString("cat_item_pos", "").equals("")) {
+                    catItemImageClickInterface.onClicked(catItemImageModelList.get(Integer.parseInt(preferences.getString("cat_item_pos", "0"))), Integer.parseInt(preferences.getString("cat_item_pos", "0")));
+//                preferences.edit().clear().apply();
+                }
+            }
+            if (preferences.getString("action", "").equals("new")) {
+                if (!preferences.getString("pos", "").equals("")) {
+                    catItemImageClickInterface.onClicked(catItemImageModelList.get(Integer.parseInt(preferences.getString("pos", "0"))), Integer.parseInt(preferences.getString("pos", "0")));
+//                preferences.edit().clear().apply();
+                }
+            }
+
         } else if (holder.getItemViewType() == AD_VIEW) {
             ((AdViewHolder) holder).bindAdData();
         }
@@ -121,11 +137,13 @@ public class CatItemImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            preferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+
             itemImage = itemView.findViewById(R.id.item_image);
         }
     }

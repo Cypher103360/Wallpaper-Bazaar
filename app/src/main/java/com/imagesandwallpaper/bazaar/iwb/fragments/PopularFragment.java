@@ -159,11 +159,6 @@ public class PopularFragment extends Fragment implements ImageItemClickInterface
     }
 
     @Override
-    public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-
-    }
-
-    @Override
     public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
 
     }

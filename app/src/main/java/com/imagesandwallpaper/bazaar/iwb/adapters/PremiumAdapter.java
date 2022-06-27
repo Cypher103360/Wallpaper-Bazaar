@@ -2,6 +2,8 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,7 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Activity context;
     PremiumClickInterface premiumClickInterface;
     ShowAds showAds = new ShowAds();
+    SharedPreferences preferences;
 
     public PremiumAdapter(Activity context, PremiumClickInterface premiumClickInterface) {
         this.context = context;
@@ -70,6 +73,7 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
+
         Shimmer shimmer = new Shimmer.AlphaHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
                 .setDuration(700) // how long the shimmering animation takes to do one full sweep
                 .setBaseAlpha(0.9f) //the alpha of the underlying children
@@ -85,9 +89,17 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (holder.getItemViewType() == ITEM_VIEW) {
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
             Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                    + premiumModelList.get(position).getImage())
+                            + premiumModelList.get(position).getImage())
                     .placeholder(shimmerDrawable)
                     .into(((ViewHolder) holder).itemImage);
+
+//            Log.d("Content", preferences.getString("action", "") + "   " + preferences.getString("pos", ""));
+            if (preferences.getString("action", "").equals("pre")) {
+                if (!preferences.getString("pos", "").equals("")) {
+                    premiumClickInterface.onClicked(premiumModelList.get(Integer.parseInt(preferences.getString("pos", "0"))), Integer.parseInt(preferences.getString("pos", "0")));
+//                preferences.edit().clear().apply();
+                }
+            }
 
 
             ((ViewHolder) holder).itemView.setOnClickListener(view -> {
@@ -115,7 +127,7 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage, premiumImage;
 
         public ViewHolder(@NonNull View itemView) {
@@ -123,6 +135,8 @@ public class PremiumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemImage = itemView.findViewById(R.id.item_image);
             premiumImage = itemView.findViewById(R.id.pre_logo);
             premiumImage.setVisibility(View.VISIBLE);
+            preferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+
         }
     }
 

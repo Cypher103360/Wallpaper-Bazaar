@@ -76,9 +76,9 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
             IronSource.destroyBanner(banner);
         } else if (Objects.equals(Paper.book().read(Prevalent.bannerTopNetworkName), "IronSourceWithMeta")) {
             IronSource.destroyBanner(banner);
-            if (banner!=null) {
+            if (banner != null) {
                 Log.d("ContentValues", "bannerNotNull");
-            }else {
+            } else {
                 Log.d("ContentValues", "bannerNull");
 
             }
@@ -88,6 +88,7 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
 
     public void showTopBannerAd(Activity context, RelativeLayout container, String networkName, String bannerAdId) {
 
+        Log.e("ContentValue", networkName + bannerAdId);
         switch (networkName) {
             case "AdmobWithMeta":
                 MobileAds.initialize(context);
@@ -722,7 +723,9 @@ public class Ads implements MaxAdViewAdListener, LifecycleObserver {
     @Override
     public void onAdLoaded(MaxAd ad) {
         retryAttempt = 0;
-        maxAdView.setVisibility(View.VISIBLE);
+
+        if (maxAdView != null)
+            maxAdView.setVisibility(View.VISIBLE);
 
     }
 

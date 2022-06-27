@@ -38,4 +38,8 @@ No Copyright Infringement is Intended, and a request to remove any of the Pictur
     <string name="home_screen">Home Screen</string>
     <string name="lock_screen">Lock Screen</string>
     <string name="both">Both</string>
+
+    <string name="DownloadFolder">/Download/Wallpaper/</string>
+    <string name="error_server">Check your internet connection</string>
+
 </resources>

@@ -2,7 +2,9 @@ package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +38,7 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
     List<SubCatModel> subCatModels = new ArrayList<>();
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +48,22 @@ public class SubCategoryActivity extends AppCompatActivity implements SubCatClic
         loading = CommonMethods.loadingDialog(SubCategoryActivity.this);
         catId = getIntent().getStringExtra("id");
         activityTitle = getIntent().getStringExtra("title");
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         binding.backIcon.setOnClickListener(view -> {
-            onBackPressed();
+            if (preferences.getString("action", "").equals("")) {
+                onBackPressed();
+            } else {
+                preferences.edit().clear().apply();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+
+            }
         });
+
+
         binding.activityTitle.setText(activityTitle);
         getLifecycle().addObserver(ads);
 

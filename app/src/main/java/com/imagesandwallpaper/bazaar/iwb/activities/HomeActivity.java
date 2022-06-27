@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,16 +41,23 @@ import com.imagesandwallpaper.bazaar.iwb.activities.ui.main.SectionsPagerAdapter
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.fragments.CategoryFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
+import com.imagesandwallpaper.bazaar.iwb.fragments.LiveWallpaperFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.PremiumFragment;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
+import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.RandomImage;
+import com.imagesandwallpaper.bazaar.iwb.models.RandomImgDatabase;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
 import com.ironsource.mediationsdk.IronSource;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
@@ -76,6 +84,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     ShowAds ads = new ShowAds();
     String proWallUrl;
     ApiInterface apiInterface;
+    //  Map<String, String> map = new HashMap<>();
+    FirebaseAnalytics mFirebaseAnalytics;
+    Bundle bundle;
+    RandomImgDatabase randomImgDatabase;
+    String action;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,9 +103,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
-    //  Map<String, String> map = new HashMap<>();
-    FirebaseAnalytics mFirebaseAnalytics;
-    Bundle bundle;
 
     private void Set_Visibility_ON() {
         binding.lottieHomeNoInternet.setVisibility(View.GONE);
@@ -111,7 +121,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             viewPager.setOffscreenPageLimit(3);
             tabs.setupWithViewPager(viewPager);
             navigationDrawer();
+            if (action != null) {
+                Log.d("ContentValueForPref", action);
+                switch (action) {
+                    case "home":
+                        binding.viewPager.setCurrentItem(0);
+                        action = null;
+                        break;
+                    case "cat":
+                        binding.viewPager.setCurrentItem(1);
+                        action = null;
+
+                        break;
+                    case "pre":
+                        binding.viewPager.setCurrentItem(2);
+                        action = null;
+                        break;
+                    default:
+                }
+
+            }
+
         }
+
+
     }
 
     private void Set_Visibility_OFF() {
@@ -136,6 +169,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = binding.drawerLayout;
         bundle = new Bundle();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        action = getIntent().getStringExtra("action");
+
 
         // Setting Version Code
         try {
@@ -147,6 +182,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+        fetchProWallUrl();
+        fetchGetWallUrl();
         //Internet Checking Condition
         intentFilter = new IntentFilter();
         intentFilter.addAction(BroadCastStringForAction);
@@ -155,6 +192,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (isOnline(HomeActivity.this)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Set_Visibility_ON();
+                fetchRandomImages();
             }
         } else {
             Set_Visibility_OFF();
@@ -170,6 +208,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         });
+
 //        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 //        if (account != null) {
 //            loading.show();
@@ -183,29 +222,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
         sectionsPagerAdapter.addFragments(new CategoryFragment(), "Category");
+        sectionsPagerAdapter.addFragments(new LiveWallpaperFragment(), "Live");
         sectionsPagerAdapter.addFragments(new PremiumFragment(), "Premium");
 
     }
-
-//    private void uploadUserData(Map<String, String> map) {
-//        Call<MessageModel> call = apiInterface.uploadUserData(map);
-//        call.enqueue(new Callback<MessageModel>() {
-//            @Override
-//            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
-//                if (response.isSuccessful()) {
-//                    assert response.body() != null;
-//                   // Toast.makeText(HomeActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//                loading.dismiss();
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
-//                loading.dismiss();
-//            }
-//        });
-//    }
-
 
     public void navigationDrawer() {
         navigationView = findViewById(R.id.navigation);
@@ -408,6 +428,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     private void fetchGetWallUrl() {
         Call<ProWallModelList> call = apiInterface.fetchGetWallUrl();
         call.enqueue(new Callback<ProWallModelList>() {
@@ -468,6 +489,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             ads.showBottomBanner(this, binding.adViewBottom);
         }
         registerReceiver(receiver, intentFilter);
+
+
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -493,6 +516,44 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             finish();
             ads.destroyBanner();
         }
+    }
+
+
+    private void fetchRandomImages() {
+
+        randomImgDatabase = Room.databaseBuilder(
+                        this,
+                        RandomImgDatabase.class
+                        , "RandomImgDB")
+                .allowMainThreadQueries()
+                .build();
+        Call<ImageItemModelList> call = apiInterface.fetchRandomImages();
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    for (ImageItemModel i : response.body().getData()) {
+                        switch (FilenameUtils.getExtension(i.getImage())) {
+                            case "jpeg":
+                            case "jpg":
+                            case "png":
+                                randomImgDatabase.getRandomDao().addRandomImg(new RandomImage("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + i.getImage(), i.getId(), 0));
+                                break;
+                            case "gif":
+                                randomImgDatabase.getRandomDao().addRandomImg(new RandomImage("https://gedgetsworld.in/Wallpaper_Bazaar/live_wallpapers/" + i.getImage(), i.getId(), 0));
+                                break;
+                        }
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 
 

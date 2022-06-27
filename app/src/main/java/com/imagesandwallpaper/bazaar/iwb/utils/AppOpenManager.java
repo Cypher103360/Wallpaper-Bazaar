@@ -150,10 +150,10 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
                         // Handle the error.
 //                        currentActivity.startActivity(new Intent(currentActivity, WelcomeScreenActivity.class));
                         Log.d("adError", "error = " + loadAdError);
-                        if (count == 1) {
-                            myApplication.intent();
-                            count++;
-                        }
+//                        if (count == 1) {
+//                            myApplication.intent();
+//                            count++;
+//                        }
 
                     }
 
@@ -216,9 +216,9 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
     @Override
     public void onActivityDestroyed(Activity activity) {
         currentActivity = null;
-        if (count == 1) {
-            myApplication.intent();
-            count++;
-        }
+//        if (count == 1) {
+//            myApplication.intent();
+//            count++;
+//        }
     }
 }

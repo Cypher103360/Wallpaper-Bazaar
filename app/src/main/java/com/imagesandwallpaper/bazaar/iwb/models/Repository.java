@@ -26,6 +26,7 @@ public class Repository {
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<PremiumModelList> premiumModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<ImageItemModelList> liveWallpaperModelListMutableLiveData = new MutableLiveData<>();
 
     public Repository() {
         apiInterface = ApiWebServices.getApiInterface();
@@ -209,6 +210,24 @@ public class Repository {
         });
 
         return premiumModelListMutableLiveData;
+    }
+    public MutableLiveData<ImageItemModelList> getLiveWallpaperModelListMutableLiveData(Map<String, String> map) {
+
+        Call<ImageItemModelList> call = apiInterface.getLiveWallpaperImage(map);
+        call.enqueue(new Callback<ImageItemModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<ImageItemModelList> call, @NonNull Response<ImageItemModelList> response) {
+                if (response.isSuccessful()) {
+                    liveWallpaperModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ImageItemModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return liveWallpaperModelListMutableLiveData;
     }
 
 }

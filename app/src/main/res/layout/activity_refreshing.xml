@@ -33,60 +33,30 @@
         android:id="@+id/imageView3"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:civ_border_color="@color/white"
-        app:civ_border_width="2dp"
         android:layout_marginTop="100dp"
         android:src="@drawable/logo"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adView_top" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/startBtn"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
-        android:background="@drawable/start_btn_bg"
         android:backgroundTint="@color/btn_color"
-        android:paddingLeft="40dp"
-        android:paddingTop="10dp"
-        android:paddingRight="40dp"
-        android:paddingBottom="10dp"
+        android:drawableEnd="@drawable/ic_baseline_double_arrow_24"
+        android:padding="15dp"
         android:text="@string/start"
         android:textColor="@color/white"
+        app:cornerRadius="5dp"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
-        app:layout_constraintEnd_toStartOf="@+id/lottie_contact"
-        app:layout_constraintStart_toEndOf="@+id/share_icon" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_contact"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/startBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startBtn"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="whatsapp.json"
-        app:lottie_loop="true" />
-
-    <ImageView
-        android:id="@+id/share_icon"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/item_bg"
-        android:backgroundTint="#18DA4D"
-        android:contentDescription="@string/todo"
-        android:elevation="3dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/startBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startBtn"
-        app:srcCompat="@drawable/ic_baseline_share_24"
-        app:tint="@color/white" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

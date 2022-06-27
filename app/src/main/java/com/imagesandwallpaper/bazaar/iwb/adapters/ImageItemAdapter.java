@@ -2,6 +2,8 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,7 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     Activity context;
     ImageItemClickInterface imageItemClickInterface;
     ShowAds showAds = new ShowAds();
+    SharedPreferences preferences;
 
     public ImageItemAdapter(Activity context, ImageItemClickInterface imageItemClickInterface) {
         this.context = context;
@@ -94,6 +97,12 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 imageItemClickInterface.onClicked(imageItemModelList.get(position), position);
             });
 
+            if (preferences.getString("action", "").equals("pop")) {
+                if (!preferences.getString("pos", "").equals("")) {
+                    imageItemClickInterface.onClicked(imageItemModelList.get(Integer.parseInt(preferences.getString("pos", "0"))), Integer.parseInt(preferences.getString("pos", "0")));
+//                preferences.edit().clear().apply();
+                }
+            }
         } else if (holder.getItemViewType() == AD_VIEW) {
             ((AdViewHolder) holder).bindAdData();
         }
@@ -116,12 +125,14 @@ public class ImageItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemImage = itemView.findViewById(R.id.item_image);
+            preferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+
         }
     }
 

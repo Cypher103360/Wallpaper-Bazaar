@@ -1,9 +1,11 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +36,7 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
     FavoriteAppDatabase favoriteAppDatabase;
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,21 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         catItemsRecyclerView.setLayoutManager(layoutManager);
 
 
-        binding.backIcon.setOnClickListener(view -> onBackPressed());
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        binding.backIcon.setOnClickListener(view -> {
+            if (preferences.getString("action", "").equals("")) {
+                onBackPressed();
+            } else {
+                preferences.edit().clear().apply();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+
+            }
+        });
+
         getLifecycle().addObserver(ads);
         imageItemModels = new ArrayList<>();
 
@@ -59,9 +76,9 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
     private void displayAllContactInBackground() {
 
         favoriteAppDatabase = Room.databaseBuilder(
-                this,
-                FavoriteAppDatabase.class
-                , "FavoriteDB")
+                        this,
+                        FavoriteAppDatabase.class
+                        , "FavoriteDB")
                 .build();
         catItemImageAdapter = new CatItemImageAdapter(this, this);
         catItemsRecyclerView.setAdapter(catItemImageAdapter);
@@ -96,6 +113,7 @@ public class FavoriteActivity extends AppCompatActivity implements CatItemImageC
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Favorite Images");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
         mFirebaseAnalytics.logEvent("Clicked_On_Favorite_Items", bundle);
 
     }
