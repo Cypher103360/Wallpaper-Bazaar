@@ -1,7 +1,9 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +46,7 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
     String id, title, type;
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +56,21 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         type = getIntent().getStringExtra("type");
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         binding.backIcon.setOnClickListener(view -> {
-            onBackPressed();
+            if (preferences.getString("action", "").equals("")) {
+                onBackPressed();
+            } else {
+                preferences.edit().clear().apply();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+
+            }
         });
+
         binding.activityTitle.setText(title);
         imageItemModels = new ArrayList<>();
         apiInterface = ApiWebServices.getApiInterface();
@@ -130,6 +145,7 @@ public class CatItemsActivity extends AppCompatActivity implements SubCatImageCl
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Cat Item Images");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/all_images/" + imageItemModel.getImage());
         mFirebaseAnalytics.logEvent("Clicked_On_Cat_Items", bundle);
 
     }

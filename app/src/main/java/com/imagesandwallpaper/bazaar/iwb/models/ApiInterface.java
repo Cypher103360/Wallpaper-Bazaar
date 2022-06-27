@@ -65,6 +65,16 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("upload_user_data.php")
     Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
+    @POST("fetch_random_images.php")
+    Call<ImageItemModelList> fetchRandomImages();
+
+    @FormUrlEncoded
+    @POST("fetch_urls.php")
+    Call<UrlModel> getUrls(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("fetch_popular_images.php")
+    Call<ImageItemModelList> getLiveWallpaperImage(@FieldMap Map<String, String> map);
 
 }
 

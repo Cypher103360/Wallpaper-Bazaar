@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,15 +84,16 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
 
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewBottom.setVisibility(View.GONE);
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
+//            ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         } else {
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
+//            ads.showTopBanner(requireActivity(), binding.adViewTop);
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         premiumModels = new ArrayList<>();
 
         return binding.getRoot();
+
 
     }
 
@@ -103,6 +106,7 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
                 premiumModels.clear();
                 premiumModels.addAll(premiumModelList.getData());
                 premiumAdapter.updateList(premiumModels);
+
             }
             loading.dismiss();
         });
@@ -124,6 +128,12 @@ public class PremiumFragment extends Fragment implements PremiumClickInterface {
                     }
 
                     binding.premiumBannerImage.setOnClickListener(view -> {
+                        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+                        Bundle bundle = new Bundle();
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, banUrl);
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/category_images/" + banImage);
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Premium Banner");
+                        mFirebaseAnalytics.logEvent("Clicked_On_premium_banner", bundle);
                         openWebPage(banUrl);
                     });
                 }

@@ -77,11 +77,34 @@
                     app:layout_constraintStart_toEndOf="@+id/nav_menu"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/coin_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/coin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/coins"
+                    app:layout_constraintTop_toTopOf="@+id/lottie_contact" />
+
+                <TextView
+                    android:id="@+id/coins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="10"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/lottie_contact"
+                    app:layout_constraintTop_toTopOf="@+id/lottie_contact" />
+
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/lottie_contact"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

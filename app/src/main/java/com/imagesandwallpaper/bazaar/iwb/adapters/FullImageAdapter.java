@@ -16,10 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.Shimmer;
-import com.facebook.shimmer.ShimmerDrawable;
+import com.google.android.material.card.MaterialCardView;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
 import com.imagesandwallpaper.bazaar.iwb.models.FavoriteAppDatabase;
@@ -27,6 +27,8 @@ import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,29 +60,46 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Shimmer shimmer = new Shimmer.AlphaHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
-                .setDuration(700) // how long the shimmering animation takes to do one full sweep
-                .setBaseAlpha(0.9f) //the alpha of the underlying children
-                .setHighlightAlpha(0.7f) // the shimmer alpha amount
-                .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
-                .setAutoStart(true)
-                .build();
+//        Shimmer shimmer = new Shimmer.AlphaHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
+//                .setDuration(700) // how long the shimmering animation takes to do one full sweep
+//                .setBaseAlpha(0.9f) //the alpha of the underlying children
+//                .setHighlightAlpha(0.7f) // the shimmer alpha amount
+//                .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+//                .setAutoStart(true)
+//                .build();
+//
+//        // This is the placeholder for the imageView
+//        ShimmerDrawable shimmerDrawable = new ShimmerDrawable();
+//        shimmerDrawable.setShimmer(shimmer);
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(holder.itemView.getContext());
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
 
-        // This is the placeholder for the imageView
-        ShimmerDrawable shimmerDrawable = new ShimmerDrawable();
-        shimmerDrawable.setShimmer(shimmer);
 
         holder.itemImage.layout(0, 0, 0, 0);
 
-        context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
-                        + imageItemModelList.get(position).getImage())
-                .placeholder(shimmerDrawable)
-                .into(holder.itemImage)
-                ::getRequest);
+        switch (FilenameUtils.getExtension(imageItemModelList.get(position).getImage())) {
+            case "jpeg":
+            case "jpg":
+            case "png":
+                context.runOnUiThread(Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/all_images/"
+                                + imageItemModelList.get(position).getImage())
+                        .placeholder(circularProgressDrawable)
+                        .into(holder.itemImage)
+                        ::getRequest);
+                break;
+            case "gif":
+                context.runOnUiThread(Glide.with(context).asGif().load("https://gedgetsworld.in/Wallpaper_Bazaar/live_wallpapers/"
+                                + imageItemModelList.get(position).getImage())
+                        .placeholder(circularProgressDrawable)
+                        .into(holder.itemImage)
+                        ::getRequest);
+                break;
+        }
 
         holder.backIcon.setOnClickListener(view -> imageItemClickInterface.onClicked());
         holder.favoriteIcon.setOnClickListener(view -> imageItemClickInterface.onFavoriteImg(imageItemModelList.get(position), position, holder.favoriteIcon));
-        holder.downloadIcon.setOnClickListener(view -> imageItemClickInterface.onDownloadImg(imageItemModelList.get(position), position, holder.itemImage));
         holder.shareIcon.setOnClickListener(view -> imageItemClickInterface.onShareImg(imageItemModelList.get(position), position, holder.itemImage));
         holder.setBtn.setOnClickListener(view -> imageItemClickInterface.onSetImg(imageItemModelList.get(position), position, holder.itemImage));
 
@@ -138,16 +157,16 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImage, favoriteIcon, downloadIcon, shareIcon, backIcon;
+        ImageView itemImage, favoriteIcon, backIcon;
         Button setBtn;
         RelativeLayout adviewTop, adviewBottom;
         ShowAds showAds = new ShowAds();
+        MaterialCardView shareIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemImage = itemView.findViewById(R.id.full_item_image);
             favoriteIcon = itemView.findViewById(R.id.favorite_icon);
-            downloadIcon = itemView.findViewById(R.id.download_icon);
             shareIcon = itemView.findViewById(R.id.share_icon);
             backIcon = itemView.findViewById(R.id.back_icon);
             setBtn = itemView.findViewById(R.id.set_btn);

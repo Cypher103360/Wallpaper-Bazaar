@@ -2,6 +2,8 @@ package com.imagesandwallpaper.bazaar.iwb.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Activity context;
     SubCatClickInterface catClickInterface;
     ShowAds showAds = new ShowAds();
+    SharedPreferences preferences;
 
     public SubCategoryAdapter(Activity context, SubCatClickInterface catClickInterface) {
         this.context = context;
@@ -87,7 +90,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             int position = pos - Math.round(pos / ITEM_FEED_COUNT);
 
             Glide.with(context).load("https://gedgetsworld.in/Wallpaper_Bazaar/category_images/"
-                    + subCatModelList.get(position).getImage())
+                            + subCatModelList.get(position).getImage())
                     .placeholder(shimmerDrawable)
                     .into(((ViewHolder) holder).catImage);
 
@@ -96,6 +99,13 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((ViewHolder) holder).itemView.setOnClickListener(view -> {
                 catClickInterface.onClicked(subCatModelList.get(position), position);
             });
+            Log.d("Content", preferences.getString("action", "") + "  " + preferences.getString("cat_pos", "0"));
+            if (preferences.getString("action", "").equals("cat")) {
+                if (!preferences.getString("cat_pos", "").equals("")) {
+                    catClickInterface.onClicked(subCatModelList.get(Integer.parseInt(preferences.getString("cat_pos", "0"))), Integer.parseInt(preferences.getString("cat_pos", "0")));
+//                preferences.edit().clear().apply();
+                }
+            }
 
         } else if (holder.getItemViewType() == AD_VIEW) {
             ((AdViewHolder) holder).bindAdData();
@@ -118,7 +128,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView catImage;
         TextView catTitle;
 
@@ -126,6 +136,8 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             catImage = itemView.findViewById(R.id.catImage);
             catTitle = itemView.findViewById(R.id.catTitle);
+            preferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+
         }
     }
 

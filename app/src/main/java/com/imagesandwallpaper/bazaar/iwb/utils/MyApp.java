@@ -4,26 +4,27 @@ import static android.content.ContentValues.TAG;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.AudienceNetworkAds;
+import com.imagesandwallpaper.bazaar.iwb.activities.FavoriteActivity;
+import com.imagesandwallpaper.bazaar.iwb.activities.HomeActivity;
 import com.imagesandwallpaper.bazaar.iwb.activities.RefreshingActivity;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
-import com.imagesandwallpaper.bazaar.iwb.models.Favorite;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
-import com.ironsource.mediationsdk.IronSource;
 import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
+
+import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -39,7 +40,7 @@ public class MyApp extends Application {
 
     public static MyApp mInstance;
     ApiInterface apiInterface;
-
+    SharedPreferences.Editor editor;
 
     public MyApp() {
         mInstance = this;
@@ -52,9 +53,8 @@ public class MyApp extends Application {
         Paper.init(mInstance);
         ExecutorService service = Executors.newSingleThreadExecutor();
         // Background work
+        editor = PreferenceManager.getDefaultSharedPreferences(mInstance).edit();
         service.execute(this::fetchAds);
-
-
     }
 
     public void intent() {
@@ -114,8 +114,8 @@ public class MyApp extends Application {
                             Paper.book().write(Prevalent.interstitialNetwork, ads.getInterstitialNetwork());
                             Paper.book().write(Prevalent.nativeAds, ads.getNativeAds());
                             Paper.book().write(Prevalent.nativeAdsNetworkName, ads.getNativeAdsNetworkName());
-                            Paper.book().write(Prevalent.openAds,ads.getOpenAds());
-                            Paper.book().write(Prevalent.openAdsNetworkName,ads.getOpenAdsNetworkName());
+                            Paper.book().write(Prevalent.openAds, ads.getOpenAds());
+                            Paper.book().write(Prevalent.openAdsNetworkName, ads.getOpenAdsNetworkName());
 
                             try {
                                 ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -148,16 +148,17 @@ public class MyApp extends Application {
 
                         if (!Objects.equals(Paper.book().read(Prevalent.openAds), "null")) {
                             new AppOpenManager(mInstance, Paper.book().read(Prevalent.openAds), getApplicationContext());
-                        } else {
-                            new Handler().postDelayed(() -> {
-
-                                Intent intent = new Intent(getApplicationContext(), RefreshingActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-
-                            }, 2000);
-
                         }
+//                        else {
+//                            new Handler().postDelayed(() -> {
+//
+//                                Intent intent = new Intent(getApplicationContext(), RefreshingActivity.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startActivity(intent);
+//
+//                            }, 2000);
+//
+//                        }
                     }
                 } else {
                     Log.e("adsError", response.message());
@@ -175,9 +176,46 @@ public class MyApp extends Application {
     private class ExampleNotificationOpenedHandler implements OneSignal.OSNotificationOpenedHandler {
         @Override
         public void notificationOpened(OSNotificationOpenedResult result) {
-            Intent intent = new Intent(MyApp.this, RefreshingActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            JSONObject data = result.getNotification().getAdditionalData();
+            String activityToBeOpened, imgPos, cat_pos, cat_item_pos;
+
+            if (data != null) {
+                activityToBeOpened = data.optString("action", null);
+                imgPos = data.optString("pos", null);
+                cat_pos = data.optString("cat_pos", null);
+                cat_item_pos = data.optString("cat_item_pos", null);
+                editor.putString("pos", imgPos);
+                editor.putString("action", activityToBeOpened);
+                editor.putString("cat_pos", cat_pos);
+                editor.putString("cat_item_pos", cat_item_pos);
+                editor.apply();
+                switch (activityToBeOpened) {
+                    case "home":
+                    case "cat":
+                    case "pop":
+                    case "new":
+                    case "pre": {
+                        Intent intent = new Intent(MyApp.this, HomeActivity.class);
+                        intent.putExtra("action", activityToBeOpened);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        startActivity(intent);
+                        break;
+                    }
+                    case "fav": {
+                        Intent intent = new Intent(MyApp.this, FavoriteActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        startActivity(intent);
+                        break;
+                    }
+                }
+            } else {
+
+                Intent intent = new Intent(MyApp.this, RefreshingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
 
         }
     }

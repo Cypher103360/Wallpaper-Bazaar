@@ -2,130 +2,198 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/bg_color"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_color">
 
-        <ImageView
-            android:id="@+id/full_item_image"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
+    <ImageView
+        android:id="@+id/full_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView_top" />
+
+    <ImageView
+        android:id="@+id/coin_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/coin"
+        app:layout_constraintBottom_toBottomOf="@+id/favorite_icon"
+        app:layout_constraintEnd_toStartOf="@+id/coins"
+        app:layout_constraintTop_toTopOf="@+id/favorite_icon" />
+
+    <TextView
+        android:id="@+id/coins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="10"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/favorite_icon"
+        app:layout_constraintEnd_toStartOf="@+id/favorite_icon"
+        app:layout_constraintTop_toTopOf="@+id/favorite_icon" />
+
+    <ImageView
+        android:id="@+id/favorite_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/item_bg"
+        android:backgroundTint="@color/btn_color"
+        android:contentDescription="@string/todo"
+        android:elevation="3dp"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView_top"
+        app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
+
+    <ImageView
+        android:id="@+id/back_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/item_bg"
+        android:backgroundTint="@color/btn_color"
+        android:contentDescription="@string/todo"
+        android:elevation="3dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/favorite_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/favorite_icon"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_ios_new_24"
+        app:tint="@color/white" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <Button
+            android:id="@+id/set_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/start_btn_bg"
+            android:backgroundTint="@color/btn_color"
+            android:fontFamily="@font/lemon"
+            android:text="Set"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/adView_top"
-            android:contentDescription="@string/todo" />
-
-        <ImageView
-            android:id="@+id/favorite_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/item_bg"
-            android:backgroundTint="@color/btn_color"
-            android:contentDescription="@string/todo"
-            android:elevation="3dp"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/adView_top"
-            app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
-
-        <ImageView
-            android:id="@+id/back_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/item_bg"
-            android:backgroundTint="@color/btn_color"
-            android:contentDescription="@string/todo"
-            android:elevation="3dp"
-            android:padding="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/favorite_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/favorite_icon"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_ios_new_24"
-            app:tint="@color/white" />
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-                <ImageView
-                    android:id="@+id/download_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/item_bg"
-                    android:contentDescription="@string/todo"
-                    android:elevation="3dp"
-                    android:padding="10dp"
-                    app:tint="@color/white"
-                    android:backgroundTint="@color/btn_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_download_24" />
-
-
-                <Button
-                    android:id="@+id/set_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="52dp"
-                    android:layout_marginEnd="52dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/start_btn_bg"
-                    android:text="Set"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/btn_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/share_icon"
-                    app:layout_constraintStart_toEndOf="@+id/download_icon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/share_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/item_bg"
-                    android:contentDescription="@string/todo"
-                    android:elevation="3dp"
-                    android:padding="10dp"
-                    app:tint="@color/white"
-                    android:backgroundTint="@color/btn_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_share_24" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <RelativeLayout
-            android:id="@+id/adView_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center"
-            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:id="@+id/adView_bottom"
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/share_icon"
+        android:layout_width="56dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="-5dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="match_parent"
+            android:background="#00A34F"
+            android:gravity="center_vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="-5dp"
+                android:elevation="4dp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="whatsapp.json"
+                app:lottie_loop="true" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <RelativeLayout
+        android:id="@+id/adView_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/adView_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/subscription_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:padding="5dp"
+        android:visibility="gone"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/btn_color"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subscribe Now"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To unlock all the Pro features"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

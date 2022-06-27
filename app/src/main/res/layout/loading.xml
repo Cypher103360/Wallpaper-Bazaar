@@ -7,7 +7,7 @@
     android:elevation="4dp"
     android:background="@drawable/item_bg"
     android:backgroundTint="@color/btn_color"
-    android:padding="8dp">
+    android:padding="10dp">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -17,5 +17,13 @@
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/white"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Progress"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:id="@+id/progressTitle"/>
 </LinearLayout>
 

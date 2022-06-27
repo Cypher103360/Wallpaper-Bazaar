@@ -7,10 +7,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,15 +20,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.imagesandwallpaper.bazaar.iwb.activities.FullscreenActivity;
 import com.imagesandwallpaper.bazaar.iwb.adapters.PopNewPagerAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.FragmentHomeBinding;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiWebServices;
 import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModel;
 import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModelList;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemClickInterface;
-import com.imagesandwallpaper.bazaar.iwb.models.ImageItemModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
 import com.imagesandwallpaper.bazaar.iwb.utils.ShowAds;
@@ -52,6 +50,7 @@ public class HomeFragment extends Fragment {
     String banImage, banUrl;
     ShowAds ads = new ShowAds();
     PopNewPagerAdapter popNewPagerAdapter;
+    String action;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -69,10 +68,10 @@ public class HomeFragment extends Fragment {
 
         } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewBottom.setVisibility(View.GONE);
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
+//            ads.showTopBanner(requireActivity(), binding.adViewTop);
 
         } else {
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
+//            ads.showTopBanner(requireActivity(), binding.adViewTop);
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
         }
         popNewPagerAdapter = new PopNewPagerAdapter(getChildFragmentManager(),
@@ -86,11 +85,31 @@ public class HomeFragment extends Fragment {
         tabs.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(2);
 
+        action = requireActivity().getIntent().getStringExtra("action");
 
         banMap.put("tableName", "home_banner");
         setBannerImage(banMap);
 
+        new Handler().postDelayed(() -> {
+            if (action != null) {
+                Log.d("ContentValueForPref", action);
+                switch (action) {
+                    case "pop":
+                        binding.viewPager.setCurrentItem(0);
+                        action = null;
+                        break;
+                    case "new":
+                        binding.viewPager.setCurrentItem(1);
+                        action = null;
+
+                        break;
+                    default:
+                }
+
+            }
+        }, 1000);
         return binding.getRoot();
+
     }
 
     private void setBannerImage(Map<String, String> banMap) {
@@ -125,6 +144,13 @@ public class HomeFragment extends Fragment {
                 }
                 binding.homeBannerImage.setOnClickListener(view -> {
                     openWebPage(banUrl);
+                    FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, banUrl);
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "https://gedgetsworld.in/Wallpaper_Bazaar/category_images/" + banImage);
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Banner");
+                    mFirebaseAnalytics.logEvent("Clicked_On_home_banner", bundle);
+
                 });
             }
 

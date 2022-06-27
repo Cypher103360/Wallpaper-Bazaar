@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             uploadCategory("featured");
         });
         binding.showFeaturedItems.setOnClickListener(v -> {
-           startActivity(new Intent(this,ShowFeaturedActivity.class));
+            startActivity(new Intent(this, ShowFeaturedActivity.class));
         });
 
         binding.updateTextUrls.setOnClickListener(v -> {
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         String[] textUrlItems = new String[]{
                 "Update Share Text",
                 "Update Whatsapp Text",
-                "Website Url"};
+                "Website Url", "memes Url", "success quotes Url"};
         builder.setTitle("Update your texts and Urls").setCancelable(true).setItems(textUrlItems, (dialogInterface, which) -> {
             switch (which) {
                 case 0:
@@ -244,6 +244,12 @@ public class MainActivity extends AppCompatActivity {
 
                 case 2:
                     fetchTextAndUrls("website");
+                    break;
+                case 3:
+                    fetchTextAndUrls("memes");
+                    break;
+                case 4:
+                    fetchTextAndUrls("web");
                     break;
                 default:
             }

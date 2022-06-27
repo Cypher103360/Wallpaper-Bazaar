@@ -114,11 +114,6 @@ public class NewFragment extends Fragment implements ImageItemClickInterface, Ca
     }
 
     @Override
-    public void onDownloadImg(ImageItemModel imageItemModel, int position, ImageView itemImage) {
-
-    }
-
-    @Override
     public void onFavoriteImg(ImageItemModel imageItemModel, int position, ImageView favoriteIcon) {
 
     }
