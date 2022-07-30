@@ -28,9 +28,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +42,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.imagesandwallpaper.bazaar.iwb.R;
 import com.imagesandwallpaper.bazaar.iwb.activities.ui.main.SectionsPagerAdapter;
 import com.imagesandwallpaper.bazaar.iwb.databinding.ActivityHomeBinding;
+import com.imagesandwallpaper.bazaar.iwb.db.CoinsDatabase;
 import com.imagesandwallpaper.bazaar.iwb.fragments.CategoryFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.HomeFragment;
 import com.imagesandwallpaper.bazaar.iwb.fragments.LiveWallpaperFragment;
@@ -51,6 +55,10 @@ import com.imagesandwallpaper.bazaar.iwb.models.ProWallModel;
 import com.imagesandwallpaper.bazaar.iwb.models.ProWallModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.RandomImage;
 import com.imagesandwallpaper.bazaar.iwb.models.RandomImgDatabase;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModel;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModelFactory;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataViewModel;
 import com.imagesandwallpaper.bazaar.iwb.utils.CommonMethods;
 import com.imagesandwallpaper.bazaar.iwb.utils.MyReceiver;
 import com.imagesandwallpaper.bazaar.iwb.utils.Prevalent;
@@ -60,6 +68,8 @@ import com.ironsource.mediationsdk.IronSource;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import io.paperdb.Paper;
@@ -70,6 +80,8 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
     private static final float END_SCALE = 0.7f;
+    String userCoins = "";
+    String userId = "";
     int count = 1;
     ImageView navMenu;
     DrawerLayout drawerLayout;
@@ -78,17 +90,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     IntentFilter intentFilter;
     SectionsPagerAdapter sectionsPagerAdapter;
     GoogleSignInOptions gso;
+    UserDataViewModel userDataViewModel;
     GoogleSignInClient gsc;
+    CoinsDatabase coinsDatabase;
     ActivityHomeBinding binding;
     Dialog loading;
     ShowAds ads = new ShowAds();
-    String proWallUrl;
+    String proWallUrl, action, localCoins;
     ApiInterface apiInterface;
-    //  Map<String, String> map = new HashMap<>();
-    FirebaseAnalytics mFirebaseAnalytics;
-    Bundle bundle;
-    RandomImgDatabase randomImgDatabase;
-    String action;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -103,6 +112,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
+    Map<String, String> map = new HashMap<>();
+    FirebaseAnalytics mFirebaseAnalytics;
+    Bundle bundle;
+    RandomImgDatabase randomImgDatabase;
+    private GoogleSignInAccount account;
 
     private void Set_Visibility_ON() {
         binding.lottieHomeNoInternet.setVisibility(View.GONE);
@@ -161,6 +175,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         apiInterface = ApiWebServices.getApiInterface();
+        account = GoogleSignIn.getLastSignedInAccount(this);
+
 //        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 //        gsc = GoogleSignIn.getClient(this, gso);
         loading = CommonMethods.loadingDialog(HomeActivity.this);
@@ -171,7 +187,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         action = getIntent().getStringExtra("action");
 
-
         // Setting Version Code
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
@@ -180,7 +195,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
 
         fetchProWallUrl();
         fetchGetWallUrl();
@@ -209,22 +223,60 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        if (account != null) {
-//            loading.show();
-//            String name = account.getDisplayName();
-//            String email = account.getEmail();
-//            map.put("name", name);
-//            map.put("email", email);
-//            uploadUserData(map);
-//        }
+        refreshCoins();
+
+        binding.coinsContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SubscriptionActivity.class);
+            if (account != null) {
+                intent.putExtra("coins", userCoins);
+            } else {
+                intent.putExtra("coins", localCoins);
+            }
+            startActivity(intent);
+        });
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
         sectionsPagerAdapter.addFragments(new CategoryFragment(), "Category");
         sectionsPagerAdapter.addFragments(new LiveWallpaperFragment(), "Live");
         sectionsPagerAdapter.addFragments(new PremiumFragment(), "Premium");
+    }
 
+    private void refreshCoins() {
+        if (account != null) {
+            loading.show();
+
+            fetchUserData(account.getEmail());
+        } else {
+            // Room Database
+            coinsDatabase = Room.databaseBuilder(
+                            HomeActivity.this,
+                            CoinsDatabase.class,
+                            "CoinsDB")
+                    .allowMainThreadQueries()
+                    .build();
+            Paper.book().write(Prevalent.coinsId, coinsDatabase.getCoinsDAO().getCoins());
+            localCoins = Paper.book().read(Prevalent.coinsId);
+            Log.d("coinsLocal", localCoins);
+
+            binding.coins.setText(localCoins);
+
+        }
+    }
+
+    private void fetchUserData(String email) {
+        userDataViewModel = new ViewModelProvider(this, new UserDataModelFactory(this.getApplication(), email))
+                .get(UserDataViewModel.class);
+        userDataViewModel.getAllUserData().observe(this, userDataModel -> {
+
+            if (userDataModel != null) {
+                userId = userDataModel.getId();
+                userCoins = userDataModel.getCoins();
+            }
+            binding.coins.setText(userCoins);
+            loading.dismiss();
+
+        });
     }
 
     public void navigationDrawer() {
@@ -463,6 +515,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             loading.dismiss();
             startActivity(new Intent(HomeActivity.this, SignupActivity.class));
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        refreshCoins();
     }
 
     @Override

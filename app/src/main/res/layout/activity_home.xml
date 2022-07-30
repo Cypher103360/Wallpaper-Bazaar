@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    android:id="@+id/drawerLayout"
     tools:context=".activities.HomeActivity">
 
     <com.google.android.material.navigation.NavigationView
@@ -77,33 +76,42 @@
                     app:layout_constraintStart_toEndOf="@+id/nav_menu"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/coin_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/coin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/coins"
-                    app:layout_constraintTop_toTopOf="@+id/lottie_contact" />
-
-                <TextView
-                    android:id="@+id/coins"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="10"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
+                    android:orientation="horizontal"
+                    android:id="@+id/coins_container"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/lottie_contact"
-                    app:layout_constraintTop_toTopOf="@+id/lottie_contact" />
+                    app:layout_constraintStart_toEndOf="@+id/title"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/coin_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/coin" />
+
+                    <TextView
+                        android:id="@+id/coins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="5dp"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/lottie_contact"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -118,7 +126,7 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabIndicatorColor="@color/btn_color"/>
+                app:tabIndicatorColor="@color/btn_color" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

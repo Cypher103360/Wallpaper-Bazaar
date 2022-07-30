@@ -6,6 +6,8 @@ public class Prevalent {
     public static final String appId = "appId";
     public static final String appLovinId = "appLovinId";
 
+    public static final String coinsId = "coinsId";
+
     public static final String bannerTop = "bannerTop";
     public static final String bannerTopNetworkName = "bannerTopNetworkName";
 

@@ -83,6 +83,12 @@ public class UpdateAdsActivity extends AppCompatActivity {
             case "turbo":
                 fetchAds("Turbo Share");
                 break;
+            case "turbo2":
+                fetchAds("Turbo Share2");
+                break;
+            case "turbo3":
+                fetchAds("Turbo Share3");
+                break;
             case "HDWall":
                 fetchAds("HD Wallpaper");
                 break;
@@ -160,6 +166,12 @@ public class UpdateAdsActivity extends AppCompatActivity {
                         break;
                     case "turbo":
                         map.put("id", "Turbo Share");
+                        break;
+                    case "turbo2":
+                        map.put("id", "Turbo Share2");
+                        break;
+                    case "turbo3":
+                        map.put("id", "Turbo Share3");
                         break;
                     case "HDWall":
                         map.put("id", "HD Wallpaper");

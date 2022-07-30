@@ -13,10 +13,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.room.Room;
 
 import com.imagesandwallpaper.bazaar.iwb.activities.FavoriteActivity;
 import com.imagesandwallpaper.bazaar.iwb.activities.HomeActivity;
 import com.imagesandwallpaper.bazaar.iwb.activities.RefreshingActivity;
+import com.imagesandwallpaper.bazaar.iwb.db.CoinsDatabase;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModel;
 import com.imagesandwallpaper.bazaar.iwb.models.AdsModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.ApiInterface;

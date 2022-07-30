@@ -17,6 +17,7 @@
     <uses-feature
         android:name="android.software.live_wallpaper"
         android:required="true" />
+
     <application
         android:name=".utils.MyApp"
         android:allowBackup="true"
@@ -28,6 +29,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperBazaar"
         tools:targetApi="n">
+        <activity
+            android:name=".activities.SubscriptionActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.FavoriteActivity"
             android:exported="false" />
@@ -69,8 +73,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name="com.ironsource.sdk.controller.ControllerActivity"
             android:configChanges="orientation|screenSize"
@@ -95,22 +97,18 @@
         <meta-data
             android:name="applovin.sdk.key"
             android:value="GgLgSCRJuuwaT0BTcIsnQ1DPOdEioGgavMteEAVnFP4HrKRiBrwhezR0TgSh1L_oOZTelQGMC9PQeSHPsUf8fW" />
-
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
-            android:value="DISABLE" />
-
-<!--        <receiver-->
-<!--            android:name=".utils.BootUpReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true"-->
-<!--            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
+            android:value="DISABLE" /> <!-- <receiver -->
+        <!-- android:name=".utils.BootUpReceiver" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" -->
+        <!-- android:permission="android.permission.RECEIVE_BOOT_COMPLETED"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -120,6 +118,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <service
             android:name=".utils.GIFLiveWallpaper"
             android:exported="true"
@@ -128,13 +127,11 @@
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.service.wallpaper"
                 android:resource="@xml/wallpaper" />
         </service>
-
-
     </application>
-
 
 </manifest>

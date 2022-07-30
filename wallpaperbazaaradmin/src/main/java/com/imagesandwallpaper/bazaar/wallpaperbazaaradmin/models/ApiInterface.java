@@ -4,6 +4,7 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.Ads.AdsModelLis
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -127,5 +128,16 @@ public interface ApiInterface {
     Call<ResponseBody> uploadLiveWallpaper(@Part MultipartBody.Part liveWallPart,
                                            @Part MultipartBody.Part idPart);
 
+    //
+    @FormUrlEncoded
+    @POST("update_premium.php")
+    Call<MessageModel> updatePremium(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("upload_fileShare_banners.php")
+    Call<MessageModel> uploadFileShareBanners(@FieldMap Map<String, String> map);
+
+    @POST("fetch_fileShare_banners.php")
+    Call<List<BannerModel>> fetchBanners();
 }
 

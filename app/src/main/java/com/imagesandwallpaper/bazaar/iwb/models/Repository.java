@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModel;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModelList;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -26,6 +28,7 @@ public class Repository {
     MutableLiveData<SubCatModelList> subCategoryMutableLiveData = new MutableLiveData<>();
     MutableLiveData<SubCatImageModelList> subCatImageModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<PremiumModelList> premiumModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<UserDataModel> userDataModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<ImageItemModelList> liveWallpaperModelListMutableLiveData = new MutableLiveData<>();
 
     public Repository() {
@@ -228,6 +231,24 @@ public class Repository {
             }
         });
         return liveWallpaperModelListMutableLiveData;
+    }
+
+    public MutableLiveData<UserDataModel> getUserDataModelListMutableLiveData(String email){
+        Call<UserDataModel> call = apiInterface.getAllUserData(email);
+        call.enqueue(new Callback<UserDataModel>() {
+            @Override
+            public void onResponse(@NonNull Call<UserDataModel> call, @NonNull Response<UserDataModel> response) {
+                if (response.isSuccessful()){
+                    userDataModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserDataModel> call, @NonNull Throwable t) {
+
+            }
+        });
+        return userDataModelListMutableLiveData;
     }
 
 }

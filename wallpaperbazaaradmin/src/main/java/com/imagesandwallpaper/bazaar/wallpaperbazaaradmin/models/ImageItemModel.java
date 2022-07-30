@@ -1,12 +1,13 @@
 package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
 public class ImageItemModel {
-    String id, catId, Image;
+    String id, catId, Image,lockItem;
 
-    public ImageItemModel(String id, String catId, String image) {
+    public ImageItemModel(String id, String catId, String image, String lockItem) {
         this.id = id;
         this.catId = catId;
         Image = image;
+        this.lockItem = lockItem;
     }
 
     public String getId() {
@@ -19,5 +20,9 @@ public class ImageItemModel {
 
     public String getImage() {
         return Image;
+    }
+
+    public String getLockItem() {
+        return lockItem;
     }
 }

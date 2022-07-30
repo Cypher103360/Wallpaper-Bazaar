@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="5dp"
     android:layout_margin="8dp"
@@ -29,20 +29,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            app:endIconMode="clear_text"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:hint="Enter Image Quality"
             app:boxStrokeColor="@color/black"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/choose_imageView">
+            app:layout_constraintTop_toBottomOf="@+id/switch1">
 
             <EditText
                 android:id="@+id/img_quality"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -84,6 +84,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/upload_image_btn" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:switchMinWidth="20dp"
+            android:text="Unlocked"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/choose_imageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

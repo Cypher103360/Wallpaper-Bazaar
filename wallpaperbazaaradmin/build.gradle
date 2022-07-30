@@ -51,4 +51,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
     implementation 'commons-io:commons-io:2.6'
 
+    // Image Slider
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
+
 }

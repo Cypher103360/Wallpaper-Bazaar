@@ -1,18 +1,17 @@
 package com.imagesandwallpaper.bazaar.iwb.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.telephony.TelephonyManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public RandomImage r;
     int REQUEST_CODE = 11;
     int count = 1;
+    SharedPreferences preferences;
     ActivityMainBinding binding;
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -83,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         firebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
         inAppUpdate();
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         randomImgDatabase = Room.databaseBuilder(
                         this,
                         RandomImgDatabase.class
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(BroadCastStringForAction);
         Intent serviceIntent = new Intent(this, MyReceiver.class);
         startService(serviceIntent);
+
         if (isOnline(getApplicationContext())) {
             Set_Visibility_ON();
             fetchRandomImage();
@@ -102,10 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-
     }
-
 
 
     private void fetchRandomImage() {
@@ -166,16 +168,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (count == 2) {
             new Handler().postDelayed(() -> {
-                // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-                startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
-
-//                if (account != null) {
-//                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
-//                } else {
-//                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
-//                }
-                // finish();
+                // startActivity(new Intent(MainActivity.this, SignupActivity.class));
+                //
+                if (account != null || preferences.getBoolean("skip", false)) {
+                    startActivity(new Intent(MainActivity.this, RefreshingActivity.class));
+                } else {
+                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
+                }
+                finish();
             }, 3000);
         }
     }

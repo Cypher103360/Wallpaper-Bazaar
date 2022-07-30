@@ -56,18 +56,22 @@ public class PopAndPremiumActivity extends AppCompatActivity implements ImageIte
         popPremiumRV.setHasFixedSize(true);
         imageItemModels = new ArrayList<>();
 
-        if (type.equals("popular")) {
-            loading.show();
-            map.put("tableName", "Popular_Images");
-            fetchPopular(this, map);
-        } else if (type.equals("premium")) {
-            loading.show();
-            map.put("tableName", "Premium_Images");
-            fetchPremium(this, map);
-        } else if (type.equals("live")) {
-            loading.show();
-            map.put("tableName", "live_wallpaper");
-            fetchPremium(this, map);
+        switch (type) {
+            case "popular":
+                loading.show();
+                map.put("tableName", "Popular_Images");
+                fetchPopular(this, map);
+                break;
+            case "premium":
+                loading.show();
+                map.put("tableName", "Premium_Images");
+                fetchPremium(this, map);
+                break;
+            case "live":
+                loading.show();
+                map.put("tableName", "live_wallpaper");
+                fetchPremium(this, map);
+                break;
         }
 
     }
@@ -107,53 +111,60 @@ public class PopAndPremiumActivity extends AppCompatActivity implements ImageIte
 
     @Override
     public void onClicked(ImageItemModel imageItemModel) {
-        if (type.equals("popular")) {
+        switch (type) {
+            case "popular": {
 
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-            builder.setTitle("Delete this Item?")
-                    .setNegativeButton("Cancel", (dialog1, which1) -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setTitle("Delete this Item?")
+                        .setNegativeButton("Cancel", (dialog1, which1) -> {
 
-                    })
-                    .setPositiveButton("Delete", (dialog12, which12) -> {
-                        loading.show();
-                        itemId = imageItemModel.getId();
-                        itemImage = imageItemModel.getImage();
-                        map.put("id", itemId);
-                        map.put("title", "popular");
-                        map.put("path", "all_images/" + itemImage);
-                        deletePopPremiumImages(map, "popular");
-                    }).show();
-        } else if (type.equals("premium")) {
+                        })
+                        .setPositiveButton("Delete", (dialog12, which12) -> {
+                            loading.show();
+                            itemId = imageItemModel.getId();
+                            itemImage = imageItemModel.getImage();
+                            map.put("id", itemId);
+                            map.put("title", "popular");
+                            map.put("path", "all_images/" + itemImage);
+                            deletePopPremiumImages(map, "popular");
+                        }).show();
+                break;
+            }
+            case "premium": {
 
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-            builder.setTitle("Delete this Item?")
-                    .setNegativeButton("Cancel", (dialog1, which1) -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setTitle("Delete this Item?")
+                        .setNegativeButton("Cancel", (dialog1, which1) -> {
 
-                    })
-                    .setPositiveButton("Delete", (dialog12, which12) -> {
-                        loading.show();
-                        itemId = imageItemModel.getId();
-                        itemImage = imageItemModel.getImage();
-                        map.put("id", itemId);
-                        map.put("title", "premium");
-                        map.put("path", "all_images/" + itemImage);
-                        deletePopPremiumImages(map, "premium");
-                    }).show();
-        } else if (type.equals("live")) {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-            builder.setTitle("Delete this Item?")
-                    .setNegativeButton("Cancel", (dialog1, which1) -> {
+                        })
+                        .setPositiveButton("Delete", (dialog12, which12) -> {
+                            loading.show();
+                            itemId = imageItemModel.getId();
+                            itemImage = imageItemModel.getImage();
+                            map.put("id", itemId);
+                            map.put("title", "premium");
+                            map.put("path", "all_images/" + itemImage);
+                            deletePopPremiumImages(map, "premium");
+                        }).show();
+                break;
+            }
+            case "live": {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setTitle("Delete this Item?")
+                        .setNegativeButton("Cancel", (dialog1, which1) -> {
 
-                    })
-                    .setPositiveButton("Delete", (dialog12, which12) -> {
-                        loading.show();
-                        itemId = imageItemModel.getId();
-                        itemImage = imageItemModel.getImage();
-                        map.put("id", itemId);
-                        map.put("title", "live");
-                        map.put("path", "live_wallpapers/" + itemImage);
-                        deletePopPremiumImages(map, "live");
-                    }).show();
+                        })
+                        .setPositiveButton("Delete", (dialog12, which12) -> {
+                            loading.show();
+                            itemId = imageItemModel.getId();
+                            itemImage = imageItemModel.getImage();
+                            map.put("id", itemId);
+                            map.put("title", "live");
+                            map.put("path", "live_wallpapers/" + itemImage);
+                            deletePopPremiumImages(map, "live");
+                        }).show();
+                break;
+            }
         }
     }
 

@@ -3,6 +3,8 @@ package com.imagesandwallpaper.bazaar.iwb.models;
 import com.imagesandwallpaper.bazaar.iwb.models.BannerImages.BannerModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.CatItemImage.CatItemImageModelList;
 import com.imagesandwallpaper.bazaar.iwb.models.PremiumImages.PremiumModelList;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModel;
+import com.imagesandwallpaper.bazaar.iwb.models.UserData.UserDataModelList;
 
 import java.util.Map;
 
@@ -65,6 +67,7 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("upload_user_data.php")
     Call<MessageModel> uploadUserData(@FieldMap Map<String, String> map);
+
     @POST("fetch_random_images.php")
     Call<ImageItemModelList> fetchRandomImages();
 
@@ -75,6 +78,22 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("fetch_popular_images.php")
     Call<ImageItemModelList> getLiveWallpaperImage(@FieldMap Map<String, String> map);
+
+
+    @POST("fetch_coins.php")
+    Call<CoinsModelList> getAllCoins();
+
+    @FormUrlEncoded
+    @POST("update_coins.php")
+    Call<MessageModel> updateCoins(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_user_data.php")
+    Call<UserDataModel> getAllUserData(@Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("update_user_data.php")
+    Call<MessageModel> updateUserData(@FieldMap Map<String, String> map);
 
 }
 
