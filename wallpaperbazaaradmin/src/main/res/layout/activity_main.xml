@@ -122,24 +122,6 @@
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/turbo_ads_btn2"
-                android:layout_width="300dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:text="Turbo Share ads Id 2"
-                android:textAllCaps="false"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/turbo_ads_btn3"
-                android:layout_width="300dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:text="Turbo Share ads Id 3"
-                android:textAllCaps="false"
-                android:textSize="18sp" />
-
-            <Button
                 android:id="@+id/user_data_btn"
                 android:layout_width="300dp"
                 android:layout_height="56dp"
@@ -205,6 +187,24 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:text="Update Text and Urls"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/FS_news_reviews_details"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="FileShare News and Reviews"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/show_FS_news_reviews_details"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Show News or Review Details"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
 

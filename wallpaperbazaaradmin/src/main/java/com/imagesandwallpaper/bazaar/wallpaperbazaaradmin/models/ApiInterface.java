@@ -3,6 +3,7 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.Ads.AdsModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.news_and_reviews.DetailsModelList;
 
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,14 @@ public interface ApiInterface {
     @POST("fetch_file_transfer_url.php")
     Call<ProWallModelList> fetchFileTransferUrl();
 
+    @FormUrlEncoded
+    @POST("fetch_specific_fileShare_url.php")
+    Call<ProWallModel> fetchFileShareUrlById(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("update_specific_fileShare_url.php")
+    Call<MessageModel> updateFileShareUrlsById(@FieldMap Map<String, String> map);
+
 
     @FormUrlEncoded
     @POST("update_pro_wallpaper_url.php")
@@ -139,5 +148,23 @@ public interface ApiInterface {
 
     @POST("fetch_fileShare_banners.php")
     Call<List<BannerModel>> fetchBanners();
+
+    @FormUrlEncoded
+    @POST("upload_news_details.php")
+    Call<MessageModel> uploadNewsDetails(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("upload_review_details.php")
+    Call<MessageModel> uploadReviewDetails(@FieldMap Map<String, String> map);
+
+    @POST("fetch_news_details.php")
+    Call<DetailsModelList> getNewsDetails();
+
+    @POST("fetch_review_details.php")
+    Call<DetailsModelList> getReviewsDetails();
+
+    @FormUrlEncoded
+    @POST("update_news_details.php")
+    Call<MessageModel> updateAllDetails(@FieldMap Map<String, String> map);
 }
 

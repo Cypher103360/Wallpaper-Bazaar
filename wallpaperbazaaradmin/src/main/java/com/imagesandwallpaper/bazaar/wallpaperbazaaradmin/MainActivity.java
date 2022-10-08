@@ -1,8 +1,9 @@
 package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.denzcoskun.imageslider.ImageSlider;
@@ -34,11 +36,14 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.FileShareAdsActivity;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.FileShareEditActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremiumActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.ShowFeaturedActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.NewsCardLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadLiveWallpaperLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
@@ -80,9 +85,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
     String encodedImage, liveWallImg, checkImage;
-    Dialog loadingDialog, sliderDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog, textAndUrlsDialog;
+    Dialog loadingDialog, sliderDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog, textAndUrlsDialog, fileShareDetailsDialog;
     ApiInterface apiInterface;
-    String id, image2, proWallUrl, proWallId, fileShareId, fileShareUrl, getWallId, getWallUrl, textAndUrls, textAndUrlsId;
+    String id, image2, proWallUrl, proWallId, getWallId, getWallUrl, textAndUrls, textAndUrlsId;
+    String fileShareUrl, fileShareId, key, fsTitletxt, fsURLTxt, fsDescTxt;
     EditText choseImgQuality;
     UploadLiveWallpaperLayoutBinding uploadLiveWallpaperLayoutBinding;
     Intent intent;
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     List<BannerModel> bannerModels = new ArrayList<>();
     List<SlideModel> slideModels = new ArrayList<>();
     Uri uri;
+    NewsCardLayoutBinding cardLayoutBinding;
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -131,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
             if (result != null) {
                 if (chooseImage != null) {
                     Glide.with(this).load(result).into(chooseImage);
-                } else {
+                } else if (cardLayoutBinding.selectImage != null) {
+                    Glide.with(this).load(result).into(cardLayoutBinding.selectImage);
+                }else{
                     Glide.with(this).load(result).into(categoryImage);
                 }
                 try {
@@ -141,6 +150,11 @@ public class MainActivity extends AppCompatActivity {
                         bitmap = BitmapFactory.decodeStream(inputStream);
                         encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
                         Toast.makeText(this, "Image quality is " + imgQuality, Toast.LENGTH_SHORT).show();
+                    }else if(Objects.equals(key, "news")){
+
+                        InputStream inputStream = this.getContentResolver().openInputStream(result);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        encodedImage = imageStore(bitmap, 80);
                     }
 
                 } catch (FileNotFoundException e) {
@@ -186,30 +200,22 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.adsIdBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key", "wall");
+            intent.putExtra("key", "Wallpaper Bazaar");
             startActivity(intent);
         });
 
         binding.hdWallpaperAds.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key", "HDWall");
+            intent.putExtra("key", "HD Wallpaper");
             startActivity(intent);
         });
 
         binding.turboAdsBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key", "turbo");
-            startActivity(intent);
-        });
-        binding.turboAdsBtn2.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key", "turbo2");
-            startActivity(intent);
-        });
+//            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
+//            intent.putExtra("key", "turbo");
+//            startActivity(intent);
 
-        binding.turboAdsBtn3.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, UpdateAdsActivity.class);
-            intent.putExtra("key", "turbo3");
+            Intent intent = new Intent(MainActivity.this, FileShareAdsActivity.class);
             startActivity(intent);
         });
 
@@ -243,6 +249,128 @@ public class MainActivity extends AppCompatActivity {
 
         binding.updateTextUrls.setOnClickListener(v -> {
             showUrlAndTextDialog();
+        });
+
+        binding.FSNewsReviewsDetails.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this, R.style.MyTheme);
+            String[] fsItemsList = new String[]{
+                    "Upload News Detail",
+                    "Upload Reviews Detail"
+            };
+            builder.setTitle("Choose your option").setCancelable(true).setItems(fsItemsList, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        showDetailsDialog("News Details");
+                        break;
+                    case 1:
+                        showDetailsDialog("Review Details");
+                        break;
+                    default:
+                }
+            }).show();
+        });
+
+        binding.showFSNewsReviewsDetails.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this, R.style.MyTheme);
+            String[] fsItemsList = new String[]{
+                    "Show News Detail",
+                    "Show Reviews Detail"
+            };
+            builder.setTitle("Choose your option").setCancelable(true).setItems(fsItemsList, (dialog, which) -> {
+                Intent intent = new Intent(MainActivity.this, FileShareEditActivity.class);
+                switch (which) {
+                    case 0:
+                        intent.putExtra("key","News");
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent.putExtra("key","Reviews");
+                        startActivity(intent);
+                        break;
+                    default:
+                }
+            }).show();
+        });
+    }
+
+    private void showDetailsDialog(String dialogName) {
+
+        fileShareDetailsDialog = new Dialog(this);
+        cardLayoutBinding = NewsCardLayoutBinding.inflate(getLayoutInflater());
+        fileShareDetailsDialog.setContentView(cardLayoutBinding.getRoot());
+        fileShareDetailsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        fileShareDetailsDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.item_bg));
+        fileShareDetailsDialog.setCancelable(false);
+        fileShareDetailsDialog.show();
+
+        cardLayoutBinding.selectImage.setOnClickListener(v -> {
+            launcher.launch("image/*");
+            key = "news";
+        });
+        cardLayoutBinding.backBtn.setOnClickListener(view -> fileShareDetailsDialog.cancel());
+
+        cardLayoutBinding.title.setText(dialogName);
+
+        cardLayoutBinding.okBtn.setOnClickListener(view -> {
+
+            fsTitletxt = cardLayoutBinding.titleEdt.getText().toString();
+            fsURLTxt = cardLayoutBinding.urlEdt.getText().toString();
+            fsDescTxt = cardLayoutBinding.descEdt.getText().toString();
+
+            if (encodedImage == null) {
+                Toast.makeText(this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+
+            } else if (TextUtils.isEmpty(fsTitletxt)) {
+                cardLayoutBinding.titleEdt.setError("Title required!");
+
+            } else if (TextUtils.isEmpty(fsURLTxt)) {
+                cardLayoutBinding.urlEdt.setError("Title required!");
+
+            } else if (TextUtils.isEmpty(fsDescTxt)) {
+                cardLayoutBinding.descEdt.setError("Field required!");
+            } else {
+                loadingDialog.show();
+                map.put("img", encodedImage);
+                map.put("title", fsTitletxt);
+                map.put("url", fsURLTxt);
+                map.put("desc", fsDescTxt);
+                uploadData(map, dialogName);
+            }
+        });
+
+
+    }
+
+    private void uploadData(Map<String, String> map, String key) {
+        switch (key) {
+            case "News Details":
+                call = apiInterface.uploadNewsDetails(map);
+                break;
+            case "Review Details":
+                call = apiInterface.uploadReviewDetails(map);
+                break;
+            default:
+        }
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    loadingDialog.dismiss();
+                    fileShareDetailsDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Data Uploaded", Toast.LENGTH_SHORT).show();
+                } else {
+                    loadingDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                loadingDialog.dismiss();
+                Log.e(TAG, t.getMessage());
+            }
         });
     }
 
@@ -487,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
         sliderDialog.setContentView(R.layout.banner_slider_layout);
         sliderDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         sliderDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        sliderDialog.setCancelable(false);
+        sliderDialog.setCancelable(true);
         sliderDialog.show();
 
         ImageSlider slider;

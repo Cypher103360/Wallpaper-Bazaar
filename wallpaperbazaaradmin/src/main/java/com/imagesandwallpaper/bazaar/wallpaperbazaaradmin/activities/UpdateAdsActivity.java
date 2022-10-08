@@ -76,23 +76,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
         InterstitialNetwork.setAdapter(arrayAdapter);
         NativeAdsNetworkName.setAdapter(arrayAdapter);
         OpenAdsNetworkName.setAdapter(arrayAdapter);
-        switch (key) {
-            case "wall":
-                fetchAds("Wallpaper Bazaar");
-                break;
-            case "turbo":
-                fetchAds("Turbo Share");
-                break;
-            case "turbo2":
-                fetchAds("Turbo Share2");
-                break;
-            case "turbo3":
-                fetchAds("Turbo Share3");
-                break;
-            case "HDWall":
-                fetchAds("HD Wallpaper");
-                break;
-        }
+        fetchAds(key);
 
         UploadAdsBtn.setOnClickListener(view -> {
             loading.show();
@@ -160,23 +144,7 @@ public class UpdateAdsActivity extends AppCompatActivity {
                 OpenAdsNetworkName.requestFocus();
                 loading.dismiss();
             } else {
-                switch (key) {
-                    case "wall":
-                        map.put("id", "Wallpaper Bazaar");
-                        break;
-                    case "turbo":
-                        map.put("id", "Turbo Share");
-                        break;
-                    case "turbo2":
-                        map.put("id", "Turbo Share2");
-                        break;
-                    case "turbo3":
-                        map.put("id", "Turbo Share3");
-                        break;
-                    case "HDWall":
-                        map.put("id", "HD Wallpaper");
-                        break;
-                }
+                map.put("id",key);
                 map.put("appId", appId);
                 map.put("appLovinSdkKey", appLovinSdkKey);
                 map.put("bannerTop", bannerTop);

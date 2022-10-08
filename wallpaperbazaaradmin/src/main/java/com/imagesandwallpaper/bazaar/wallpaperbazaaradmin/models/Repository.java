@@ -3,9 +3,9 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModel;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.news_and_reviews.DetailsModelList;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +26,8 @@ public class Repository {
     MutableLiveData<ImageItemModelList> premiumImageItemModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<UserDataModelList> userDataModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<FeaturedModelList> featuredModelListMutableLiveData = new MutableLiveData<>();
-
+    MutableLiveData<DetailsModelList> newsDetailsModelListMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<DetailsModelList> reviewDetailsModelListMutableLiveData = new MutableLiveData<>();
 
 
     public Repository() {
@@ -170,12 +171,12 @@ public class Repository {
         return featuredModelListMutableLiveData;
     }
 
-    public MutableLiveData<UserDataModelList> getUserDataModelListMutableLiveData(){
+    public MutableLiveData<UserDataModelList> getUserDataModelListMutableLiveData() {
         Call<UserDataModelList> call = apiInterface.getAllUserData();
         call.enqueue(new Callback<UserDataModelList>() {
             @Override
             public void onResponse(@NonNull Call<UserDataModelList> call, @NonNull Response<UserDataModelList> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     userDataModelListMutableLiveData.setValue(response.body());
                 }
             }
@@ -186,5 +187,41 @@ public class Repository {
             }
         });
         return userDataModelListMutableLiveData;
+    }
+
+    public MutableLiveData<DetailsModelList> getNewsDetailsModelListMutableLiveData() {
+        Call<DetailsModelList> call = apiInterface.getNewsDetails();
+        call.enqueue(new Callback<DetailsModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<DetailsModelList> call, @NonNull Response<DetailsModelList> response) {
+                if (response.isSuccessful()) {
+                    newsDetailsModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<DetailsModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return newsDetailsModelListMutableLiveData;
+    }
+
+    public MutableLiveData<DetailsModelList> getReviewDetailsModelListMutableLiveData() {
+        Call<DetailsModelList> call = apiInterface.getReviewsDetails();
+        call.enqueue(new Callback<DetailsModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<DetailsModelList> call, @NonNull Response<DetailsModelList> response) {
+                if (response.isSuccessful()) {
+                    reviewDetailsModelListMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<DetailsModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+        return reviewDetailsModelListMutableLiveData;
     }
 }

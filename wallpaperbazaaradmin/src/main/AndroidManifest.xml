@@ -17,6 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperBazaar">
         <activity
+            android:name=".activities.FileShareEditActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.FileShareAdsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ShowFeaturedActivity"
             android:exported="false" />
         <activity
