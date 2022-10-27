@@ -44,6 +44,7 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsAc
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.NewsCardLayoutBinding;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadBannerImageLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadLiveWallpaperLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiWebServices;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     String fileShareUrl, fileShareId, key, fsTitletxt, fsURLTxt, fsDescTxt;
     EditText choseImgQuality;
     UploadLiveWallpaperLayoutBinding uploadLiveWallpaperLayoutBinding;
+    UploadBannerImageLayoutBinding uploadBannerImageLayoutBinding;
     Intent intent;
     Call<MessageModel> call;
     List<BannerModel> bannerModels = new ArrayList<>();
@@ -138,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
             if (result != null) {
                 if (chooseImage != null) {
                     Glide.with(this).load(result).into(chooseImage);
-                } else if (cardLayoutBinding.selectImage != null) {
-                    Glide.with(this).load(result).into(cardLayoutBinding.selectImage);
-                }else{
+                }  else if (categoryImage != null) {
                     Glide.with(this).load(result).into(categoryImage);
+                }else{
+                    Glide.with(this).load(result).into(cardLayoutBinding.selectImage);
                 }
                 try {
                     if (choseImgQuality != null) {
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         bitmap = BitmapFactory.decodeStream(inputStream);
                         encodedImage = imageStore(bitmap, Integer.parseInt(imgQuality));
                         Toast.makeText(this, "Image quality is " + imgQuality, Toast.LENGTH_SHORT).show();
-                    }else if(Objects.equals(key, "news")){
+                    } else if (Objects.equals(key, "news")) {
 
                         InputStream inputStream = this.getContentResolver().openInputStream(result);
                         bitmap = BitmapFactory.decodeStream(inputStream);
@@ -280,11 +282,11 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, FileShareEditActivity.class);
                 switch (which) {
                     case 0:
-                        intent.putExtra("key","News");
+                        intent.putExtra("key", "News");
                         startActivity(intent);
                         break;
                     case 1:
-                        intent.putExtra("key","Reviews");
+                        intent.putExtra("key", "Reviews");
                         startActivity(intent);
                         break;
                     default:
@@ -574,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (requestCode == 102 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             uri = data.getData();
             encodedImage = FileUtils.getPath(this, uri);
-            Glide.with(this).load(uri).into(categoryImage);
+            Glide.with(this).load(uri).into(uploadBannerImageLayoutBinding.chooseBannerImageView);
         }
     }
 
@@ -688,7 +690,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateBanner(String key) {
         bannerImgDialog = new Dialog(this);
-        bannerImgDialog.setContentView(R.layout.upload_banner_image_layout);
+        uploadBannerImageLayoutBinding = UploadBannerImageLayoutBinding.inflate(getLayoutInflater());
+        bannerImgDialog.setContentView(uploadBannerImageLayoutBinding.getRoot());
         bannerImgDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         bannerImgDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         bannerImgDialog.setCancelable(false);
@@ -697,11 +700,12 @@ public class MainActivity extends AppCompatActivity {
             loadingDialog.show();
         }
 
-        categoryImage = bannerImgDialog.findViewById(R.id.choose_banner_imageView);
-        EditText urlEdt = bannerImgDialog.findViewById(R.id.url);
-        Button updateBanBtn = bannerImgDialog.findViewById(R.id.upload_banner_image_btn);
-        Button cancelBtn = bannerImgDialog.findViewById(R.id.cancel_banner_btn);
-        choseImgQuality = bannerImgDialog.findViewById(R.id.img_quality);
+        categoryImage = uploadBannerImageLayoutBinding.chooseBannerImageView;
+        EditText urlEdt = uploadBannerImageLayoutBinding.url;
+        Button updateBanBtn = uploadBannerImageLayoutBinding.uploadBannerImageBtn;
+        Button cancelBtn = uploadBannerImageLayoutBinding.cancelBannerBtn;
+
+        choseImgQuality = uploadBannerImageLayoutBinding.imgQuality;
 
         cancelBtn.setOnClickListener(view -> {
             bannerImgDialog.dismiss();

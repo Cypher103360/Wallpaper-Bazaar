@@ -2,11 +2,11 @@ package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
 public class BannerModel {
 
-    String id, Image, url;
+    String id, image, url;
 
     public BannerModel(String id, String image, String url) {
         this.id = id;
-        Image = image;
+        this.image = image;
         this.url = url;
     }
 
@@ -15,7 +15,7 @@ public class BannerModel {
     }
 
     public String getImage() {
-        return Image;
+        return image;
     }
 
     public String getUrl() {
