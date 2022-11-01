@@ -18,4 +18,7 @@
         <item name="android:textSize">18sp</item>
         <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyLarge</item>
     </style>
+    <style name="SwitchCompatTheme">
+        <item name="colorControlActivated">@color/purple_500</item>
+    </style>
 </resources>

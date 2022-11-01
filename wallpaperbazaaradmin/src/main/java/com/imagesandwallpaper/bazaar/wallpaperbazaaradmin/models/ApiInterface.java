@@ -167,5 +167,31 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("update_news_details.php")
     Call<MessageModel> updateAllDetails(@FieldMap Map<String, String> map);
+
+    @Multipart
+    @POST("upload_own_ads.php")
+    Call<ResponseBody> uploadOwnAds(@Part MultipartBody.Part bannerPart, @Part MultipartBody.Part nativePart, @Part MultipartBody.Part interstitialPart, @Part MultipartBody.Part banUrlPart, @Part MultipartBody.Part nativeUrlPart, @Part MultipartBody.Part interstitialUrlPart, @Part MultipartBody.Part appIdPart);
+
+    @FormUrlEncoded
+    @POST("fetch_own_ads.php")
+    Call<List<OwnAdsModel>> fetchOwnAds(@Field("app_id") String appId);
+
+    @FormUrlEncoded
+    @POST("delete_own_ad.php")
+    Call<MessageModel> deleteAd(@FieldMap Map<String, String> map);
+
+    @POST("fetch_ads_state.php")
+    Call<AdsStateModel> fetchAdsState();
+
+    @FormUrlEncoded
+    @POST("upload_ads_state.php")
+    Call<MessageModel> uploadAdsState(@Field("adsState") String adsState);
+
+    @Multipart
+    @POST("update_own_ads.php")
+    Call<MessageModel> updateOwnAds(@Part MultipartBody.Part bannerPart,
+                                    @Part MultipartBody.Part bannerPartTemp,
+                                    @Part MultipartBody.Part nativePart,
+                                    @Part MultipartBody.Part nativePartTemp, @Part MultipartBody.Part keyPart, @Part MultipartBody.Part adPart);
 }
 

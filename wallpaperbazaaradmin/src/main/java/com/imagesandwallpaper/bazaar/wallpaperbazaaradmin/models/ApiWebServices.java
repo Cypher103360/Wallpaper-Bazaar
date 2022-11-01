@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiWebServices {
 
-    private static final String base_url = "https://gedgetsworld.in/Wallpaper_Bazaar/";
+    public static final String base_url = "https://gedgetsworld.in/Wallpaper_Bazaar/";
     public static Gson gson = new GsonBuilder()
             .setLenient()
             .create();

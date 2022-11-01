@@ -40,10 +40,12 @@ import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.FileShareAd
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.FileShareEditActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.PopAndPremiumActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.ShowFeaturedActivity;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.ShowOwnAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UpdateAdsActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.activities.UserDataActivity;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.ActivityMainBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.NewsCardLayoutBinding;
+import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadAdsDialogBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadBannerImageLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.databinding.UploadLiveWallpaperLayoutBinding;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.ApiInterface;
@@ -86,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView chooseImage, categoryImage;
     Bitmap bitmap;
     String encodedImage, liveWallImg, checkImage;
-    Dialog loadingDialog, sliderDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog, textAndUrlsDialog, fileShareDetailsDialog;
+    String bannerImage, nativeImage, interstitialImage;
+    Dialog loadingDialog, sliderDialog, imageDialog, catDialog, bannerImgDialog, liveWallDialog,
+            textAndUrlsDialog, fileShareDetailsDialog, adsDialog;
     ApiInterface apiInterface;
     String id, image2, proWallUrl, proWallId, getWallId, getWallUrl, textAndUrls, textAndUrlsId;
     String fileShareUrl, fileShareId, key, fsTitletxt, fsURLTxt, fsDescTxt;
@@ -99,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     List<SlideModel> slideModels = new ArrayList<>();
     Uri uri;
     NewsCardLayoutBinding cardLayoutBinding;
+    UploadAdsDialogBinding uploadAdsDialogBinding;
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -140,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
             if (result != null) {
                 if (chooseImage != null) {
                     Glide.with(this).load(result).into(chooseImage);
-                }  else if (categoryImage != null) {
+                } else if (categoryImage != null) {
                     Glide.with(this).load(result).into(categoryImage);
-                }else{
+                } else {
                     Glide.with(this).load(result).into(cardLayoutBinding.selectImage);
                 }
                 try {
@@ -293,6 +298,111 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).show();
         });
+
+        binding.uploadOwnAds.setOnClickListener(v -> UploadOwnAdsDialog());
+
+        binding.showOwnAds.setOnClickListener(v -> startActivity(new Intent(this, ShowOwnAdsActivity.class)));
+    }
+
+    private void UploadOwnAdsDialog() {
+
+        adsDialog = new Dialog(this);
+        uploadAdsDialogBinding = UploadAdsDialogBinding.inflate(getLayoutInflater());
+        adsDialog.setContentView(uploadAdsDialogBinding.getRoot());
+        adsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        adsDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.item_bg));
+        adsDialog.setCancelable(false);
+        adsDialog.show();
+        uploadAdsDialogBinding.imageCancel.setOnClickListener(v -> adsDialog.dismiss());
+
+        uploadAdsDialogBinding.chooseBannerImage.setOnClickListener(v -> {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 103);
+        });
+        uploadAdsDialogBinding.chooseNativeImage.setOnClickListener(v -> {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 104);
+        });
+        uploadAdsDialogBinding.chooseInterstitialImage.setOnClickListener(v -> {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 105);
+        });
+
+        uploadAdsDialogBinding.uploadAdsBtn.setOnClickListener(v -> {
+            String bannerUrl = uploadAdsDialogBinding.bannerUrl.getText().toString().trim();
+            String nativeUrl = uploadAdsDialogBinding.nativeUrl.getText().toString().trim();
+            String interstitialUrl = uploadAdsDialogBinding.interstitialIdUrl.getText().toString().trim();
+
+            if (bannerImage == null) {
+                Toast.makeText(this, "Please select Banner Image", Toast.LENGTH_LONG).show();
+            } else if (nativeImage == null) {
+                Toast.makeText(this, "Please select Native Image", Toast.LENGTH_LONG).show();
+            } else if (interstitialImage == null) {
+                Toast.makeText(this, "Please select Interstitial Image", Toast.LENGTH_LONG).show();
+            } else if (TextUtils.isEmpty(bannerUrl)) {
+                uploadAdsDialogBinding.bannerUrl.setError("Url required!");
+                uploadAdsDialogBinding.bannerUrl.requestFocus();
+            } else if (TextUtils.isEmpty(nativeUrl)) {
+                uploadAdsDialogBinding.nativeUrl.setError("Url required!");
+                uploadAdsDialogBinding.nativeUrl.requestFocus();
+            } else if (TextUtils.isEmpty(interstitialUrl)) {
+                uploadAdsDialogBinding.interstitialIdUrl.setError("Url required!");
+                uploadAdsDialogBinding.interstitialIdUrl.requestFocus();
+            } else {
+
+                File bannerFile = new File(Uri.parse(bannerImage).getPath());
+                File nativeFile = new File(Uri.parse(nativeImage).getPath());
+                File interstitialFile = new File(Uri.parse(interstitialImage).getPath());
+                RequestBody bannerRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), bannerFile);
+                RequestBody nativeRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), nativeFile);
+                RequestBody interstitialRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), interstitialFile);
+                MultipartBody.Part bannerPart = MultipartBody.Part.createFormData("banImg", bannerFile.getName(), bannerRequestBody);
+                MultipartBody.Part nativePart = MultipartBody.Part.createFormData("nativeImg", nativeFile.getName(), nativeRequestBody);
+                MultipartBody.Part interstitialPart = MultipartBody.Part.createFormData("interImg", interstitialFile.getName(), interstitialRequestBody);
+                MultipartBody.Part banUrlPart = MultipartBody.Part.createFormData("banUrl", bannerUrl);
+                MultipartBody.Part nativeUrlPart = MultipartBody.Part.createFormData("nativeUrl", nativeUrl);
+                MultipartBody.Part interstitialUrlPart = MultipartBody.Part.createFormData("interstitialUrl", interstitialUrl);
+                MultipartBody.Part appIdPart = MultipartBody.Part.createFormData("appId", "Turbo Share19");
+
+//                map.put("banUrl", bannerUrl);
+//                map.put("nativeUrl", nativeUrl);
+//                map.put("interstitialUrl", interstitialUrl);
+//                map.put("appId", "PM Kisan All Yojana");
+                Call<ResponseBody> call = apiInterface.uploadOwnAds(bannerPart, nativePart, interstitialPart, banUrlPart, nativeUrlPart, interstitialUrlPart, appIdPart);
+                UploadOwnAds(call);
+            }
+        });
+
+
+    }
+
+    private void UploadOwnAds(Call<ResponseBody> call) {
+        loadingDialog.show();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    adsDialog.dismiss();
+
+                    Toast.makeText(MainActivity.this, "Data Upload Successfully", Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+
+            }
+        });
+
+
     }
 
     private void showDetailsDialog(String dialogName) {
@@ -577,6 +687,47 @@ public class MainActivity extends AppCompatActivity {
             uri = data.getData();
             encodedImage = FileUtils.getPath(this, uri);
             Glide.with(this).load(uri).into(uploadBannerImageLayoutBinding.chooseBannerImageView);
+        } else if (requestCode == 103 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            Log.d("imageViewUri",uri.toString());
+            bannerImage = FileUtils.getPath(this, uri);
+            switch (Objects.requireNonNull(FilenameUtils.getExtension(bannerImage))) {
+                case "jpeg":
+                case "jpg":
+                case "png":
+                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
+                    break;
+                case "gif":
+                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
+                    break;
+            }
+        } else if (requestCode == 104 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            nativeImage = FileUtils.getPath(this, uri);
+            switch (Objects.requireNonNull(FilenameUtils.getExtension(nativeImage))) {
+                case "jpeg":
+                case "jpg":
+                case "png":
+                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
+                    break;
+                case "gif":
+                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
+                    break;
+            }
+
+        } else if (requestCode == 105 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            interstitialImage = FileUtils.getPath(this, uri);
+            switch (Objects.requireNonNull(FilenameUtils.getExtension(interstitialImage))) {
+                case "jpeg":
+                case "jpg":
+                case "png":
+                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+                    break;
+                case "gif":
+                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+                    break;
+            }
         }
     }
 

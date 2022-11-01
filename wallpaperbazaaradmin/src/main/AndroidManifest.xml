@@ -48,6 +48,9 @@
             android:name=".ShowDataActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ShowOwnAdsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

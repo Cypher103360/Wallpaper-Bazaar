@@ -1,12 +1,16 @@
 package com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.UserData.UserDataModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.featured.FeaturedModelList;
 import com.imagesandwallpaper.bazaar.wallpaperbazaaradmin.models.news_and_reviews.DetailsModelList;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +32,7 @@ public class Repository {
     MutableLiveData<FeaturedModelList> featuredModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<DetailsModelList> newsDetailsModelListMutableLiveData = new MutableLiveData<>();
     MutableLiveData<DetailsModelList> reviewDetailsModelListMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<OwnAdsModel>> ownAdsViewModelLiveData = new MutableLiveData<>();
 
 
     public Repository() {
@@ -223,5 +228,24 @@ public class Repository {
             }
         });
         return reviewDetailsModelListMutableLiveData;
+    }
+    public LiveData<List<OwnAdsModel>> fetchOwnAds(String appId) {
+        Call<List<OwnAdsModel>> call = apiInterface.fetchOwnAds(appId);
+        call.enqueue(new Callback<List<OwnAdsModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<OwnAdsModel>> call, @NonNull Response<List<OwnAdsModel>> response) {
+                if (response.isSuccessful()) {
+                    ownAdsViewModelLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<OwnAdsModel>> call, @NonNull Throwable t) {
+                Log.d("onResponse error", t.getMessage());
+            }
+        });
+        return ownAdsViewModelLiveData;
+
+
     }
 }
