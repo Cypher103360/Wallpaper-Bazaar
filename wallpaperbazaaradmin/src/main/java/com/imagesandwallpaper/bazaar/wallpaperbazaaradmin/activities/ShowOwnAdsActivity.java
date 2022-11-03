@@ -100,15 +100,15 @@ public class ShowOwnAdsActivity extends AppCompatActivity implements OwnAdsAdapt
         stateModelCall.enqueue(new Callback<AdsStateModel>() {
             @Override
             public void onResponse(@NonNull Call<AdsStateModel> call, @NonNull Response<AdsStateModel> response) {
-                Log.d("ContentValue", Objects.requireNonNull(response.body()).getAds_turn_on_or_off());
-                checkSwitch = Boolean.parseBoolean(response.body().getAds_turn_on_or_off());
-                if (checkSwitch) {
-                    binding.switchButton.setText("Ads ON");
-                } else {
-                    binding.switchButton.setText(R.string.ads_off);
+                if (response != null) {
+                    checkSwitch = Boolean.parseBoolean(response.body().getAds_turn_on_or_off());
+                    if (checkSwitch) {
+                        binding.switchButton.setText("Ads ON");
+                    } else {
+                        binding.switchButton.setText(R.string.ads_off);
+                    }
+                    binding.switchButton.setChecked(checkSwitch);
                 }
-                binding.switchButton.setChecked(checkSwitch);
-
             }
 
             @Override

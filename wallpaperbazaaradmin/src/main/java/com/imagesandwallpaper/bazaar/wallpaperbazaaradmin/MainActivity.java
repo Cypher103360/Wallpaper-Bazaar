@@ -82,10 +82,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    int bannerClick, interstitialClick, nativeClick;
     ActivityMainBinding binding;
     ActivityResultLauncher<String> launcher;
     Map<String, String> map = new HashMap<>();
-    ImageView chooseImage, categoryImage;
+    ImageView chooseImage, categoryImage,selectImage;
     Bitmap bitmap;
     String encodedImage, liveWallImg, checkImage;
     String bannerImage, nativeImage, interstitialImage;
@@ -101,9 +102,12 @@ public class MainActivity extends AppCompatActivity {
     Call<MessageModel> call;
     List<BannerModel> bannerModels = new ArrayList<>();
     List<SlideModel> slideModels = new ArrayList<>();
-    Uri uri;
+    Uri uri,bannerUri,nativeUri,interstitialUri;
     NewsCardLayoutBinding cardLayoutBinding;
     UploadAdsDialogBinding uploadAdsDialogBinding;
+
+    public MainActivity() {
+    }
 
     public static String imageStore(Bitmap bitmap, int imageQuality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadingDialog = CommonMethods.loadingDialog(MainActivity.this);
         apiInterface = ApiWebServices.getApiInterface();
+        requestPermission();
         // upload_popular_images.php
 
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
@@ -147,8 +152,57 @@ public class MainActivity extends AppCompatActivity {
                     Glide.with(this).load(result).into(chooseImage);
                 } else if (categoryImage != null) {
                     Glide.with(this).load(result).into(categoryImage);
-                } else {
-                    Glide.with(this).load(result).into(cardLayoutBinding.selectImage);
+                } else if(selectImage!=null) {
+                    Glide.with(this).load(result).into(selectImage);
+                }else if (bannerClick == 103) {
+                    bannerClick=0;
+                    Toast.makeText(this, "103", Toast.LENGTH_SHORT).show();
+                    bannerUri = result;
+                    Log.d("imageViewUri", bannerUri.toString());
+                    bannerImage = FileUtils.getPath(this, bannerUri);
+                    switch (Objects.requireNonNull(FilenameUtils.getExtension(bannerImage))) {
+                        case "jpeg":
+                        case "jpg":
+                        case "png":
+                            Glide.with(this).load(bannerUri).into(uploadAdsDialogBinding.chooseBannerImage);
+                            break;
+                        case "gif":
+                            Glide.with(this).asGif().load(bannerUri).into(uploadAdsDialogBinding.chooseBannerImage);
+                            break;
+                    }
+                }
+                else if (nativeClick == 104) {
+                    nativeClick=0;
+                    Toast.makeText(this, "104", Toast.LENGTH_SHORT).show();
+                    nativeUri = result;
+                    nativeImage = FileUtils.getPath(this, nativeUri);
+                    switch (Objects.requireNonNull(FilenameUtils.getExtension(nativeImage))) {
+                        case "jpeg":
+                        case "jpg":
+                        case "png":
+                            Glide.with(this).load(nativeUri).into(uploadAdsDialogBinding.chooseNativeImage);
+                            break;
+                        case "gif":
+                            Glide.with(this).asGif().load(nativeUri).into(uploadAdsDialogBinding.chooseNativeImage);
+                            break;
+                    }
+
+                }
+                else if (interstitialClick == 105) {
+                    interstitialClick=0;
+                    Toast.makeText(this, "105", Toast.LENGTH_SHORT).show();
+                    interstitialUri = result;
+                    interstitialImage = FileUtils.getPath(this, interstitialUri);
+                    switch (Objects.requireNonNull(FilenameUtils.getExtension(interstitialImage))) {
+                        case "jpeg":
+                        case "jpg":
+                        case "png":
+                            Glide.with(this).load(interstitialUri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+                            break;
+                        case "gif":
+                            Glide.with(this).asGif().load(interstitialUri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+                            break;
+                    }
                 }
                 try {
                     if (choseImgQuality != null) {
@@ -159,6 +213,10 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Image quality is " + imgQuality, Toast.LENGTH_SHORT).show();
                     } else if (Objects.equals(key, "news")) {
 
+                        InputStream inputStream = this.getContentResolver().openInputStream(result);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        encodedImage = imageStore(bitmap, 80);
+                    } else {
                         InputStream inputStream = this.getContentResolver().openInputStream(result);
                         bitmap = BitmapFactory.decodeStream(inputStream);
                         encodedImage = imageStore(bitmap, 80);
@@ -305,7 +363,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void UploadOwnAdsDialog() {
-
         adsDialog = new Dialog(this);
         uploadAdsDialogBinding = UploadAdsDialogBinding.inflate(getLayoutInflater());
         adsDialog.setContentView(uploadAdsDialogBinding.getRoot());
@@ -317,19 +374,25 @@ public class MainActivity extends AppCompatActivity {
         uploadAdsDialogBinding.imageCancel.setOnClickListener(v -> adsDialog.dismiss());
 
         uploadAdsDialogBinding.chooseBannerImage.setOnClickListener(v -> {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, 103);
+            bannerClick = 103;
+            launcher.launch("image/*");
+//            intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.setType("image/*");
+//            startActivityForResult(intent, 103);
         });
         uploadAdsDialogBinding.chooseNativeImage.setOnClickListener(v -> {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, 104);
+            nativeClick = 104;
+            launcher.launch("image/*");
+//            intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.setType("image/*");
+//            startActivityForResult(intent, 104);
         });
         uploadAdsDialogBinding.chooseInterstitialImage.setOnClickListener(v -> {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, 105);
+            interstitialClick = 105;
+            launcher.launch("image/*");
+//            intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.setType("image/*");
+//            startActivityForResult(intent, 105);
         });
 
         uploadAdsDialogBinding.uploadAdsBtn.setOnClickListener(v -> {
@@ -415,8 +478,9 @@ public class MainActivity extends AppCompatActivity {
         fileShareDetailsDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.item_bg));
         fileShareDetailsDialog.setCancelable(false);
         fileShareDetailsDialog.show();
+        selectImage=cardLayoutBinding.selectImage;
 
-        cardLayoutBinding.selectImage.setOnClickListener(v -> {
+        selectImage.setOnClickListener(v -> {
             launcher.launch("image/*");
             key = "news";
         });
@@ -687,48 +751,49 @@ public class MainActivity extends AppCompatActivity {
             uri = data.getData();
             encodedImage = FileUtils.getPath(this, uri);
             Glide.with(this).load(uri).into(uploadBannerImageLayoutBinding.chooseBannerImageView);
-        } else if (requestCode == 103 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            uri = data.getData();
-            Log.d("imageViewUri",uri.toString());
-            bannerImage = FileUtils.getPath(this, uri);
-            switch (Objects.requireNonNull(FilenameUtils.getExtension(bannerImage))) {
-                case "jpeg":
-                case "jpg":
-                case "png":
-                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
-                    break;
-                case "gif":
-                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
-                    break;
-            }
-        } else if (requestCode == 104 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            uri = data.getData();
-            nativeImage = FileUtils.getPath(this, uri);
-            switch (Objects.requireNonNull(FilenameUtils.getExtension(nativeImage))) {
-                case "jpeg":
-                case "jpg":
-                case "png":
-                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
-                    break;
-                case "gif":
-                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
-                    break;
-            }
-
-        } else if (requestCode == 105 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            uri = data.getData();
-            interstitialImage = FileUtils.getPath(this, uri);
-            switch (Objects.requireNonNull(FilenameUtils.getExtension(interstitialImage))) {
-                case "jpeg":
-                case "jpg":
-                case "png":
-                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
-                    break;
-                case "gif":
-                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
-                    break;
-            }
         }
+//        else if (requestCode == 103 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            uri = data.getData();
+//            Log.d("imageViewUri", uri.toString());
+//            bannerImage = FileUtils.getPath(this, uri);
+//            switch (Objects.requireNonNull(FilenameUtils.getExtension(bannerImage))) {
+//                case "jpeg":
+//                case "jpg":
+//                case "png":
+//                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
+//                    break;
+//                case "gif":
+//                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseBannerImage);
+//                    break;
+//            }
+//        } else if (requestCode == 104 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            uri = data.getData();
+//            nativeImage = FileUtils.getPath(this, uri);
+//            switch (Objects.requireNonNull(FilenameUtils.getExtension(nativeImage))) {
+//                case "jpeg":
+//                case "jpg":
+//                case "png":
+//                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
+//                    break;
+//                case "gif":
+//                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseNativeImage);
+//                    break;
+//            }
+//
+//        } else if (requestCode == 105 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            uri = data.getData();
+//            interstitialImage = FileUtils.getPath(this, uri);
+//            switch (Objects.requireNonNull(FilenameUtils.getExtension(interstitialImage))) {
+//                case "jpeg":
+//                case "jpg":
+//                case "png":
+//                    Glide.with(this).load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+//                    break;
+//                case "gif":
+//                    Glide.with(this).asGif().load(uri).into(uploadAdsDialogBinding.chooseInterstitialImage);
+//                    break;
+//            }
+//        }
     }
 
 
